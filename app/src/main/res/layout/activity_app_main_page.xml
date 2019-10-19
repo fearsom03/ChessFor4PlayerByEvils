@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/chess_background"
+    tools:context=".activity.MainAppPage">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:layout_marginEnd="55dp"
+        android:orientation="vertical"
+        android:layout_marginTop="220dp">
+
+        <TextView
+            android:id="@+id/playText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/rounded_text"
+            android:textColor="@android:color/white"
+            android:text="Play"/>
+        <TextView
+            android:id="@+id/communityText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/rounded_text"
+            android:textColor="@android:color/white"
+            android:text="Community"/>
+        <TextView
+            android:id="@+id/optionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/rounded_text"
+            android:textColor="@android:color/white"
+            android:text="Option"/>
+        <TextView
+            android:id="@+id/rulesText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/rounded_text"
+            android:textColor="@android:color/white"
+            android:text="Rules"/>
+    </LinearLayout>
+
+
+</LinearLayout>

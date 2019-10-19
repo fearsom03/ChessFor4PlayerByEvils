@@ -6,8 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/sample_photo"
-    tools:context=".MainActivity">
+    android:background="@drawable/chess_background"
+    tools:context=".activity.MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,14 +24,14 @@
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
         android:orientation="vertical"
-        android:layout_marginTop="200dp">
+        android:layout_marginTop="320dp">
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="25sp"
             android:textSize="17sp"
             android:background="@drawable/rouded_edit"
-            android:hint="Email"
+            android:text="sadsad"
             android:layout_marginBottom="15dp"
         />
 
@@ -36,12 +45,13 @@
             />
 
         <Button
+            android:id="@+id/signInButtom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sign in"
             android:textSize="17sp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/rouded"
+            android:background="@drawable/roudedButton"
             />
         <TextView
             android:layout_width="match_parent"
@@ -55,7 +65,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="170dp"
+            android:layout_marginTop="100dp"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
