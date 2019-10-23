@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/image_preview_1_dark"
+    tools:context=".activity.RegistrationActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:layout_marginEnd="55dp"
+
+        android:orientation="vertical"
+        android:layout_marginTop="220dp">
+
+        <EditText
+            android:id="@+id/userNameRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            style="@style/editTextDesignInMenu"
+            android:layout_marginBottom="25dp"
+            android:hint="Username"/>
+
+        <EditText
+            android:id="@+id/emailRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="textEmailAddress"
+            style="@style/editTextDesignInMenu"
+            android:layout_marginBottom="25dp"
+            android:hint="Email"/>
+
+        <EditText
+            android:id="@+id/passwordRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            style="@style/editTextDesignInMenu"
+            android:inputType="textPassword"
+            android:layout_marginBottom="25dp"
+            android:hint="Password"/>
+        <EditText
+            android:id="@+id/passwordConfRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            style="@style/editTextDesignInMenu"
+            android:inputType="textPassword"
+            android:layout_marginBottom="25dp"
+            android:hint="Confirm Password"/>
+        <Button
+            android:id="@+id/signInButtonRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Account"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rouded_button"
+            />
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>
