@@ -8,6 +8,18 @@
     android:orientation="vertical"
     android:background="@drawable/image_preview_3_king_queen"
     tools:context=".activity.MainAppPage">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:id="@+id/discretePicker"
+        android:layout_width="match_parent"
+        android:layout_height="156dp"
+        android:layout_marginTop="14dp"
+        android:clipToPadding="false" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +27,7 @@
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
         android:orientation="vertical"
-        android:layout_marginTop="220dp">
+        android:layout_marginTop="138dp">
 
         <TextView
             android:id="@+id/playText"
@@ -62,6 +74,7 @@
             android:textColor="@android:color/white"
             android:text="Rules"/>
     </LinearLayout>
+</LinearLayout>
 
 
 </androidx.core.widget.NestedScrollView>

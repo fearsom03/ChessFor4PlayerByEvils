@@ -16,7 +16,7 @@
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
         android:orientation="vertical"
-        android:layout_marginTop="320dp">
+        android:layout_marginTop="330dp">
 
         <EditText
             android:layout_width="match_parent"

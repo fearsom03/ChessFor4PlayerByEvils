@@ -14,9 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
-
         android:orientation="vertical"
-        android:layout_marginTop="220dp">
+        android:layout_marginTop="290dp">
 
         <EditText
             android:id="@+id/userNameRegistration"
