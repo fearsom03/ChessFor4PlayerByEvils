@@ -10,7 +10,6 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,12 +58,23 @@ public class MainAppPage extends AppCompatActivity {
         discretePicker.setAdapter(adapter);
         discretePicker.setOrientation(DSVOrientation.HORIZONTAL);
         discretePicker.setOverScrollEnabled(true);
-        discretePicker.setItemTransitionTimeMillis(300);
+        discretePicker.setScrollbarFadingEnabled(true);
         discretePicker.setOffscreenItems(imageLinks.size());
         discretePicker.setItemTransformer(new ScaleTransformer.Builder()
-                .setMinScale(0.8f)
+                .setMinScale(0.9f)
                 .build());
-        discretePicker.setItemTransitionTimeMillis(100);
+        discretePicker.setItemTransitionTimeMillis(4500);
+
+        goToLastElement();
+
+    }
+    private void goToLastElement(){
+        discretePicker.post(new Runnable() {
+            @Override
+            public void run() {
+                discretePicker.smoothScrollToPosition(imageLinks.size() - 1);
+            }
+        });
     }
 
 
