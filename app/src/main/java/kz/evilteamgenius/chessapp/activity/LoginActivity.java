@@ -18,7 +18,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     @BindView(R.id.signInButton)
-    Button signInButton;
+    MaterialButton signInButton;
     @BindView(R.id.createAccTextView)
     TextView createAccount;
 

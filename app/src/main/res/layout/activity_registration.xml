@@ -17,7 +17,7 @@
         android:orientation="vertical"
         android:layout_marginTop="290dp">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/userNameRegistration"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -25,7 +25,7 @@
             android:layout_marginBottom="25dp"
             android:hint="Username"/>
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailRegistration"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -34,7 +34,7 @@
             android:layout_marginBottom="25dp"
             android:hint="Email"/>
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordRegistration"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -42,7 +42,7 @@
             android:inputType="textPassword"
             android:layout_marginBottom="25dp"
             android:hint="Password"/>
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordConfRegistration"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -50,7 +50,7 @@
             android:inputType="textPassword"
             android:layout_marginBottom="25dp"
             android:hint="Confirm Password"/>
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/signInButtonRegistration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

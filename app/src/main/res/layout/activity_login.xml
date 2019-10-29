@@ -18,7 +18,7 @@
         android:orientation="vertical"
         android:layout_marginTop="330dp">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:textSize="20sp"
@@ -30,7 +30,7 @@
             android:layout_marginBottom="15dp"
         />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:textSize="20sp"
@@ -42,7 +42,7 @@
             android:layout_marginBottom="25dp"
             />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/signInButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

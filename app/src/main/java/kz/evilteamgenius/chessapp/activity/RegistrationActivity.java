@@ -8,6 +8,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -17,15 +20,15 @@ import timber.log.Timber;
 public class RegistrationActivity extends AppCompatActivity {
 
     @BindView(R.id.userNameRegistration)
-    EditText userName;
+    TextInputEditText userName;
     @BindView(R.id.emailRegistration)
-    EditText email;
+    TextInputEditText email;
     @BindView(R.id.passwordRegistration)
-    EditText password;
+    TextInputEditText password;
     @BindView(R.id.passwordConfRegistration)
-    EditText passwordConf;
+    TextInputEditText passwordConf;
     @BindView(R.id.signInButtonRegistration)
-    Button signInButtom;
+    MaterialButton signInButtom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 Toast.makeText(this,"Input email",Toast.LENGTH_SHORT).show();
             }
         }else {
-            Toast.makeText(this,"name must be more that 4 letters",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Name is empty or less that 4 letters",Toast.LENGTH_SHORT).show();
         }
     }
 
