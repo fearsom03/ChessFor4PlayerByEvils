@@ -1,26 +1,29 @@
 package kz.evilteamgenius.chessapp.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 import com.yarolegovich.discretescrollview.DSVOrientation;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.adapters.AdvertismentAdapter;
+import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
 
 public class MainAppPage extends AppCompatActivity {
 
-    @BindView(R.id.discretePicker)
-    DiscreteScrollView discretePicker;
+    @BindView(R.id.imageSlider)
+    SliderView sliderView;
     @BindView(R.id.playText)
     TextView playText;
     @BindView(R.id.communityText)
@@ -31,7 +34,7 @@ public class MainAppPage extends AppCompatActivity {
     TextView rulesText;
 
     private ArrayList<String> imageLinks;
-    private AdvertismentAdapter adapter;
+    private SliderAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,28 +58,27 @@ public class MainAppPage extends AppCompatActivity {
     }
 
     private void initUI() {
-        adapter = new AdvertismentAdapter();
+        adapter = new SliderAdapter(this.getApplicationContext());
         adapter.setImages(imageLinks);
-        discretePicker.setAdapter(adapter);
-        discretePicker.setOrientation(DSVOrientation.HORIZONTAL);
-        discretePicker.setOverScrollEnabled(true);
-        discretePicker.setScrollbarFadingEnabled(true);
-        discretePicker.setOffscreenItems(imageLinks.size());
-        discretePicker.setItemTransformer(new ScaleTransformer.Builder()
-                .setMinScale(0.9f)
-                .build());
-        discretePicker.setItemTransitionTimeMillis(14000);
-        goToLastElement();
+//        sliderView.setSliderAdapter(adapter);
+//        sliderView.setOrientation(DSVOrientation.HORIZONTAL);
+//        sliderView.setOverScrollEnabled(true);
+//        sliderView.setScrollbarFadingEnabled(true);
+//        sliderView.setOffscreenItems(imageLinks.size());
+//        sliderView.setItemTransformer(new ScaleTransformer.Builder()
+//                .setMinScale(0.9f)
+//                .build());
+//        sliderView.setItemTransitionTimeMillis(14000);
 
-    }
+        sliderView.setSliderAdapter(adapter);
 
-    private void goToLastElement() {
-        discretePicker.post(new Runnable() {
-            @Override
-            public void run() {
-                discretePicker.smoothScrollToPosition(imageLinks.size() - 2);
-            }
-        });
+        sliderView.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
+        sliderView.setIndicatorSelectedColor(Color.WHITE);
+        sliderView.setIndicatorUnselectedColor(Color.GRAY);
+        sliderView.setScrollTimeInSec(3); //set scroll delay in seconds :
+        sliderView.startAutoCycle();
     }
 
 
