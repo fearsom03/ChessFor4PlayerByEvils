@@ -23,6 +23,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static kz.evilteamgenius.chessapp.Constants.UrlForLogin;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
 
@@ -35,7 +37,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.password)
     TextInputEditText passwordEditText;
 
-    final String url_Login = "https://k-chess.herokuapp.com/api/auth/token";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,18 +56,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent intent;
         switch (view.getId()) {
             case R.id.signInButton:
-                String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
-                new LoginUser().execute(username, password);
-
-//                intent = new Intent(this, MainAppPage.class);
-//                startActivity(intent);
+                if (usernameEditText.getText()!=null && passwordEditText.getText()!=null){
+                    String username = usernameEditText.getText().toString();
+                    String password = passwordEditText.getText().toString();
+                    new LoginUser().execute(username, password);
+//                    loginFunction(username,password);
+                }else {
+                    showToast(getResources().getString(R.string.EmptyInput));
+                }
                 break;
             case R.id.createAccTextView:
                 intent = new Intent(this, RegistrationActivity.class);
                 startActivity(intent);
                 break;
         }
+    }
+
+    // todo leter need to realize
+    private void loginFunction(String username, String password) {
+
     }
 
     public class LoginUser extends AsyncTask<String, Void, String> {
@@ -83,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .build();
 
             Request request = new Request.Builder()
-                    .url(url_Login)
+                    .url(UrlForLogin)
                     .post(formBody)
                     .build();
 

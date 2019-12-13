@@ -14,13 +14,6 @@
     android:orientation="vertical">
 
 
-<!--    <com.yarolegovich.discretescrollview.DiscreteScrollView-->
-<!--        android:id="@+id/discretePicker"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="156dp"-->
-<!--        android:layout_marginTop="14dp"-->
-<!--        android:clipToPadding="false" />-->
-
     <com.smarteist.autoimageslider.SliderView
         android:id="@+id/imageSlider"
         android:layout_width="match_parent"
@@ -57,7 +50,7 @@
             android:layout_marginBottom="25dp"
             android:background="@drawable/rounded_text"
             android:textColor="@android:color/white"
-            android:text="Play"/>
+            android:text="@string/playText"/>
         <TextView
             android:id="@+id/communityText"
             android:layout_width="match_parent"
@@ -68,7 +61,7 @@
             android:layout_marginBottom="25dp"
             android:background="@drawable/rounded_text"
             android:textColor="@android:color/white"
-            android:text="Community"/>
+            android:text="@string/communityText"/>
         <TextView
             android:id="@+id/optionText"
             android:layout_width="match_parent"
@@ -79,7 +72,7 @@
             android:layout_marginBottom="25dp"
             android:background="@drawable/rounded_text"
             android:textColor="@android:color/white"
-            android:text="Option"/>
+            android:text="@string/optionText"/>
         <TextView
             android:id="@+id/rulesText"
             android:layout_width="match_parent"
@@ -90,7 +83,7 @@
             android:layout_marginBottom="25dp"
             android:background="@drawable/rounded_text"
             android:textColor="@android:color/white"
-            android:text="Rules"/>
+            android:text="@string/rulesText"/>
     </LinearLayout>
 </LinearLayout>
 

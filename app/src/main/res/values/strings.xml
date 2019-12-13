@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">ChessAppGG</string>
+    <string name="login">Login</string>
+    <string name="passwordName">Password</string>
+    <string name="SignInText">Sign in</string>
+    <string name="ForgotPassText">Forgot password</string>
+    <string name="create_account_text">Create Account</string>
+    <string name="usernameText_hint">Username</string>
+    <string name="emailText">Email</string>
+    <string name="confirm_passwordText">Confirm Password</string>
+    <string name="playText">Play</string>
+    <string name="communityText">Community</string>
+    <string name="optionText">Option</string>
+    <string name="rulesText">Rules</string>
+    <string name="EmptyInput">Empty Input</string>
+    <string name="EmptyNameInputOrLess">Name is empty or less that 4 letters</string>
+    <string name="InputEmailText">Input email</string>
+    <string name="RegisterSuccess">Register successful</string>
+    <string name="OOPS_TryAgain">OOPS! Please try again</string>
+
+
+
+
+
 </resources>

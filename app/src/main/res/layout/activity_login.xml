@@ -24,7 +24,7 @@
             android:layout_height="30dp"
             android:textSize="20sp"
             android:background="@drawable/rounded_text"
-            android:hint="Login"
+            android:hint="@string/login"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:textColorHint="@android:color/white"
@@ -37,18 +37,19 @@
             android:layout_height="30dp"
             android:textSize="20sp"
             android:background="@drawable/rounded_text"
-            android:hint="Password"
+            android:hint="@string/passwordName"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:textColorHint="@android:color/white"
             android:layout_marginBottom="25dp"
+            android:inputType="textPassword"
             />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/signInButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign in"
+            android:text="@string/SignInText"
             android:textSize="17sp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/rouded_button"
@@ -60,7 +61,7 @@
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:text="Forgot password"/>
+            android:text="@string/ForgotPassText"/>
 
         <TextView
             android:id="@+id/createAccTextView"
@@ -71,7 +72,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:text="Create Account"/>
+            android:text="@string/create_account_text"/>
     </LinearLayout>
 
 

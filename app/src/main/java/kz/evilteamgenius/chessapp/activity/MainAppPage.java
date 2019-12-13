@@ -2,6 +2,7 @@ package kz.evilteamgenius.chessapp.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -60,16 +61,6 @@ public class MainAppPage extends AppCompatActivity {
     private void initUI() {
         adapter = new SliderAdapter(this.getApplicationContext());
         adapter.setImages(imageLinks);
-//        sliderView.setSliderAdapter(adapter);
-//        sliderView.setOrientation(DSVOrientation.HORIZONTAL);
-//        sliderView.setOverScrollEnabled(true);
-//        sliderView.setScrollbarFadingEnabled(true);
-//        sliderView.setOffscreenItems(imageLinks.size());
-//        sliderView.setItemTransformer(new ScaleTransformer.Builder()
-//                .setMinScale(0.9f)
-//                .build());
-//        sliderView.setItemTransitionTimeMillis(14000);
-
         sliderView.setSliderAdapter(adapter);
 
         sliderView.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!

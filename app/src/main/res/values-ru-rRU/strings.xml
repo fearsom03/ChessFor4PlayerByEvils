@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ChessAppGG</string>
+    <string name="login">Логин</string>
+    <string name="passwordName">Пароль</string>
+    <string name="SignInText">Войти</string>
+    <string name="ForgotPassText">Забыл пароль</string>
+    <string name="create_account_text">Создать Аккаунт</string>
+    <string name="usernameText_hint">Имя пользователя</string>
+    <string name="confirm_passwordText">Подтвердить пароль</string>
+    <string name="emailText">Email</string>
+    <string name="playText">Игра</string>
+    <string name="communityText">Сообщество</string>
+    <string name="optionText">Настройки</string>
+    <string name="rulesText">Правила</string>
+    <string name="EmptyInput">Ввод пустой</string>
+    <string name="EmptyNameInputOrLess">Имя постое или меньше чем 4 буквы</string>
+    <string name="InputEmailText">Введите ваш email</string>
+    <string name="RegisterSuccess">Вы зарегистрировались</string>
+    <string name="OOPS_TryAgain">УПС! Попробуйте еще раз</string>
+
+
+
+
 </resources>
