@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ChessAppGG</string>
-    <string name="login">Login</string>
-    <string name="passwordName">Password</string>
-    <string name="SignInText">Sign in</string>
-    <string name="ForgotPassText">Forgot password</string>
-    <string name="create_account_text">Create Account</string>
-    <string name="usernameText_hint">Username</string>
-    <string name="confirm_passwordText">Confirm Password</string>
-    <string name="emailText">Email</string>
-    <string name="playText">Play</string>
-    <string name="communityText">Community</string>
-    <string name="optionText">Option</string>
-    <string name="rulesText">Rules</string>
-    <string name="EmptyInput">Empty Input</string>
-    <string name="EmptyNameInputOrLess">Name is empty or less that 4 letters</string>
-    <string name="InputEmailText">Input email</string>
-    <string name="RegisterSuccess">Register successful</string>
-    <string name="OOPS_TryAgain">OOPS! Please try again</string>
+    <string name="app_name">K-国际象棋</string>
+    <string name="login">用户名</string>
+    <string name="passwordName">密码</string>
+    <string name="SignInText">登录</string>
+    <string name="ForgotPassText">忘记密码</string>
+    <string name="create_account_text">创建账号</string>
+    <string name="usernameText_hint">用户名</string>
+    <string name="confirm_passwordText">确认密码</string>
+    <string name="emailText">邮箱</string>
+    <string name="playText">开始游戏</string>
+    <string name="communityText">社区</string>
+    <string name="optionText">选项</string>
+    <string name="rulesText">规则</string>
+    <string name="EmptyInput">输入为空</string>
+    <string name="EmptyNameInputOrLess">名字长度需在4个字符以上</string>
+    <string name="InputEmailText">请输入邮箱</string>
+    <string name="RegisterSuccess">注册成功</string>
+    <string name="OOPS_TryAgain">请再试一次！</string>
 
     <string-array name="language_option">
-        <item>Select Language</item>
+        <item>选择语言</item>
         <item>English</item>
         <item>Қазақ</item>
         <item>Русский</item>
-        <item>中国人</item>
+        <item>中文</item>
     </string-array>
 
 </resources>
