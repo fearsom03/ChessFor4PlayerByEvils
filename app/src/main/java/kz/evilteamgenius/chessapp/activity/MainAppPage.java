@@ -2,7 +2,6 @@ package kz.evilteamgenius.chessapp.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,15 +9,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
-import com.yarolegovich.discretescrollview.DSVOrientation;
-import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.adapters.AdvertismentAdapter;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
 
 public class MainAppPage extends AppCompatActivity {
@@ -63,7 +59,7 @@ public class MainAppPage extends AppCompatActivity {
         adapter.setImages(imageLinks);
         sliderView.setSliderAdapter(adapter);
 
-        sliderView.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        sliderView.setIndicatorAnimation(IndicatorAnimations.WORM);
         sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
         sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
         sliderView.setIndicatorSelectedColor(Color.WHITE);
@@ -71,7 +67,5 @@ public class MainAppPage extends AppCompatActivity {
         sliderView.setScrollTimeInSec(3); //set scroll delay in seconds :
         sliderView.startAutoCycle();
     }
-
-
 
 }

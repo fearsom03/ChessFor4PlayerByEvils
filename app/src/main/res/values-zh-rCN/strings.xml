@@ -19,5 +19,12 @@
     <string name="RegisterSuccess">Register successful</string>
     <string name="OOPS_TryAgain">OOPS! Please try again</string>
 
+    <string-array name="language_option">
+        <item>Select Language</item>
+        <item>English</item>
+        <item>Қазақ</item>
+        <item>Русский</item>
+        <item>中国人</item>
+    </string-array>
 
 </resources>
