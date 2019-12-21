@@ -24,6 +24,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.RegistrationActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".activity.GameActivity">
+        </activity>
         <activity android:name=".activity.MainAppPage"
             android:screenOrientation="portrait"/>
         <activity android:name=".activity.LoginActivity"

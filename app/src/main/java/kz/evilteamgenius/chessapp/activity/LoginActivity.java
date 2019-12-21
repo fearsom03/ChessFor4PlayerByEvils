@@ -1,10 +1,9 @@
 package kz.evilteamgenius.chessapp.activity;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -26,7 +25,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.databinding.ActivityLoginBinding;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
@@ -156,7 +154,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                 if (response.isSuccessful()) {
                     String JWTtoken = response.body().string();
                     if (!JWTtoken.isEmpty()) {
-                        showToast(JWTtoken);
+                        //showToast(JWTtoken);
+                        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                        preferences.edit().putString("token", JWTtoken).apply();
                         Intent i = new Intent(LoginActivity.this,
                                 MainAppPage.class);
                         startActivity(i);

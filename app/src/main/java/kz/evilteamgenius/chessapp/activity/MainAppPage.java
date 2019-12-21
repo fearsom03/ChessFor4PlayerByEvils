@@ -1,8 +1,14 @@
 package kz.evilteamgenius.chessapp.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,10 +20,11 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
 
-public class MainAppPage extends AppCompatActivity {
+public class MainAppPage extends AppCompatActivity implements OnClickListener {
 
     @BindView(R.id.imageSlider)
     SliderView sliderView;
@@ -66,6 +73,49 @@ public class MainAppPage extends AppCompatActivity {
         sliderView.setIndicatorUnselectedColor(Color.GRAY);
         sliderView.setScrollTimeInSec(3); //set scroll delay in seconds :
         sliderView.startAutoCycle();
+    }
+
+    @OnClick(R.id.playText)
+    void GoToGame(){
+        Context mContext = MainAppPage.this;
+        Intent mIntent = new Intent(mContext, GameActivity.class);
+        startActivity(mIntent);
+        finish();
+    }
+
+
+    //test to output token, replace it once finish community page
+    @OnClick(R.id.communityText)
+    void showToken(){
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String token = preferences.getString("token","");
+        showToast(token);
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        Intent intent;
+        switch (view.getId()) {
+            case R.id.playText:
+                showToast("Play Clicked!");
+                intent = new Intent(this, GameActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.communityText:
+                showToast("Community Clicked!");
+                break;
+        }
+    }
+
+    public void showToast(final String Text) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainAppPage.this,
+                        Text, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }
