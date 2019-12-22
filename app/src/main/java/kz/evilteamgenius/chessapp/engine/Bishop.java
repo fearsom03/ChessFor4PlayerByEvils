@@ -78,4 +78,10 @@ public class Bishop extends Piece{
         return allowedMoves;
     }
 
+    @Override
+    public String toString() {
+        if(isWhite())
+            return "B";
+        else return "b";
+    }
 }

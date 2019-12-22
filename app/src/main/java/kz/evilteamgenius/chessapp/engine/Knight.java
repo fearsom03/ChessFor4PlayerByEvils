@@ -112,4 +112,11 @@ public class Knight extends Piece{
 
         return allowedMoves;
     }
+
+    @Override
+    public String toString() {
+        if(isWhite())
+            return "N";
+        else return "n";
+    }
 }

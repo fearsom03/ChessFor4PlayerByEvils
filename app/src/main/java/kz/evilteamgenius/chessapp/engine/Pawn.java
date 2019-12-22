@@ -86,4 +86,11 @@ public class Pawn extends Piece{
         //work on the coordinates and return the allowed moves
         return allowedMoves;
     }
+
+    @Override
+    public String toString() {
+        if(isWhite())
+            return "P";
+        else return "p";
+    }
 }

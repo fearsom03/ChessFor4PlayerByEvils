@@ -26,4 +26,6 @@ public class Piece {
     public boolean isWhite() {
         return white;
     }
+
+
 }

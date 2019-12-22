@@ -114,4 +114,11 @@ public class King extends Piece {
 
         return allowedMoves;
     }
+
+    @Override
+    public String toString() {
+        if(isWhite())
+            return "K";
+        else return "k";
+    }
 }
