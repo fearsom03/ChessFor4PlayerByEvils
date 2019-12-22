@@ -27,7 +27,7 @@ public class Game implements Serializable {
     @Expose
     private String result;
 
-    @SerializedName("blfrom_xack")
+    @SerializedName("from_x")
     @Expose
     private int from_x;
 

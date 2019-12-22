@@ -27,5 +27,11 @@ public class Piece {
         return white;
     }
 
+    public String getColor(){
+        if(isWhite())
+            return "white";
+        return "black";
+    }
+
 
 }
