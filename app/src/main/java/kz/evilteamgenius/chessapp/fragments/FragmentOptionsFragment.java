@@ -40,6 +40,8 @@ public class FragmentOptionsFragment extends Fragment {
     Switch soundSwitch;
     @BindView(R.id.exitTextView)
     TextView exitTextView;
+    @BindView(R.id.shareApp)
+    TextView shareApp;
     @BindView(R.id.backButtonInOption)
     MaterialButton backButtonInOption;
 
@@ -118,10 +120,23 @@ public class FragmentOptionsFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.backButtonInOption)
-    public void onViewClicked() {
-        FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
-        tr.replace(R.id.frame, new NavigationPageFragment());
-        tr.commit();
+    @OnClick({R.id.exitTextView, R.id.shareApp, R.id.backButtonInOption})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.exitTextView:
+                break;
+            case R.id.shareApp:
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, "Kuanysh is best");
+                startActivity(Intent.createChooser(intent, "Share"));
+                break;
+            case R.id.backButtonInOption:
+                FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
+                tr.replace(R.id.frame, new NavigationPageFragment());
+                tr.commit();
+                break;
+        }
     }
 }

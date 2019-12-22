@@ -20,7 +20,6 @@
     <string name="notificationName">Notification</string>
     <string name="soundText">Sound</string>
     <string name="changeUserText">Change user</string>
-
     <string-array name="language_option">
         <item>Select Language</item>
         <item>English</item>
@@ -29,6 +28,9 @@
         <item>中文</item>
     </string-array>
     <string name="backText">Back</string>
+    <string name="okText">OK</string>
+    <string name="errorEmailorLogin">Your password or Email is wrong</string>
+    <string name="shareApp">Share this app</string>
 
 
 </resources>

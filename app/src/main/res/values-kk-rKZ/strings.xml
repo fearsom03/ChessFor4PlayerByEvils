@@ -21,7 +21,10 @@
     <string name="notificationName">Хабарландыру</string>
     <string name="soundText">Дыбыс</string>
     <string name="changeUserText">Колданушыны ауыстыру</string>
-    <string name="backText">Back</string>
+    <string name="backText">Артқа</string>
+    <string name="okText">OK</string>
+    <string name="errorEmailorLogin">Сіздің пароліңіз немесе электрондық поштаңыз қате</string>
+    <string name="shareApp">Share this app</string>
 
     <string-array name="language_option">
         <item>Тiлдi танданыз</item>

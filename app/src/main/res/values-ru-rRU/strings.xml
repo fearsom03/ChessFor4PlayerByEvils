@@ -18,10 +18,13 @@
     <string name="InputEmailText">Введите ваш email</string>
     <string name="RegisterSuccess">Вы зарегистрировались</string>
     <string name="OOPS_TryAgain">УПС! Попробуйте еще раз</string>
-    <string name="notificationName">Notification</string>
-    <string name="soundText">Sound</string>
-    <string name="changeUserText">Change user</string>
-    <string name="backText">Back</string>
+    <string name="notificationName">Уведомление</string>
+    <string name="soundText">Звук</string>
+    <string name="changeUserText">Поменять пользователя</string>
+    <string name="backText">Назад</string>
+    <string name="okText">OK</string>
+    <string name="errorEmailorLogin">Ваш пароль или адрес электронной почты неверны</string>
+    <string name="shareApp">Share this app</string>
 
     <string-array name="language_option">
         <item>Выберите язык</item>

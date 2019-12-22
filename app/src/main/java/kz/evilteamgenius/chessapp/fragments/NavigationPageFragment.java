@@ -81,7 +81,6 @@ public class NavigationPageFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static NavigationPageFragment newInstance(String param1, String param2) {
         NavigationPageFragment fragment = new NavigationPageFragment();
         Bundle args = new Bundle();
@@ -245,7 +244,6 @@ public class NavigationPageFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

@@ -18,28 +18,15 @@ import kz.evilteamgenius.chessapp.fragments.NavigationPageFragment;
 public class KukaActivity extends AppCompatActivity implements NavigationPageFragment.OnFragmentInteractionListener {
 
     private Fragment fragment;
-    private MediaPlayer mPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kuka);
-        initMusic();
         fragment =new  NavigationPageFragment();
         replaceFragment(fragment);
     }
 
-    private void initMusic() {
-        mPlayer = MediaPlayer.create(this, R.raw.nina);
-        mPlayer.start();
-        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-            }
-        });
-    }
 
     public void replaceFragment(Fragment fragment){
         FragmentTransaction tr = this.getSupportFragmentManager().beginTransaction();
@@ -54,30 +41,5 @@ public class KukaActivity extends AppCompatActivity implements NavigationPageFra
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    @Override
-    protected void onPause() {
-        mPlayer.pause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        mPlayer.stop();
-        mPlayer.release();
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        mPlayer.start();
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        mPlayer.reset();
-        super.onResume();
     }
 }

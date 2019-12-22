@@ -1,5 +1,9 @@
 package kz.evilteamgenius.chessapp.activity;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -192,7 +196,24 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         finish();
 
                     } else {
-                        showToast("Wrong Email or Password!");
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
+                                builder1.setMessage(R.string.errorEmailorLogin);
+                                builder1.setCancelable(true);
+
+                                builder1.setPositiveButton(
+                                        getResources().getText(R.string.okText),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                                AlertDialog alert11 = builder1.create();
+                                alert11.show();
+                            }
+                        });
                     }
                 }
             } catch (Exception e) {

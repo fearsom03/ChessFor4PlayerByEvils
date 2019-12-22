@@ -975,6 +975,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setBoard();
 
     }
+
     //move Piece
     public void movePiece() {
         if (myColor.equals("white"))

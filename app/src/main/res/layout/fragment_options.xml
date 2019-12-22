@@ -10,11 +10,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="165dp"
+                android:layout_marginTop="125dp"
                 android:layout_marginEnd="55dp"
                 android:layout_marginBottom="25dp"
                 android:layout_marginStart="55dp"
@@ -101,6 +102,23 @@
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
                         android:text="@string/changeUserText"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_text"
+                    android:layout_marginBottom="25dp">
+
+                    <TextView
+                        android:id="@+id/shareApp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textSize="35sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:text="@string/shareApp"/>
                 </LinearLayout>
 
         </LinearLayout>
