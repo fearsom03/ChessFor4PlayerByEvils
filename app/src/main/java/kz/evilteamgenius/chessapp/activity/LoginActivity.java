@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
-    // todo leter need to realize
+    // todo later need to realize
     private void loginFunction(String username, String password) {
 
     }

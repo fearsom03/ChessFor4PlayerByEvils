@@ -1,11 +1,15 @@
 package kz.evilteamgenius.chessapp.activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.engine.Bishop;
@@ -17,8 +21,15 @@ import kz.evilteamgenius.chessapp.engine.Piece;
 import kz.evilteamgenius.chessapp.engine.Position;
 import kz.evilteamgenius.chessapp.engine.Queen;
 import kz.evilteamgenius.chessapp.engine.Rook;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.util.ArrayList;
+
+import static kz.evilteamgenius.chessapp.Constants.UrlForLogin;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -673,15 +684,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
+        //nothing selected previously
         if (!AnythingSelected) {
-            if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null) {
+
+            //click empty space
+            if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null) {
                 isKingInDanger();
                 return;
-            }else{
-                if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn){
+            }
+            else {
+                if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn) {
                     isKingInDanger();
                     return;
-                }else{
+                } else {
                     listOfCoordinates.clear();
                     listOfCoordinates = Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().AllowedMoves(clickedPosition, Board);
                     DisplayBoardBackground[clickedPosition.getX()][clickedPosition.getY()].setBackgroundResource(R.color.colorSelected);
@@ -690,13 +705,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+        // already selected something
         else {
-            if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null){
-                if(moveIsAllowed(listOfCoordinates , clickedPosition)){
+
+            //destination is empty, make move
+            if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null) {
+                if (moveIsAllowed(listOfCoordinates, clickedPosition)) {
 
                     saveBoard();
-                    if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() instanceof King){
-                        if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn){
+                    if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() instanceof King) {
+                        if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn) {
                             game_over.setVisibility(View.VISIBLE);
                         }
                     }
@@ -711,61 +729,60 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     FirstPlayerTurn = !FirstPlayerTurn;
                     checkForPawn();
 
-                }else{
+                } else {
                     resetColorAtLastPosition(lastPos);
                     resetColorAtAllowedPosition(listOfCoordinates);
                     AnythingSelected = false;
                 }
 
-            }else{
-                if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null) {
-                    isKingInDanger();
-                    return;
+            }
 
-                }else{
-                    if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() !=null){
-                        if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn){
-                            if(moveIsAllowed(listOfCoordinates , clickedPosition)){
+            //destination has a piece
+            else {
 
-                                saveBoard();
-                                if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() instanceof King){
-                                    if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn){
-                                        game_over.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                                Board[clickedPosition.getX()][clickedPosition.getY()].setPiece(Board[lastPos.getX()][lastPos.getY()].getPiece());
-                                Board[lastPos.getX()][lastPos.getY()].setPiece(null);
+                //destination has an enemy piece, take it
+                if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn) {
+                    if (moveIsAllowed(listOfCoordinates, clickedPosition)) {
 
-                                resetColorAtAllowedPosition(listOfCoordinates);
-                                DisplayBoard[lastPos.getX()][lastPos.getY()].setBackgroundResource(0);
-                                resetColorAtLastPosition(lastPos);
-
-                                AnythingSelected = false;
-                                FirstPlayerTurn = !FirstPlayerTurn;
-                                checkForPawn();
-                            }else{
-                                resetColorAtLastPosition(lastPos);
-                                resetColorAtAllowedPosition(listOfCoordinates);
-                                AnythingSelected = false;
+                        saveBoard();
+                        if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() instanceof King) {
+                            if (Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn) {
+                                game_over.setVisibility(View.VISIBLE);
                             }
-
-                        }else{
-                            if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != FirstPlayerTurn){
-                                isKingInDanger();
-                                return;
-                            }
-
-                            resetColorAtLastPosition(lastPos);
-                            resetColorAtAllowedPosition(listOfCoordinates);
-
-                            listOfCoordinates.clear();
-                            listOfCoordinates = Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().AllowedMoves(clickedPosition, Board);
-                            DisplayBoardBackground[clickedPosition.getX()][clickedPosition.getY()].setBackgroundResource(R.color.colorSelected);
-                            setColorAtAllowedPosition(listOfCoordinates);
-                            AnythingSelected = true;
                         }
+                        Board[clickedPosition.getX()][clickedPosition.getY()].setPiece(Board[lastPos.getX()][lastPos.getY()].getPiece());
+                        Board[lastPos.getX()][lastPos.getY()].setPiece(null);
+
+                        resetColorAtAllowedPosition(listOfCoordinates);
+                        DisplayBoard[lastPos.getX()][lastPos.getY()].setBackgroundResource(0);
+                        resetColorAtLastPosition(lastPos);
+
+                        AnythingSelected = false;
+                        FirstPlayerTurn = !FirstPlayerTurn;
+                        checkForPawn();
+                    } else {
+                        resetColorAtLastPosition(lastPos);
+                        resetColorAtAllowedPosition(listOfCoordinates);
+                        AnythingSelected = false;
                     }
+
                 }
+
+
+                //destination has my own piece, reset
+                else {
+
+                    resetColorAtLastPosition(lastPos);
+                    resetColorAtAllowedPosition(listOfCoordinates);
+
+                    listOfCoordinates.clear();
+                    listOfCoordinates = Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().AllowedMoves(clickedPosition, Board);
+                    DisplayBoardBackground[clickedPosition.getX()][clickedPosition.getY()].setBackgroundResource(R.color.colorSelected);
+                    setColorAtAllowedPosition(listOfCoordinates);
+                    AnythingSelected = true;
+                }
+
+
             }
         }
 
@@ -953,4 +970,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         isKingInDanger();
     }
+
+
+    public void showToast(final String Text) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(GameActivity.this,
+                        Text, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 }
