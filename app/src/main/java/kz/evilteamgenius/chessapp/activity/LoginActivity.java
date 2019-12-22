@@ -141,8 +141,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     preferences.edit().putString("token", token).apply();
                     preferences.edit().putString("username", username).apply();
                     Intent i = new Intent(LoginActivity.this,
-                            MainAppPage.class);
+                            KukaActivity.class);
                     startActivity(i);
+                    finish();
                 } else {
                     showToast("Wrong Email or Password!");
                 }
@@ -186,9 +187,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         preferences.edit().putString("token", JWTtoken).apply();
                         preferences.edit().putString("username", username).apply();
                         Intent i = new Intent(LoginActivity.this,
-                                MainAppPage.class);
+                                KukaActivity.class);
                         startActivity(i);
                         finish();
+
                     } else {
                         showToast("Wrong Email or Password!");
                     }
@@ -200,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
-    public void setLocale(String localeName) {
+    private void setLocale(String localeName) {
         if (!localeName.equals(getlanguageStat)) {
             myLocale = new Locale(localeName);
             Resources res = getResources();
@@ -215,6 +217,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             Toast.makeText(LoginActivity.this, getString(R.string.OOPS_TryAgain), Toast.LENGTH_SHORT).show();
         }
     }
+
     public void showToast(final String Text) {
         this.runOnUiThread(new Runnable() {
             @Override

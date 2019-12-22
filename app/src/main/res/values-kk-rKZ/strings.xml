@@ -18,6 +18,10 @@
     <string name="InputEmailText">Еmail енгiзiнiз</string>
     <string name="RegisterSuccess">Сiз тiркелдiнiз</string>
     <string name="OOPS_TryAgain">УПС! Кайта корiнiз</string>
+    <string name="notificationName">Хабарландыру</string>
+    <string name="soundText">Дыбыс</string>
+    <string name="changeUserText">Колданушыны ауыстыру</string>
+    <string name="backText">Back</string>
 
     <string-array name="language_option">
         <item>Тiлдi танданыз</item>

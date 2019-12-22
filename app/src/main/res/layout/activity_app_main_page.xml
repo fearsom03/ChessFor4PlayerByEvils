@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/image_preview_3_king_queen"
-    tools:context=".activity.MainAppPage">
+    android:background="@drawable/image_preview_3_king_queen">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"

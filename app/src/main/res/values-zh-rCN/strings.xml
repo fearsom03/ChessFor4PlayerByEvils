@@ -18,6 +18,10 @@
     <string name="InputEmailText">请输入邮箱</string>
     <string name="RegisterSuccess">注册成功</string>
     <string name="OOPS_TryAgain">请再试一次！</string>
+    <string name="notificationName">Notification</string>
+    <string name="soundText">Sound</string>
+    <string name="changeUserText">Change user</string>
+    <string name="backText">Back</string>
 
     <string-array name="language_option">
         <item>选择语言</item>

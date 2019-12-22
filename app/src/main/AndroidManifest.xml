@@ -2,11 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="kz.evilteamgenius.chessapp">
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-feature android:name="android.hardware.location.gps" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -15,6 +14,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <dist:module dist:instant="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,13 +23,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.RegistrationActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.GameActivity">
-        </activity>
-        <activity android:name=".activity.MainAppPage"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.LoginActivity"
+        <activity android:name=".activity.KukaActivity"></activity>
+        <activity
+            android:name=".activity.RegistrationActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.GameActivity" />
+        <activity
+            android:name=".activity.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,7 +38,5 @@
             </intent-filter>
         </activity>
     </application>
-
-    <dist:module dist:instant="true" />
 
 </manifest>
