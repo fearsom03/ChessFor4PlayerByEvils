@@ -183,64 +183,7 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
                 if (response.isSuccessful()) {
                     String result = response.body().string();
                     if (!result.isEmpty()) {
-
                         showToast(result);
-//                        Intent i = new Intent(GameActivity.this,
-//                                MainAppPage.class);
-//                        startActivity(i);
-//                        finish();
-                    } else {
-                        showToast("Test Ping Failed");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    public class MakeNewGame extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-            String token = preferences.getString("token","");
-            showToast(token);
-
-            OkHttpClient okHttpClient = new OkHttpClient();
-
-            Request request = new Request.Builder()
-                    .url(URL_NEW_GAME)
-                    .get()
-                    .addHeader("cache-control", "no-cache")
-                    .addHeader("Authorization" , "Bearer " + token)
-                    .build();
-
-            Response response = null;
-            try {
-                response = okHttpClient.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    String result = response.body().string();
-                    if (!result.isEmpty()) {
-
-                        JSONObject jsonObject = new JSONObject(result);
-                        Game game = new Game(jsonObject.getLong("id"),
-                                jsonObject.getString("white"),
-                                jsonObject.getString("black"),
-                                jsonObject.getString("fen"),
-                                jsonObject.getString("result"),
-                                jsonObject.getInt("from_x"),
-                                jsonObject.getInt("from_y"),
-                                jsonObject.getInt("to_x"),
-                                jsonObject.getInt("to_y"),
-                                jsonObject.getString("next_move"));
-                        showToast(game.toString());
-//                        Intent i = new Intent(GameActivity.this,
-//                                MainAppPage.class);
-//                        startActivity(i);
-//                        finish();
                     } else {
                         showToast("Test Ping Failed");
                     }
@@ -257,17 +200,13 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
 
-            SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-            String token = preferences.getString("token","");
-            showToast(token);
-
             OkHttpClient okHttpClient = new OkHttpClient();
 
             Request request = new Request.Builder()
                     .url(URL_GET_LATEST_MOVE)
                     .get()
                     .addHeader("cache-control", "no-cache")
-                    .addHeader("Authorization" , "Bearer " + token)
+                    .addHeader("Authorization" , "Bearer " + getToken())
                     .build();
 
             Response response = null;
@@ -291,10 +230,6 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
 
                         checkIfMatched(game);
                         showToast(game.toString());
-//                        Intent i = new Intent(GameActivity.this,
-//                                MainAppPage.class);
-//                        startActivity(i);
-//                        finish();
                     } else {
                         showToast("Test Ping Failed");
                     }

@@ -157,6 +157,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         //showToast(JWTtoken);
                         SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
                         preferences.edit().putString("token", JWTtoken).apply();
+                        preferences.edit().putString("username", username).apply();
                         Intent i = new Intent(LoginActivity.this,
                                 MainAppPage.class);
                         startActivity(i);
