@@ -31,16 +31,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
+import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
 import kz.evilteamgenius.chessapp.models.Game;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
-
-import static kz.evilteamgenius.chessapp.Constants.URL_GET_LATEST_MOVE;
-import static kz.evilteamgenius.chessapp.Constants.URL_NEW_GAME;
-import static kz.evilteamgenius.chessapp.Constants.URL_TEST;
 
 public class MainAppPage extends AppCompatActivity implements OnClickListener {
 
@@ -60,15 +53,11 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
     final Handler handler = new Handler();
     Runnable runnable = new Runnable() {
         public void run() {
-            try {
-                GetLatestMove getLatestMove = new GetLatestMove();
-                // PerformBackgroundTask this class is the class that extends AsynchTask
-                getLatestMove.execute();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-            }
+            getLastMove();
         }
     };
+
+
     Timer timer = new Timer();
 
     @Override
@@ -80,11 +69,6 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
         initUI();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //handler.removeCallbacks(runnable);
-    }
 
     private void initData() {
         //add advertisment images
@@ -120,20 +104,19 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
 
     //test to output token, replace it once finish community page
     @OnClick(R.id.communityText)
-    void showToken(){
+    void communityButton(){
 
         showToast(getToken());
     }
 
     //test ping server
     @OnClick(R.id.optionText)
-    void testPingServer(){
-        new TestCode().execute();
+    void optionButton(){
     }
 
     //test make new game
     @OnClick(R.id.rulesText)
-    void testToMakeGame(){
+    void rulesButton(){
 
     }
 
@@ -165,81 +148,6 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
         });
     }
 
-    public class TestCode extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            OkHttpClient okHttpClient = new OkHttpClient();
-
-            Request request = new Request.Builder()
-                    .url(URL_TEST)
-                    .get()
-                    .build();
-
-            Response response = null;
-            try {
-                response = okHttpClient.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    String result = response.body().string();
-                    if (!result.isEmpty()) {
-                        showToast(result);
-                    } else {
-                        showToast("Test Ping Failed");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    public class GetLatestMove extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            OkHttpClient okHttpClient = new OkHttpClient();
-
-            Request request = new Request.Builder()
-                    .url(URL_GET_LATEST_MOVE)
-                    .get()
-                    .addHeader("cache-control", "no-cache")
-                    .addHeader("Authorization" , "Bearer " + getToken())
-                    .build();
-
-            Response response = null;
-            try {
-                response = okHttpClient.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    String result = response.body().string();
-                    if (!result.isEmpty()) {
-
-                        JSONObject jsonObject = new JSONObject(result);
-                        Game game = new Game(jsonObject.getLong("id"),
-                                jsonObject.getString("white"),
-                                jsonObject.getString("black"),
-                                jsonObject.getString("fen"),
-                                jsonObject.getString("result"),
-                                jsonObject.getInt("from_x"),
-                                jsonObject.getInt("from_y"),
-                                jsonObject.getInt("to_x"),
-                                jsonObject.getInt("to_y"),
-                                jsonObject.getString("next_move"));
-
-                        checkIfMatched(game);
-                        showToast(game.toString());
-                    } else {
-                        showToast("Test Ping Failed");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
 
     public boolean checkIfMatched(Game game){
         if(!game.getBlack().isEmpty() && !game.getWhite().isEmpty()){
@@ -266,15 +174,34 @@ public class MainAppPage extends AppCompatActivity implements OnClickListener {
 
             @Override
             public void onResponseFailed(String errorMessage) {
-
+                showToast(errorMessage);
             }
         });
         loader.loadMakeNewGame(getToken());
 
     }
 
-    public void callAsynchronousTask() {
+    private void getLastMove() {
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String token = preferences.getString("token","");
+        showToast(token);
+        LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
+            @Override
+            public void onMoveLoaded(Game game) {
+                checkIfMatched(game);
+                showToast(game.toString());
+            }
 
+            @Override
+            public void onResponseFailed(String errorMessage) {
+                showToast(errorMessage);
+            }
+        });
+
+        lastMoveLoader.getLastMove(token);
+    }
+
+    public void callAsynchronousTask() {
         TimerTask doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {

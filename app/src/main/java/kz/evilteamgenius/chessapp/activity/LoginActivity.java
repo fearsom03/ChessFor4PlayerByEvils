@@ -26,8 +26,10 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kz.evilteamgenius.chessapp.R;
+import kz.evilteamgenius.chessapp.api.loaders.LoginLoader;
 import kz.evilteamgenius.chessapp.databinding.ActivityLoginBinding;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
+import kz.evilteamgenius.chessapp.models.User;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -127,6 +129,31 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     // todo later need to realize
     private void loginFunction(String username, String password) {
+
+        User user = new User(username,password);
+        LoginLoader loginLoader = new LoginLoader(new LoginLoader.LoginCallback() {
+            @Override
+            public void onGetGoodsLoaded(String token) {
+                if (!token.isEmpty()) {
+                    //showToast(JWTtoken);
+                    SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                    showToast(token);
+                    preferences.edit().putString("token", token).apply();
+                    preferences.edit().putString("username", username).apply();
+                    Intent i = new Intent(LoginActivity.this,
+                            MainAppPage.class);
+                    startActivity(i);
+                } else {
+                    showToast("Wrong Email or Password!");
+                }
+            }
+
+            @Override
+            public void onResponseFailed(String errorMessage) {
+
+            }
+        });
+        loginLoader.loginUser(user);
 
     }
 

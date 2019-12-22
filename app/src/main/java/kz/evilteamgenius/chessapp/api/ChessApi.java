@@ -3,6 +3,7 @@ package kz.evilteamgenius.chessapp.api;
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.Game;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
+import kz.evilteamgenius.chessapp.models.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -19,10 +20,14 @@ public interface ChessApi {
         @GET("game/new")
         public Call<Game> makeNewGame(@Header("Authorization") String authHeader);
 
-//        or instead of id we may use Object
-//        I use USER class for both of it like as example
-//        Actually here we need to use it like response and request
-//        @POST("/posts")
-//        public Call<User> postData(@Body User data);
+        @POST("auth/token")
+        public Call<String> loginUser(@Body User user);
+
+        @GET("game/get/move")
+//        @Headers({
+//                "cache-control: application/vnd.yourapi.v1.full+json",
+//                "Authorization: Bearer"
+//        })
+        public Call<Game> getLastMove(@Header("cache-control") String header, @Header("Authorization") String Authorization);
 
 }
