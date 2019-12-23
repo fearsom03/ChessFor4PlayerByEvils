@@ -22,9 +22,15 @@
     <string name="soundText">声音</string>
     <string name="changeUserText">变更使用者</string>
     <string name="backText">背部</string>
-    <string name="okText">OK</string>
+    <string name="okText">好</string>
     <string name="errorEmailorLogin">您的密码或电子邮件错误</string>
-    <string name="shareApp">Share this app</string>
+    <string name="shareApp">分享这个应用程式</string>
+    <string name="fullRulesRealText">通用规则：
+\n1)玩家只能轮流移动棋子。
+\n2)如果某位牌手受到检定，则该牌手必须等到其指定的回合后才能对该威胁做出反应。但是，在大多数变体中，如果玩家的举动将对手置于另一对手的手上（例如，通过移动其骑士以使一个对手的国王暴露于另一个对手的新手），则第二个对手被禁止抓捕第一任国王，直到他有机会处理支票为止。有些变化禁止移动，否则将使一个对手受到另一方的控制。这些限制旨在阻止玩家之间的串通，如下文进一步讨论。
+\n3)兵只能向前移动，除非以对角线向前的方式攻击。
+\n4)如果棋子到达左侧，右侧或正对面的国王行，则该棋子将获得在传统的国际象棋比赛中棋子到达国王行的所有特权（例如，晋升为皇后（最常见的情况是），白嘴鸦） ，主教或骑士）。
+\n5)两个或两个以上的玩家组队是合法的。</string>
 
     <string-array name="language_option">
         <item>选择语言</item>

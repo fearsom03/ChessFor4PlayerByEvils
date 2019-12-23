@@ -138,7 +138,8 @@ public class NavigationPageFragment extends Fragment {
                 replaceFragment(fragment);
                 break;
             case R.id.rulesText:
-//                replaceFragment();
+                fragment = new FragmentRulesFragment();
+                replaceFragment(fragment);
                 break;
         }
     }

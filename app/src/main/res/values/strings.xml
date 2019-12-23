@@ -31,6 +31,7 @@
     <string name="okText">OK</string>
     <string name="errorEmailorLogin">Your password or Email is wrong</string>
     <string name="shareApp">Share this app</string>
+    <string name="fullRulesRealText">Common rules: \n1)Players can only move their chess pieces on their turn. \n2) If a player is placed in check, that player must wait until their designated turn before that player can respond to the threat. However, in most variations, in the event a players move places an opponent in check at the hands of another opponent for example, by moving his knight so as to expose one opponents king to anothers rook), the second opponent is forbidden from capturing the firsts king until he has a chance to deal with the check. Some variations prohibit moves that would cause one opponent to be in check at the hands of another. These restrictions are intended to discourage collusion between players, as further discussed below. \n3) Pawns move forward only, unless attacking in a diagonal forward manner. 4)In the event a pawn reaches the Kings row to the left, right or directly across, that pawn shall receive all the privileges of a pawn reaching Kings row during a traditional chess game (i.e. promoting to a queen (most commonly), a rook, a bishop, or a knight). \n5)It is legal for two or more of the players to team up.</string>
 
 
 </resources>
