@@ -9,8 +9,8 @@
     <string name="usernameText_hint">Username</string>
     <string name="confirm_passwordText">Купия создi растау</string>
     <string name="emailText">Email</string>
-    <string name="playText">Ойын</string>
-    <string name="communityText">Когам</string>
+    <string name="playText">Онлайн ойын </string>
+    <string name="communityText">Оффлайн ойын</string>
     <string name="optionText">Курыптау</string>
     <string name="rulesText">Ережелер</string>
     <string name="EmptyInput">Ештене енгiзiлмеген</string>

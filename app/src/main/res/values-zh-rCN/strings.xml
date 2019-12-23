@@ -9,8 +9,8 @@
     <string name="usernameText_hint">用户名</string>
     <string name="confirm_passwordText">确认密码</string>
     <string name="emailText">邮箱</string>
-    <string name="playText">开始游戏</string>
-    <string name="communityText">社区</string>
+    <string name="playText">网上游戏</string>
+    <string name="communityText">线下游戏</string>
     <string name="optionText">选项</string>
     <string name="rulesText">规则</string>
     <string name="EmptyInput">输入为空</string>
