@@ -1,6 +1,7 @@
 package kz.evilteamgenius.chessapp.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -28,7 +29,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.KukaActivity;
+import kz.evilteamgenius.chessapp.activity.LoginActivity;
 import timber.log.Timber;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentOptionsFragment extends Fragment {
 
@@ -47,6 +51,7 @@ public class FragmentOptionsFragment extends Fragment {
 
     private Locale myLocale;
     private String something, getlanguageStat;
+    private Intent intent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -124,9 +129,17 @@ public class FragmentOptionsFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.exitTextView:
+                intent = new Intent(this.getContext(), LoginActivity.class);
+                startActivity(intent);
+                SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.apply();
+                editor.commit();
+                getActivity().finish();
                 break;
             case R.id.shareApp:
-                Intent intent = new Intent();
+                intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_TEXT, "Kuanysh is best");

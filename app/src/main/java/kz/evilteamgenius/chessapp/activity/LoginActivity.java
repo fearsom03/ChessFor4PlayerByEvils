@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.api.loaders.LoginLoader;
 import kz.evilteamgenius.chessapp.databinding.ActivityLoginBinding;
+import kz.evilteamgenius.chessapp.models.BackGroundMusic;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
 import kz.evilteamgenius.chessapp.models.User;
 import okhttp3.FormBody;
@@ -58,12 +59,17 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     private Locale myLocale;
     private String currentLanguage ="def",something, getlanguageStat;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         ActivityLoginBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+        setContentView(R.layout.activity_login);
+        if (getToken()!=null&&!getToken().isEmpty()){
+            gotoMainPage();
+        }
+        startService(new Intent(LoginActivity.this, BackGroundMusic.class));
         RegisterMyUser user = new RegisterMyUser();
         user.setLogin("testkuka");
         user.setPass("12345qw");
@@ -112,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     @Override
     public void onClick(View view) {
-        Intent intent;
+
         switch (view.getId()) {
             case R.id.signInButton:
                 if (usernameEditText.getText() != null && passwordEditText.getText() != null) {
@@ -144,9 +150,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     showToast(token);
                     preferences.edit().putString("token", token).apply();
                     preferences.edit().putString("username", username).apply();
-                    Intent i = new Intent(LoginActivity.this,
-                            KukaActivity.class);
-                    startActivity(i);
+                    gotoMainPage();
                     finish();
                 } else {
                     showToast("Wrong Email or Password!");
@@ -190,9 +194,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
                         preferences.edit().putString("token", JWTtoken).apply();
                         preferences.edit().putString("username", username).apply();
-                        Intent i = new Intent(LoginActivity.this,
-                                KukaActivity.class);
-                        startActivity(i);
+                        gotoMainPage();
                         finish();
 
                     } else {
@@ -223,6 +225,19 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
+    private void gotoMainPage(){
+        stopService(new Intent(LoginActivity.this, BackGroundMusic.class));
+        intent = new Intent(LoginActivity.this,
+                KukaActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public String getToken() {
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("token", "");
+    }
+
     private void setLocale(String localeName) {
         if (!localeName.equals(getlanguageStat)) {
             myLocale = new Locale(localeName);
@@ -231,9 +246,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             Configuration conf = res.getConfiguration();
             conf.locale = myLocale;
             res.updateConfiguration(conf, dm);
-            Intent refresh = new Intent(this, LoginActivity.class);
-            refresh.putExtra(something, conf.locale.getLanguage());
-            startActivity(refresh);
+            intent = new Intent(this, LoginActivity.class);
+            intent.putExtra(something, conf.locale.getLanguage());
+            startActivity(intent);
         } else {
             Toast.makeText(LoginActivity.this, getString(R.string.OOPS_TryAgain), Toast.LENGTH_SHORT).show();
         }

@@ -13,8 +13,10 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 
     <dist:module dist:instant="true" />
+
 
     <application
         android:allowBackup="true"
