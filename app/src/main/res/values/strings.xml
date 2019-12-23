@@ -8,8 +8,8 @@
     <string name="usernameText_hint">Username</string>
     <string name="emailText">Email</string>
     <string name="confirm_passwordText">Confirm Password</string>
-    <string name="playText">Play</string>
-    <string name="communityText">Community</string>
+    <string name="playText">Online Play</string>
+    <string name="communityText">Offline Play</string>
     <string name="optionText">Option</string>
     <string name="rulesText">Rules</string>
     <string name="EmptyInput">Empty Input</string>

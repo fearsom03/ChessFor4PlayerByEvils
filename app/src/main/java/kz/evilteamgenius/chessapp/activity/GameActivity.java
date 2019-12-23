@@ -58,6 +58,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public LinearLayout pawn_choices;
     public int numberOfMoves;
 
+    public String mode;
     public Game myGame;
     public String myColor;
     public String opponentColor;
@@ -119,20 +120,28 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_game);
 
         Intent i = getIntent();
-        myGame = (Game) i.getSerializableExtra("game");
-        String username = getUsername();
+        mode = i.getStringExtra("mode");
+        if(mode.equals("online")){
+            myGame = (Game) i.getSerializableExtra("game");
+            String username = getUsername();
 
-        if (username.equals(myGame.getWhite())) {
+            if (username.equals(myGame.getWhite())) {
+                myTurn = true;
+                opponentTurn = false;
+                myColor = "white";
+                opponentColor = "black";
+            } else {
+                myTurn = false;
+                opponentTurn = true;
+                myColor = "black";
+                opponentColor = "white";
+            }
+
+            callAsynchronousTask();
+        }else if(mode.equals("offline")){
             myTurn = true;
-            opponentTurn = false;
-            myColor = "white";
-            opponentColor = "black";
-        } else {
-            myTurn = false;
-            opponentTurn = true;
-            myColor = "black";
-            opponentColor = "white";
         }
+
 
         initializeBoard();
 
@@ -142,7 +151,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         game_over.setVisibility(View.INVISIBLE);
         pawn_choices.setVisibility(View.INVISIBLE);
 
-        callAsynchronousTask();
+
     }
 
     private void initializeBoard() {
@@ -460,8 +469,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        if (myGame.getNext_move().equals(opponentColor))
-            return;
+        if(mode.equals("online")){
+            if (myGame.getNext_move().equals(opponentColor))
+                return;
+        }
 
         switch (v.getId()) {
             case R.id.R00:
@@ -728,12 +739,120 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
-        if(myColor.equals("white"))
-            makeMyMoveAsWhite();
-        else
-            makeMyMoveAsBlack();
+        if(mode.equals("online")){
+            if(myColor.equals("white"))
+                makeMyMoveAsWhite();
+            else
+                makeMyMoveAsBlack();
+        }else {
+            offlinePlay();
+        }
+
     }
 
+    public void offlinePlay(){
+
+        if (!AnythingSelected) {
+            if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null) {
+                isKingInDanger();
+                return;
+            }else{
+                if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != myTurn){
+                    isKingInDanger();
+                    return;
+                }else{
+                    listOfCoordinates.clear();
+                    listOfCoordinates = Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().AllowedMoves(clickedPosition, Board);
+                    DisplayBoardBackground[clickedPosition.getX()][clickedPosition.getY()].setBackgroundResource(R.color.colorSelected);
+                    setColorAtAllowedPosition(listOfCoordinates);
+                    AnythingSelected = true;
+                }
+            }
+        }
+        else {
+            if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null){
+                if(moveIsAllowed(listOfCoordinates , clickedPosition)){
+
+                    saveBoard();
+                    if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() instanceof King){
+                        if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != myTurn){
+                            game_over.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    Board[clickedPosition.getX()][clickedPosition.getY()].setPiece(Board[lastPos.getX()][lastPos.getY()].getPiece());
+                    Board[lastPos.getX()][lastPos.getY()].setPiece(null);
+
+                    isKingInDanger();
+                    resetColorAtAllowedPosition(listOfCoordinates);
+                    DisplayBoard[lastPos.getX()][lastPos.getY()].setBackgroundResource(0);
+                    resetColorAtLastPosition(lastPos);
+                    AnythingSelected = false;
+                    myTurn = !myTurn;
+                    checkForPawn();
+
+                }else{
+                    resetColorAtLastPosition(lastPos);
+                    resetColorAtAllowedPosition(listOfCoordinates);
+                    AnythingSelected = false;
+                }
+
+            }else{
+                if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null) {
+                    isKingInDanger();
+                    return;
+
+                }else{
+                    if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() !=null){
+                        if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != myTurn){
+                            if(moveIsAllowed(listOfCoordinates , clickedPosition)){
+
+                                saveBoard();
+                                if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece() instanceof King){
+                                    if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != myTurn){
+                                        game_over.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                                Board[clickedPosition.getX()][clickedPosition.getY()].setPiece(Board[lastPos.getX()][lastPos.getY()].getPiece());
+                                Board[lastPos.getX()][lastPos.getY()].setPiece(null);
+
+                                resetColorAtAllowedPosition(listOfCoordinates);
+                                DisplayBoard[lastPos.getX()][lastPos.getY()].setBackgroundResource(0);
+                                resetColorAtLastPosition(lastPos);
+
+                                AnythingSelected = false;
+                                myTurn = !myTurn;
+                                checkForPawn();
+                            }else{
+                                resetColorAtLastPosition(lastPos);
+                                resetColorAtAllowedPosition(listOfCoordinates);
+                                AnythingSelected = false;
+                            }
+
+                        }else{
+                            if(Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().isWhite() != myTurn){
+                                isKingInDanger();
+                                return;
+                            }
+
+                            resetColorAtLastPosition(lastPos);
+                            resetColorAtAllowedPosition(listOfCoordinates);
+
+                            listOfCoordinates.clear();
+                            listOfCoordinates = Board[clickedPosition.getX()][clickedPosition.getY()].getPiece().AllowedMoves(clickedPosition, Board);
+                            DisplayBoardBackground[clickedPosition.getX()][clickedPosition.getY()].setBackgroundResource(R.color.colorSelected);
+                            setColorAtAllowedPosition(listOfCoordinates);
+                            AnythingSelected = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        isKingInDanger();
+        lastPos = new Coordinates(clickedPosition.getX(), clickedPosition.getY());
+        setBoard();
+    
+    }
     public void makeMyMoveAsWhite(){
         //nothing selected previously
         if (!AnythingSelected) {
