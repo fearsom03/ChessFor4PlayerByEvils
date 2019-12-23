@@ -36,6 +36,8 @@ import kz.evilteamgenius.chessapp.activity.GameActivity;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
 import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
+import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
+import kz.evilteamgenius.chessapp.database.tasks.AddGameAsyncTask;
 import kz.evilteamgenius.chessapp.models.Game;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -203,8 +205,21 @@ public class NavigationPageFragment extends Fragment {
         MakeNewGameLoader loader = new MakeNewGameLoader(new MakeNewGameLoader.GetMakeNewGameLoaderCallback() {
             @Override
             public void onGetGoodsLoaded(Game game) {
-                checkIfMatched(game);
                 showToast(game.toString());
+                GameEntity gameEntity = new GameEntity();
+                gameEntity.id=game.getId();
+                gameEntity.white=game.getWhite();
+                gameEntity.black=game.getBlack();
+                gameEntity.fen=game.getFen();
+                gameEntity.result=game.getResult();
+                gameEntity.from_x=game.getFrom_x();
+                gameEntity.from_y=game.getFrom_y();
+                gameEntity.to_x=game.getTo_x();
+                gameEntity.to_y=game.getTo_y();
+                gameEntity.next_move=game.getNext_move();
+                insertGameIntoDatabase(gameEntity);
+                checkIfMatched(game);
+
             }
 
             @Override
@@ -214,6 +229,11 @@ public class NavigationPageFragment extends Fragment {
         });
         loader.loadMakeNewGame(getToken());
 
+    }
+
+    private void insertGameIntoDatabase(GameEntity game) {
+       AddGameAsyncTask addGameAsyncTask = new AddGameAsyncTask(getContext());
+       addGameAsyncTask.execute(game);
     }
 
     private void getLastMove() {
