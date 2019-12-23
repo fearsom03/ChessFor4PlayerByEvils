@@ -142,7 +142,7 @@ public class FragmentOptionsFragment extends Fragment {
                 intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, "Kuanysh is best");
+                intent.putExtra(Intent.EXTRA_TEXT, "https://github.com/fearsom03/AndroidFinalChessApp");
                 startActivity(Intent.createChooser(intent, "Share"));
                 break;
             case R.id.backButtonInOption:
