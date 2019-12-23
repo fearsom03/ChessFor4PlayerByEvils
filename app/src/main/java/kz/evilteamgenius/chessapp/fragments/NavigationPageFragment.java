@@ -65,7 +65,7 @@ public class NavigationPageFragment extends Fragment {
     TextView rulesText;
     private Timer timer = new Timer();
     private Fragment fragment;
-
+    private String mode = "online";
 
     private ArrayList<String> imageLinks;
     private SliderAdapter adapter;
@@ -125,11 +125,16 @@ public class NavigationPageFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.playText:
+                mode = "online";
                 makeNewGame();
                 callAsynchronousTask();
                 break;
             case R.id.communityText:
-                showToast(getToken());
+                mode = "offline";
+                Intent mIntent = new Intent(getContext(), GameActivity.class);
+                mIntent.putExtra("mode",mode);
+                startActivity(mIntent);
+                getActivity().finish();
 //                replaceFragment();
                 break;
             case R.id.optionText:
@@ -192,10 +197,12 @@ public class NavigationPageFragment extends Fragment {
 
     private void checkIfMatched(Game game){
         if(!game.getBlack().isEmpty() && !game.getWhite().isEmpty()){
+            mode = "online";
             timer.cancel();  // Terminates this timer, discarding any currently scheduled tasks.
             timer.purge();   // Removes all cancelled tasks from this timer's task queue.
             Intent mIntent = new Intent(getContext(), GameActivity.class);
             mIntent.putExtra("game",game);
+            mIntent.putExtra("mode",mode);
             startActivity(mIntent);
             getActivity().finish();
         }
