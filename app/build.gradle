@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+
     def room_version = "2.2.3"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -70,5 +71,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
-
+    implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.4'
+    api "io.reactivex.rxjava2:rxjava:2.2.5"
 }

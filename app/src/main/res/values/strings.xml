@@ -34,4 +34,22 @@
     <string name="fullRulesRealText">Common rules: \n1)Players can only move their chess pieces on their turn. \n2) If a player is placed in check, that player must wait until their designated turn before that player can respond to the threat. However, in most variations, in the event a players move places an opponent in check at the hands of another opponent for example, by moving his knight so as to expose one opponents king to anothers rook), the second opponent is forbidden from capturing the firsts king until he has a chance to deal with the check. Some variations prohibit moves that would cause one opponent to be in check at the hands of another. These restrictions are intended to discourage collusion between players, as further discussed below. \n3) Pawns move forward only, unless attacking in a diagonal forward manner. 4)In the event a pawn reaches the Kings row to the left, right or directly across, that pawn shall receive all the privileges of a pawn reaching Kings row during a traditional chess game (i.e. promoting to a queen (most commonly), a rook, a bishop, or a knight). \n5)It is legal for two or more of the players to team up.</string>
 
 
+    <string name="achievements">Achievements</string>
+    <string name="reload">Reload</string>
+    <string name="mode1">2-player, standard chess board</string>
+    <string name="mode2">2-player, extended board</string>
+    <string name="mode3">4-player in 2 teams</string>
+    <string name="mode4">4-player, no teams</string>
+    <string name="theirturn">Their turn:</string>
+    <string name="yourturn">Your turn:</string>
+    <string name="localmatches">Local matches:</string>
+    <string name="history">Match history</string>
+    <string name="newgame">Start new game</string>
+    <string name="localgame">Local game</string>
+    <string name="gameover">Game Over!\n</string>
+    <string name="win">Congratulation, you\'ve won the match!</string>
+    <string name="loss">Sorry, you\'ve lost the match!</string>
+    <string name="winlocal">Congratulation %s, you\'ve won the match!</string>
+    <string name="deletematch">Do you really want to delete this match?</string>
+    <string name="leavematch">Do you really want to leave this match?</string>
 </resources>
