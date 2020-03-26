@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,15 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.gson.Gson;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,7 +39,9 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
+import kz.evilteamgenius.chessapp.StompUtils;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
 import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
@@ -42,6 +49,15 @@ import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
 import kz.evilteamgenius.chessapp.database.tasks.AddGameAsyncTask;
 import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.engine.Game;
+import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
+import kz.evilteamgenius.chessapp.models.MoveMessage;
+import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
+import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
+import ua.naiksoftware.stomp.dto.StompCommand;
+import ua.naiksoftware.stomp.dto.StompHeader;
+import ua.naiksoftware.stomp.dto.StompMessage;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -53,6 +69,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Use the {@link NavigationPageFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 public class NavigationPageFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -70,6 +87,7 @@ public class NavigationPageFragment extends Fragment {
     private Fragment fragment;
     private String mode = "online";
     static int LAST_SELECTED_MATCH_MODE;
+    int numberOfPlayers;
     static boolean IF_CONNECTED_TO_INTERNET = true;
 
     private ArrayList<String> imageLinks;
@@ -159,15 +177,40 @@ public class NavigationPageFragment extends Fragment {
                                 builder.create().show();
                             } else {
                                 //TODO CONNECT TO WEBSCOKET AND START MATCHING
-//                                int other_player =
-//                                        LAST_SELECTED_MATCH_MODE == Game.MODE_2_PLAYER_4_SIDES ||
-//                                                LAST_SELECTED_MATCH_MODE ==
-//                                                        Game.MODE_2_PLAYER_2_SIDES ? 1 : 3;
-//                                Intent intent = Games.TurnBasedMultiplayer
-//                                        .getSelectOpponentsIntent(((Main) getActivity()).getGC(),
-//                                                other_player, other_player, true);
-//                                getActivity()
-//                                        .startActivityForResult(intent, Main.RC_SELECT_PLAYERS);
+                                StompClient stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Const.address);
+                                StompUtils.lifecycle(stompClient);
+                                System.out.println("Start connecting to server");
+                                // Connect to WebSocket server
+                                stompClient.connect();
+                                numberOfPlayers = LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE ==2 ? 2 : 4;
+                                MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT,LAST_SELECTED_MATCH_MODE,null);
+                                Gson gson = new Gson();
+                                String json = gson.toJson(matchMakingMessageToSend);
+                                stompClient.send(new StompMessage(
+                                        // Stomp command
+                                        StompCommand.SEND,
+                                        // Stomp Headers, Send Headers with STOMP
+                                        // the first header is required, and the other can be customized by ourselves
+                                        Arrays.asList(
+                                                new StompHeader(StompHeader.DESTINATION, Const.makeMatchAddress),
+                                                new StompHeader("authorization", getUsername())
+                                        ),
+                                        // Stomp payload
+                                        json)
+                                ).subscribe();
+//
+                                String dest = Const.makeMatchResponse.replace(Const.placeholder,getUsername());
+                                stompClient.topic(dest).subscribe(stompMessage -> {
+                                    MatchMakingMessage matchMakingMessageReceived = new Gson().fromJson(stompMessage.getPayload(), MatchMakingMessage.class);
+                                    //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
+                                    System.out.println("Received: *****\n" + matchMakingMessageReceived.toString() + "*****\n");
+                                    if(matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED){
+                                        Match match = new Match(String.valueOf(System.currentTimeMillis()),
+                                                LAST_SELECTED_MATCH_MODE, true);
+                                        Game.newGame(match, null);
+                                        startGame(match.id);
+                                    }
+                                },throwable -> Log.e("get match Fragment", "Throwable " + throwable.getMessage()));
                             }
                         }
                         d.dismiss();
@@ -246,5 +289,10 @@ public class NavigationPageFragment extends Fragment {
         b.putString("matchID", matchID);
         fragment.setArguments(b);
         replaceFragment(fragment);
+    }
+
+    public String getUsername() {
+        SharedPreferences preferences = this.getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("username", null);
     }
 }

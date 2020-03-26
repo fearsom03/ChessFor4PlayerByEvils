@@ -1,6 +1,7 @@
 package kz.evilteamgenius.chessapp.models;
 
 
+import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
 
 public class MoveMessage {
 
@@ -11,18 +12,16 @@ public class MoveMessage {
     private int to_x;
 
     private int to_y;
+    private String playerID;
+    private MoveMessageType type;
 
-    private String sender;
-
-    private String receiver;
-
-    public MoveMessage(int from_x, int from_y, int to_x, int to_y, String sender, String receiver) {
+    public MoveMessage(int from_x, int from_y, int to_x, int to_y, String playerID, MoveMessageType type) {
         this.from_x = from_x;
         this.from_y = from_y;
         this.to_x = to_x;
         this.to_y = to_y;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.playerID = playerID;
+        this.type = type;
     }
 
     public int getFrom_x() {
@@ -57,19 +56,19 @@ public class MoveMessage {
         this.to_y = to_y;
     }
 
-    public String getSender() {
-        return sender;
+    public String getPlayerID() {
+        return playerID;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setPlayerID(String playerID) {
+        this.playerID = playerID;
     }
 
-    public String getReceiver() {
-        return receiver;
+    public MoveMessageType getType() {
+        return type;
     }
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
+    public void setType(MoveMessageType type) {
+        this.type = type;
     }
 }

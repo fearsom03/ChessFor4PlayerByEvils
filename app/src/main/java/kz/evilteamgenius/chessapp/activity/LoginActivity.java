@@ -235,7 +235,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     public String getToken() {
         SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", "");
+        return preferences.getString("token", null);
     }
 
     private void setLocale(String localeName) {
