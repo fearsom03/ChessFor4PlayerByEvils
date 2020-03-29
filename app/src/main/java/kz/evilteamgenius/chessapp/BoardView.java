@@ -12,6 +12,7 @@ import android.view.View;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
 import kz.evilteamgenius.chessapp.engine.Game;
+import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.engine.Player;
 import kz.evilteamgenius.chessapp.engine.pieces.Piece;
 
@@ -43,21 +44,25 @@ public class BoardView extends View {
 
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            int max = Board.extendedBoard ? 12 : 8;
-            int x = (int) (event.getX() / getWidth() * max);
-            int y = max - 1 - (int) (event.getY() / getWidth() * max);
-            System.out.println("selection: " + x + " " + y);
-            Coordinate c = new Coordinate(x, y);
-            if (c.isValid() && Board.getPiece(c) != null &&
-                    Board.getPiece(c).getPlayerId().equals(Game.currentPlayer())) {
-                selection = c;
-                invalidate();
-            } else {
-                if (selection != null) { // we have a piece selected and clicked on a new position
-                    if (Board.move(selection, c)) {
-                        selection = null;
-                        invalidate();
+        if ((Game.myTurn() || Game.match.isLocal) && !Game.isGameOver()) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                int max = Board.extendedBoard ? 12 : 8;
+                int x = (int) (event.getX() / getWidth() * max);
+                int y = max - 1 - (int) (event.getY() / getWidth() * max);
+                System.out.println("selection: " + x + " " + y);
+                Coordinate c = new Coordinate(x, y);
+                if (c.isValid() && Board.getPiece(c) != null &&
+                        Board.getPiece(c).getPlayerId().equals(Game.currentPlayer())) {
+                    selection = c;
+                    System.out.println("Selected!");
+                    invalidate();
+                } else {
+                    if (selection != null) { // we have a piece selected and clicked on a new position
+                        if (Board.move(selection, c)) {
+                            System.out.println("Moved!");
+                            selection = null;
+                            invalidate();
+                        }
                     }
                 }
             }
@@ -112,7 +117,7 @@ public class BoardView extends View {
             if (player.lastMove != null) {
                 boardPaint.setColor(player.color);
                 System.out.println("draw lastMove: " + player.lastMove.first.toString() + " to " +
-                            player.lastMove.second.toString());
+                        player.lastMove.second.toString());
                 drawCoordinate(player.lastMove.first, canvas, cellWidth, boardPaint, max);
                 drawCoordinate(player.lastMove.second, canvas, cellWidth, boardPaint, max);
             }

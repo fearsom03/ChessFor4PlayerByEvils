@@ -2,6 +2,12 @@ package kz.evilteamgenius.chessapp.engine;
 
 import android.util.Pair;
 
+import com.google.gson.Gson;
+
+import java.util.Arrays;
+
+import kz.evilteamgenius.chessapp.BoardView;
+import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.engine.pieces.Bishop;
 import kz.evilteamgenius.chessapp.engine.pieces.DownPawn;
 import kz.evilteamgenius.chessapp.engine.pieces.King;
@@ -12,6 +18,11 @@ import kz.evilteamgenius.chessapp.engine.pieces.Piece;
 import kz.evilteamgenius.chessapp.engine.pieces.Queen;
 import kz.evilteamgenius.chessapp.engine.pieces.RightPawn;
 import kz.evilteamgenius.chessapp.engine.pieces.Rook;
+import kz.evilteamgenius.chessapp.models.MoveMessage;
+import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
+import ua.naiksoftware.stomp.dto.StompCommand;
+import ua.naiksoftware.stomp.dto.StompHeader;
+import ua.naiksoftware.stomp.dto.StompMessage;
 
 /*
  * Copyright 2014 Thomas Hoffmann
@@ -60,12 +71,19 @@ public class Board {
      * @return false, if that move is not legal
      */
     public static boolean move(final Coordinate old_pos, final Coordinate new_pos) {
+        System.out.println("move function");
+
         if (!Game.myTurn()) return false;
 
+        System.out.println("move function 2 ");
         if (!new_pos.isValid()) return false; // not a valid new position
+
+        System.out.println("move function 3 ");
 
         Piece p = BOARD[old_pos.x][old_pos.y];
         if (!p.getPossiblePositions().contains(new_pos)) return false; // not possible to move there
+
+        System.out.println("move function 4 ");
 
         Piece target = BOARD[new_pos.x][new_pos.y];
 
@@ -79,11 +97,66 @@ public class Board {
 
         if (target != null && target instanceof King && Game.removePlayer(target.getPlayerId())) {
             // game ended
+            if (!Game.match.isLocal && Game.myTurn()) {
+                MoveMessage message = new MoveMessage(old_pos.x, old_pos.y, new_pos.x, new_pos.y, Game.myPlayerUserame, MoveMessageType.OVER);
+                Gson gson = new Gson();
+                String json = gson.toJson(message);
+                for(String s : Game.playersAddresses){
+                    Game.stompClient.send(new StompMessage(
+                            // Stomp command
+                            StompCommand.SEND,
+                            // Stomp Headers, Send Headers with STOMP
+                            // the first header is required, and the other can be customized by ourselves
+                            Arrays.asList(
+                                    new StompHeader(StompHeader.DESTINATION, s),
+                                    new StompHeader("authorization", Game.myPlayerUserame)
+                            ),
+                            // Stomp payload
+                            json)
+                    ).subscribe();
+                }
+            }
+            Game.over();
+        } else {
+            if (!Game.match.isLocal && Game.myTurn()) {
+                MoveMessage message = new MoveMessage(old_pos.x, old_pos.y, new_pos.x, new_pos.y, Game.myPlayerUserame, MoveMessageType.OK);
+                Gson gson = new Gson();
+                String json = gson.toJson(message);
+                for(String s : Game.playersAddresses){
+                    Game.stompClient.send(new StompMessage(
+                            // Stomp command
+                            StompCommand.SEND,
+                            // Stomp Headers, Send Headers with STOMP
+                            // the first header is required, and the other can be customized by ourselves
+                            Arrays.asList(
+                                    new StompHeader(StompHeader.DESTINATION, s),
+                                    new StompHeader("authorization", Game.myPlayerUserame)
+                            ),
+                            // Stomp payload
+                            json)
+                    ).subscribe();
+                }
+            }
+            Game.moved();
+        }
+        return true;
+    }
+
+    public static void moveWhenReceived(final Coordinate old_pos, final Coordinate new_pos) {
+
+        Piece p = BOARD[old_pos.x][old_pos.y];
+        Piece target = BOARD[new_pos.x][new_pos.y];
+        BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
+        BOARD[old_pos.x][old_pos.y] = null;
+        p.position = new_pos;
+        Game.getPlayer(Game.currentPlayer()).lastMove =
+                new Pair<Coordinate, Coordinate>(old_pos, new_pos);
+        if (target != null && target instanceof King && Game.removePlayer(target.getPlayerId())) {
+            // game ended
             Game.over();
         } else {
             Game.moved();
         }
-        return true;
     }
 
     /**

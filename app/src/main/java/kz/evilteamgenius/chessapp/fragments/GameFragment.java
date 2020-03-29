@@ -16,24 +16,42 @@
 package kz.evilteamgenius.chessapp.fragments;
 
 import androidx.fragment.app.Fragment;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.engine.Game;
-import kz.evilteamgenius.chessapp.engine.Player;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+
+import kz.evilteamgenius.chessapp.Const;
+import kz.evilteamgenius.chessapp.R;
+import kz.evilteamgenius.chessapp.StompUtils;
+import kz.evilteamgenius.chessapp.engine.Board;
+import kz.evilteamgenius.chessapp.engine.Coordinate;
+import kz.evilteamgenius.chessapp.engine.Game;
+import kz.evilteamgenius.chessapp.engine.Match;
+import kz.evilteamgenius.chessapp.engine.Player;
+import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
+import kz.evilteamgenius.chessapp.models.MoveMessage;
+import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
+
+@SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 public class GameFragment extends Fragment {
 
     private TextView turn;
     private View board;
-
     public String currentMatch;
 
     @Override
@@ -47,7 +65,7 @@ public class GameFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         if (Game.match == null) {
-           // ((Main) getActivity()).showStartFragment();
+            // ((Main) getActivity()).showStartFragment();
             return null;
         }
         // Inflate the layout for this fragment
@@ -56,6 +74,16 @@ public class GameFragment extends Fragment {
         board = v.findViewById(R.id.board);
         Game.UI = this;
         updateTurn();
+        if (!Game.match.isLocal) {
+            String dest = Const.makeMoveResponse.replace(Const.placeholder, Game.myPlayerUserame);
+            Game.stompClient.topic(dest).subscribe(stompMessage -> {
+                MoveMessage message = new Gson().fromJson(stompMessage.getPayload(), MoveMessage.class);
+                //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
+                System.out.println("Received: *****\n" + message.toString() + "*****\n");
+                Board.moveWhenReceived(new Coordinate(message.getFrom_x(), message.getFrom_y()), new Coordinate(message.getTo_x(), message.getTo_y()));
+                board.invalidate();
+            }, throwable -> Log.e("Game Fragment", "Throwable " + throwable.getMessage()));
+        }
         return v;
     }
 

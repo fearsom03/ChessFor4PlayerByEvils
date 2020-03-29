@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.WSHelper;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
+import ua.naiksoftware.stomp.StompClient;
 
 /*
  * Copyright 2014 Thomas Hoffmann
@@ -41,11 +43,13 @@ public class Game {
     public final static int MODE_4_PLAYER_NO_TEAMS = 4;
 
     public static String myPlayerId;
-    private static WSHelper wsHelper;
+    public static String myPlayerUserame;
+    public static StompClient stompClient;
     public static Match match;
     public static Player[] players;
     public static int turns;
 
+    public static List<String> playersAddresses;
     private static List<String> deadPlayers;
 
     public static GameFragment UI;
@@ -68,6 +72,7 @@ public class Game {
      * Should be called when a move is made
      */
     public static void moved() {
+        System.out.println("moved function!");
         turns++;
         String next = players[turns % players.length].id;
         while (deadPlayers.contains(next)) {
@@ -178,6 +183,10 @@ public class Game {
         return match.isLocal || myPlayerId.equals(players[turns % players.length].id);
     }
 
+    public static boolean isTurnRight(String id) {
+        return match.isLocal || id.equals(players[turns % players.length].id);
+    }
+
     /**
      * Gets the id for the currently active player.
      *
@@ -196,57 +205,57 @@ public class Game {
      * @param w    the ApiClient
      * @return false, if protocol version is too old and the app should be updated first
      */
-    public static boolean load(final byte[] data, final Match m, final WSHelper w) {
-        System.out.println("  load: " + (new String(data)));
-        String[] s = new String(data).split(":");
-        // newer protocol used for the match
-        if (s.length > 6 && s[6] != null && Integer.parseInt(s[6]) > PROTOCOL_VERSION) {
-            return false;
-        }
-        wsHelper = w;
-        match = m;
-        if (s.length > 5 && s[5] != null) {
-            match.mode = Integer.parseInt(s[5]);
-        }
-        turns = Integer.parseInt(s[0]);
-        deadPlayers = new LinkedList<String>();
-        if (s.length > 3 && s[3] != null) {
-            for (String dead : s[3].split(",")) {
-                System.out.println("  dead: " + dead);
-                if (dead != null && dead.length() > 0) deadPlayers.add(dead);
-            }
-        }
-        createPlayers();
-        System.out.println("Game.load myPlayerId: " + myPlayerId + " playersInData: " + s[1]);
-        if (!s[1].contains(players[1].id)) {
-            s[2] = s[2].replace("AutoMatch_2", players[1].id);
-        }
-        if (players.length > 2) {
-            if (!s[1].contains(players[2].id)) {
-                s[2] = s[2].replace("AutoMatch_3", players[2].id);
-            }
-            if (!s[1].contains(players[3].id)) {
-                s[2] = s[2].replace("AutoMatch_4", players[3].id);
-            }
-        }
-        Board.load(s[2], match.mode);
-        if (s.length > 4 && s[4] != null) {
-            String[] lastMoves = s[4].split(";");
-            String[] coords;
-            for (int i = 0; i < lastMoves.length; i++) {
-                System.out.println("  lastMove: " + lastMoves[i]);
-                if (lastMoves[i].equals("-")) continue;
-                coords = lastMoves[i].split(",");
-                players[i].lastMove = new Pair<Coordinate, Coordinate>(
-                        new Coordinate(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]),
-                                Board.getRotation()),
-                        new Coordinate(Integer.parseInt(coords[2]), Integer.parseInt(coords[3]),
-                                Board.getRotation()));
-            }
-        }
-        if (isGameOver()) over();
-        return true;
-    }
+//    public static boolean load(final byte[] data, final Match m, final WSHelper w) {
+//        System.out.println("  load: " + (new String(data)));
+//        String[] s = new String(data).split(":");
+//        // newer protocol used for the match
+//        if (s.length > 6 && s[6] != null && Integer.parseInt(s[6]) > PROTOCOL_VERSION) {
+//            return false;
+//        }
+//        wsHelper = w;
+//        match = m;
+//        if (s.length > 5 && s[5] != null) {
+//            match.mode = Integer.parseInt(s[5]);
+//        }
+//        turns = Integer.parseInt(s[0]);
+//        deadPlayers = new LinkedList<String>();
+//        if (s.length > 3 && s[3] != null) {
+//            for (String dead : s[3].split(",")) {
+//                System.out.println("  dead: " + dead);
+//                if (dead != null && dead.length() > 0) deadPlayers.add(dead);
+//            }
+//        }
+//        createPlayers();
+//        System.out.println("Game.load myPlayerId: " + myPlayerId + " playersInData: " + s[1]);
+//        if (!s[1].contains(players[1].id)) {
+//            s[2] = s[2].replace("AutoMatch_2", players[1].id);
+//        }
+//        if (players.length > 2) {
+//            if (!s[1].contains(players[2].id)) {
+//                s[2] = s[2].replace("AutoMatch_3", players[2].id);
+//            }
+//            if (!s[1].contains(players[3].id)) {
+//                s[2] = s[2].replace("AutoMatch_4", players[3].id);
+//            }
+//        }
+//        Board.load(s[2], match.mode);
+//        if (s.length > 4 && s[4] != null) {
+//            String[] lastMoves = s[4].split(";");
+//            String[] coords;
+//            for (int i = 0; i < lastMoves.length; i++) {
+//                System.out.println("  lastMove: " + lastMoves[i]);
+//                if (lastMoves[i].equals("-")) continue;
+//                coords = lastMoves[i].split(",");
+//                players[i].lastMove = new Pair<Coordinate, Coordinate>(
+//                        new Coordinate(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]),
+//                                Board.getRotation()),
+//                        new Coordinate(Integer.parseInt(coords[2]), Integer.parseInt(coords[3]),
+//                                Board.getRotation()));
+//            }
+//        }
+//        if (isGameOver()) over();
+//        return true;
+//    }
 
     /**
      * Returns the byte-array representation of the game
@@ -283,14 +292,14 @@ public class Game {
      * Initiate a new game
      *
      * @param m the match
-     * @param w the ApiClient, can be null for a local game
+     * @param s the ApiClient, can be null for a local game
      */
-    public static void newGame(final Match m, final WSHelper w) {
-        wsHelper = w;
+    public static void newGame(final Match m, final StompClient s, ArrayList<String> receivedPlayers, String myName) {
+        stompClient = s;
         match = m;
         turns = 0;
         deadPlayers = new LinkedList<String>();
-        createPlayers();
+        createPlayers(receivedPlayers, myName);
         System.out.println("Game.newGame, players: " + players.length);
         Board.newGame(players);
     }
@@ -298,49 +307,26 @@ public class Game {
     /**
      * Creates the player objects
      */
-    private static void createPlayers() {
+    private static void createPlayers(ArrayList<String> receivedPlayers, String myName) {
+        boolean ifNull = receivedPlayers == null;
         int num_players = match.getNumPlayers();
         players = new Player[num_players];
-        if (match.isLocal) {
-            for (int i = 0; i < num_players; i++) {
-                players[i] =
-                        new Player(String.valueOf(i), match.mode == MODE_4_PLAYER_TEAMS ? i / 2 : i,
-                                PLAYER_COLOR[i], "Player " + (i + 1));
+        playersAddresses = new ArrayList<>();
+        for (int i = 0; i < num_players; i++) {
+            players[i] =
+                    new Player(String.valueOf(i), match.mode == MODE_4_PLAYER_TEAMS ? i / 2 : i,
+                            PLAYER_COLOR[i], ifNull ? "Player " + (i + 1) : receivedPlayers.get(i));
+            if(!match.isLocal){
+                if(receivedPlayers.get(i).equals(myName)){
+                    myPlayerId = String.valueOf(i);
+                    myPlayerUserame = myName;
+                }else{
+                    playersAddresses.add(Const.makeMoveResponse.replace(Const.placeholder, receivedPlayers.get(i)));
+                }
             }
-        } else {
-            //TODO GET PLAYER IDS ONLINE
-//            players[0] = new Player(match.getParticipants().get(0).getParticipantId(), 1,
-//                    PLAYER_COLOR[0], match.getParticipants().get(0).getDisplayName());
-//            if (match.getParticipants().size() > 1) {
-//                players[1] = new Player(match.getParticipants().get(1).getParticipantId(),
-//                        match.mode == MODE_4_PLAYER_TEAMS ? 1 : 2, PLAYER_COLOR[1],
-//                        match.getParticipants().get(1).getDisplayName());
-//            } else {
-//                players[1] = new Player("AutoMatch_2", match.mode == MODE_4_PLAYER_TEAMS ? 1 : 2,
-//                        PLAYER_COLOR[1], "Waiting for player...");
-//            }
-//            if (num_players > 2) {
-//                if (match.getParticipants().size() > 2) {
-//                    players[2] = new Player(match.getParticipants().get(2).getParticipantId(),
-//                            match.mode == MODE_4_PLAYER_TEAMS ? 2 : 3, PLAYER_COLOR[2],
-//                            match.getParticipants().get(2).getDisplayName());
-//                } else {
-//                    players[2] =
-//                            new Player("AutoMatch_3", match.mode == MODE_4_PLAYER_TEAMS ? 2 : 3,
-//                                    PLAYER_COLOR[2], "Waiting for player...");
-//                }
-//                if (match.getParticipants().size() > 3) {
-//                    players[3] = new Player(match.getParticipants().get(3).getParticipantId(),
-//                            match.mode == MODE_4_PLAYER_TEAMS ? 2 : 4, PLAYER_COLOR[3],
-//                            match.getParticipants().get(3).getDisplayName());
-//                } else {
-//                    players[3] =
-//                            new Player("AutoMatch_4", match.mode == MODE_4_PLAYER_TEAMS ? 2 : 4,
-//                                    PLAYER_COLOR[3], "Waiting for player...");
-//                }
-//            }
-//            myPlayerId = match.getParticipantId(Games.Players.getCurrentPlayerId(api));
+
         }
+
         System.out.println("Game.createPlayers, " + players[0].id + ", " +
                 players[1].id +
                 ((players.length > 2) ? ", " + players[2].id + ", " + players[3].id : ""));

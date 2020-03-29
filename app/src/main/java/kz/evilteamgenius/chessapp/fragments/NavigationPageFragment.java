@@ -159,7 +159,7 @@ public class NavigationPageFragment extends Fragment {
                         if (local.isChecked()) {
                             Match match = new Match(String.valueOf(System.currentTimeMillis()),
                                     LAST_SELECTED_MATCH_MODE, true);
-                            Game.newGame(match, null);
+                            Game.newGame(match, null,null, null);
                             startGame(match.id);
                         } else {
                             if (!IF_CONNECTED_TO_INTERNET) {
@@ -206,8 +206,8 @@ public class NavigationPageFragment extends Fragment {
                                     System.out.println("Received: *****\n" + matchMakingMessageReceived.toString() + "*****\n");
                                     if(matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED){
                                         Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                                                LAST_SELECTED_MATCH_MODE, true);
-                                        Game.newGame(match, null);
+                                                LAST_SELECTED_MATCH_MODE, false);
+                                        Game.newGame(match, stompClient, matchMakingMessageReceived.getPlayers(), getUsername());
                                         startGame(match.id);
                                     }
                                 },throwable -> Log.e("get match Fragment", "Throwable " + throwable.getMessage()));
