@@ -42,6 +42,7 @@ import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.StompUtils;
+import kz.evilteamgenius.chessapp.activity.KukaActivity;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
 import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
@@ -87,7 +88,7 @@ public class NavigationPageFragment extends Fragment {
     private Fragment fragment;
     private String mode = "online";
     static int LAST_SELECTED_MATCH_MODE;
-    int numberOfPlayers;
+    public int numberOfPlayers;
     static boolean IF_CONNECTED_TO_INTERNET = true;
 
     private ArrayList<String> imageLinks;
@@ -136,15 +137,10 @@ public class NavigationPageFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
     @OnClick({R.id.playText, R.id.communityText, R.id.optionText, R.id.rulesText})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.playText:
-                fragment = new ChatFragment();
-                replaceFragment(fragment);
-                break;
-            case R.id.communityText:
                 final Dialog d = new Dialog(getActivity());
                 d.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 d.setContentView(R.layout.mode);
@@ -159,7 +155,7 @@ public class NavigationPageFragment extends Fragment {
                         if (local.isChecked()) {
                             Match match = new Match(String.valueOf(System.currentTimeMillis()),
                                     LAST_SELECTED_MATCH_MODE, true);
-                            Game.newGame(match, null,null, null);
+                            Game.newGame(match, null,null);
                             startGame(match.id);
                         } else {
                             if (!IF_CONNECTED_TO_INTERNET) {
@@ -176,47 +172,16 @@ public class NavigationPageFragment extends Fragment {
                                                 });
                                 builder.create().show();
                             } else {
-                                //TODO CONNECT TO WEBSCOKET AND START MATCHING
-                                StompClient stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Const.address);
-                                StompUtils.lifecycle(stompClient);
-                                System.out.println("Start connecting to server");
-                                // Connect to WebSocket server
-                                stompClient.connect();
-                                numberOfPlayers = LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE ==2 ? 2 : 4;
-                                MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT,LAST_SELECTED_MATCH_MODE,null);
-                                Gson gson = new Gson();
-                                String json = gson.toJson(matchMakingMessageToSend);
-                                stompClient.send(new StompMessage(
-                                        // Stomp command
-                                        StompCommand.SEND,
-                                        // Stomp Headers, Send Headers with STOMP
-                                        // the first header is required, and the other can be customized by ourselves
-                                        Arrays.asList(
-                                                new StompHeader(StompHeader.DESTINATION, Const.makeMatchAddress),
-                                                new StompHeader("authorization", getUsername())
-                                        ),
-                                        // Stomp payload
-                                        json)
-                                ).subscribe();
-//
-                                String dest = Const.makeMatchResponse.replace(Const.placeholder,getUsername());
-                                stompClient.topic(dest).subscribe(stompMessage -> {
-                                    MatchMakingMessage matchMakingMessageReceived = new Gson().fromJson(stompMessage.getPayload(), MatchMakingMessage.class);
-                                    //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
-                                    System.out.println("Received: *****\n" + matchMakingMessageReceived.toString() + "*****\n");
-                                    if(matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED){
-                                        Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                                                LAST_SELECTED_MATCH_MODE, false);
-                                        Game.newGame(match, stompClient, matchMakingMessageReceived.getPlayers(), getUsername());
-                                        startGame(match.id);
-                                    }
-                                },throwable -> Log.e("get match Fragment", "Throwable " + throwable.getMessage()));
+                                // CONNECT TO WEBSCOKET AND START MATCHING
+                                ((KukaActivity)getActivity()).connectAndMakeMatch(LAST_SELECTED_MATCH_MODE);
                             }
                         }
                         d.dismiss();
                     }
                 });
                 d.show();
+                break;
+            case R.id.communityText:
                 break;
             case R.id.optionText:
                 showToast(getToken());
@@ -280,7 +245,6 @@ public class NavigationPageFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
-
 
     public void startGame(final String matchID) {
         System.out.println("startGame");

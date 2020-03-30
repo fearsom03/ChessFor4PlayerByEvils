@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import kz.evilteamgenius.chessapp.BoardView;
 import kz.evilteamgenius.chessapp.Const;
+import kz.evilteamgenius.chessapp.activity.KukaActivity;
 import kz.evilteamgenius.chessapp.engine.pieces.Bishop;
 import kz.evilteamgenius.chessapp.engine.pieces.DownPawn;
 import kz.evilteamgenius.chessapp.engine.pieces.King;
@@ -72,7 +73,7 @@ public class Board {
      */
     public static boolean move(final Coordinate old_pos, final Coordinate new_pos) {
         System.out.println("move function");
-
+        boolean ifOver = false;
         if (!Game.myTurn()) return false;
 
         System.out.println("move function 2 ");
@@ -97,45 +98,14 @@ public class Board {
 
         if (target != null && target instanceof King && Game.removePlayer(target.getPlayerId())) {
             // game ended
+            ifOver = true;
             if (!Game.match.isLocal && Game.myTurn()) {
-                MoveMessage message = new MoveMessage(old_pos.x, old_pos.y, new_pos.x, new_pos.y, Game.myPlayerUserame, MoveMessageType.OVER);
-                Gson gson = new Gson();
-                String json = gson.toJson(message);
-                for(String s : Game.playersAddresses){
-                    Game.stompClient.send(new StompMessage(
-                            // Stomp command
-                            StompCommand.SEND,
-                            // Stomp Headers, Send Headers with STOMP
-                            // the first header is required, and the other can be customized by ourselves
-                            Arrays.asList(
-                                    new StompHeader(StompHeader.DESTINATION, s),
-                                    new StompHeader("authorization", Game.myPlayerUserame)
-                            ),
-                            // Stomp payload
-                            json)
-                    ).subscribe();
-                }
+                KukaActivity.sendMove(old_pos,new_pos,ifOver);
             }
             Game.over();
         } else {
             if (!Game.match.isLocal && Game.myTurn()) {
-                MoveMessage message = new MoveMessage(old_pos.x, old_pos.y, new_pos.x, new_pos.y, Game.myPlayerUserame, MoveMessageType.OK);
-                Gson gson = new Gson();
-                String json = gson.toJson(message);
-                for(String s : Game.playersAddresses){
-                    Game.stompClient.send(new StompMessage(
-                            // Stomp command
-                            StompCommand.SEND,
-                            // Stomp Headers, Send Headers with STOMP
-                            // the first header is required, and the other can be customized by ourselves
-                            Arrays.asList(
-                                    new StompHeader(StompHeader.DESTINATION, s),
-                                    new StompHeader("authorization", Game.myPlayerUserame)
-                            ),
-                            // Stomp payload
-                            json)
-                    ).subscribe();
-                }
+                KukaActivity.sendMove(old_pos,new_pos,ifOver);
             }
             Game.moved();
         }

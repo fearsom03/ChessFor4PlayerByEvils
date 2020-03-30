@@ -33,9 +33,11 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 
+import kz.evilteamgenius.chessapp.BoardView;
 import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.StompUtils;
+import kz.evilteamgenius.chessapp.activity.KukaActivity;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
 import kz.evilteamgenius.chessapp.engine.Game;
@@ -51,7 +53,7 @@ import ua.naiksoftware.stomp.StompClient;
 public class GameFragment extends Fragment {
 
     private TextView turn;
-    private View board;
+    private BoardView board;
     public String currentMatch;
 
     @Override
@@ -75,14 +77,7 @@ public class GameFragment extends Fragment {
         Game.UI = this;
         updateTurn();
         if (!Game.match.isLocal) {
-            String dest = Const.makeMoveResponse.replace(Const.placeholder, Game.myPlayerUserame);
-            Game.stompClient.topic(dest).subscribe(stompMessage -> {
-                MoveMessage message = new Gson().fromJson(stompMessage.getPayload(), MoveMessage.class);
-                //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
-                System.out.println("Received: *****\n" + message.toString() + "*****\n");
-                Board.moveWhenReceived(new Coordinate(message.getFrom_x(), message.getFrom_y()), new Coordinate(message.getTo_x(), message.getTo_y()));
-                board.invalidate();
-            }, throwable -> Log.e("Game Fragment", "Throwable " + throwable.getMessage()));
+            ((KukaActivity) getActivity()).getMove(board);
         }
         return v;
     }
@@ -132,9 +127,18 @@ public class GameFragment extends Fragment {
      */
     public void gameOverLocal(final Player winnerPlayer) {
         if (turn == null || getActivity() == null) return;
-        turn.setText(getString(R.string.gameover) + "\n" + getString(R.string.winlocal,
-                Game.match.mode == Game.MODE_4_PLAYER_TEAMS ? "Team " + winnerPlayer.team :
-                        winnerPlayer.name));
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                turn.setText(getString(R.string.gameover) + "\n" + getString(R.string.winlocal,
+                        Game.match.mode == Game.MODE_4_PLAYER_TEAMS ? "Team " + winnerPlayer.team :
+                                winnerPlayer.name));
+
+                // Stuff that updates the UI
+
+            }
+        });
         getActivity().getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
                 .remove("match_" + Game.match.id + "_" + Game.match.mode).commit();
         System.out.println("Deleting match_" + Game.match.id + "_" + Game.match.mode);
@@ -165,7 +169,16 @@ public class GameFragment extends Fragment {
                 }
             }
             sb.delete(sb.lastIndexOf("<br />"), sb.length());
-            turn.setText(Html.fromHtml(sb.toString()));
+            getActivity().runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    // Stuff that updates the UI
+                    turn.setText(Html.fromHtml(sb.toString()));
+
+                }
+            });
         }
     }
 

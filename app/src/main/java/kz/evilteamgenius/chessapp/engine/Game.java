@@ -44,7 +44,6 @@ public class Game {
 
     public static String myPlayerId;
     public static String myPlayerUserame;
-    public static StompClient stompClient;
     public static Match match;
     public static Player[] players;
     public static int turns;
@@ -292,10 +291,10 @@ public class Game {
      * Initiate a new game
      *
      * @param m the match
-     * @param s the ApiClient, can be null for a local game
+
      */
-    public static void newGame(final Match m, final StompClient s, ArrayList<String> receivedPlayers, String myName) {
-        stompClient = s;
+    public static void newGame(final Match m, ArrayList<String> receivedPlayers, String myName) {
+//        stompClient = s;
         match = m;
         turns = 0;
         deadPlayers = new LinkedList<String>();
