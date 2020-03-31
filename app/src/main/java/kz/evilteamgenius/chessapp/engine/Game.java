@@ -10,9 +10,7 @@ import java.util.List;
 
 import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.WSHelper;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
-import ua.naiksoftware.stomp.StompClient;
 
 /*
  * Copyright 2014 Thomas Hoffmann
@@ -48,7 +46,7 @@ public class Game {
     public static Player[] players;
     public static int turns;
 
-    public static List<String> playersAddresses;
+    public static String roomAdress;
     private static List<String> deadPlayers;
 
     public static GameFragment UI;
@@ -291,9 +289,8 @@ public class Game {
      * Initiate a new game
      *
      * @param m the match
-
      */
-    public static void newGame(final Match m, ArrayList<String> receivedPlayers, String myName) {
+    public static void newGame(final Match m, String[] receivedPlayers, String myName, String room_id) {
 //        stompClient = s;
         match = m;
         turns = 0;
@@ -301,26 +298,25 @@ public class Game {
         createPlayers(receivedPlayers, myName);
         System.out.println("Game.newGame, players: " + players.length);
         Board.newGame(players);
+        if (room_id != null)
+            roomAdress = Const.makeMoveAddress.replace(Const.placeholder, room_id);
     }
 
     /**
      * Creates the player objects
      */
-    private static void createPlayers(ArrayList<String> receivedPlayers, String myName) {
+    private static void createPlayers(String[] receivedPlayers, String myName) {
         boolean ifNull = receivedPlayers == null;
         int num_players = match.getNumPlayers();
         players = new Player[num_players];
-        playersAddresses = new ArrayList<>();
         for (int i = 0; i < num_players; i++) {
             players[i] =
                     new Player(String.valueOf(i), match.mode == MODE_4_PLAYER_TEAMS ? i / 2 : i,
-                            PLAYER_COLOR[i], ifNull ? "Player " + (i + 1) : receivedPlayers.get(i));
-            if(!match.isLocal){
-                if(receivedPlayers.get(i).equals(myName)){
+                            PLAYER_COLOR[i], ifNull ? "Player " + (i + 1) : receivedPlayers[i]);
+            if (!match.isLocal) {
+                if (receivedPlayers[i].equals(myName)) {
                     myPlayerId = String.valueOf(i);
                     myPlayerUserame = myName;
-                }else{
-                    playersAddresses.add(Const.makeMoveResponse.replace(Const.placeholder, receivedPlayers.get(i)));
                 }
             }
 

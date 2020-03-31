@@ -79,7 +79,7 @@ public class KukaActivity extends AppCompatActivity implements NavigationPageFra
         // Connect to WebSocket server
         stompClient.connect();
         int numberOfPlayers = LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE == 2 ? 2 : 4;
-        MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT, LAST_SELECTED_MATCH_MODE, null);
+        MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT, LAST_SELECTED_MATCH_MODE, null, null);
         Gson gson = new Gson();
         String json = gson.toJson(matchMakingMessageToSend);
         stompClient.send(new StompMessage(
@@ -103,10 +103,10 @@ public class KukaActivity extends AppCompatActivity implements NavigationPageFra
             if (matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED) {
                 Match match = new Match(String.valueOf(System.currentTimeMillis()),
                         LAST_SELECTED_MATCH_MODE, false);
-                Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername());
+                Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(), matchMakingMessageReceived.getRoom_id());
                 startGame(match.id);
             }
-        }, throwable -> Log.e("get match Fragment", "Throwable " + throwable.getMessage()));
+        }, throwable -> Log.e("ConnectAndMakeMatch", "Throwable " + throwable.getMessage()));
     }
 
     public static void sendMove(final Coordinate old_pos, final Coordinate new_pos, boolean ifOver) {
@@ -116,27 +116,26 @@ public class KukaActivity extends AppCompatActivity implements NavigationPageFra
             message.setType(MoveMessageType.OVER);
         Gson gson = new Gson();
         String json = gson.toJson(message);
-        for (String s : Game.playersAddresses) {
-            stompClient.send(new StompMessage(
-                    // Stomp command
-                    StompCommand.SEND,
-                    // Stomp Headers, Send Headers with STOMP
-                    // the first header is required, and the other can be customized by ourselves
-                    Arrays.asList(
-                            new StompHeader(StompHeader.DESTINATION, s),
-                            new StompHeader("authorization", Game.myPlayerUserame)
-                    ),
-                    // Stomp payload
-                    json)
-            ).subscribe();
-        }
+        stompClient.send(new StompMessage(
+                // Stomp command
+                StompCommand.SEND,
+                // Stomp Headers, Send Headers with STOMP
+                // the first header is required, and the other can be customized by ourselves
+                Arrays.asList(
+                        new StompHeader(StompHeader.DESTINATION, Game.roomAdress),
+                        new StompHeader("authorization", Game.myPlayerUserame)
+                ),
+                // Stomp payload
+                json)
+        ).subscribe();
+
     }
 
     public void getMove(BoardView board) {
-        String dest = Const.makeMoveResponse.replace(Const.placeholder, Game.myPlayerUserame);
-        stompClient.topic(dest).subscribe(stompMessage -> {
+        stompClient.topic(Game.roomAdress).subscribe(stompMessage -> {
             MoveMessage message = new Gson().fromJson(stompMessage.getPayload(), MoveMessage.class);
-            //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
+            if(message.getPlayerID().equals(Game.myPlayerUserame))
+                return;
             System.out.println("Received: *****\n" + message.toString() + "*****\n");
             Board.moveWhenReceived(new Coordinate(message.getFrom_x(), message.getFrom_y()), new Coordinate(message.getTo_x(), message.getTo_y()));
             this.runOnUiThread(new Runnable() {
@@ -146,7 +145,7 @@ public class KukaActivity extends AppCompatActivity implements NavigationPageFra
                     board.invalidate();
                 }
             });
-        }, throwable -> Log.e("Kuka Activity", "Throwable " + throwable.getMessage()));
+        }, throwable -> Log.e("getMove", "Throwable " + throwable.getMessage()));
     }
 
     public String getUsername() {

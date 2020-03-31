@@ -155,7 +155,7 @@ public class NavigationPageFragment extends Fragment {
                         if (local.isChecked()) {
                             Match match = new Match(String.valueOf(System.currentTimeMillis()),
                                     LAST_SELECTED_MATCH_MODE, true);
-                            Game.newGame(match, null,null);
+                            Game.newGame(match, null,null,null);
                             startGame(match.id);
                         } else {
                             if (!IF_CONNECTED_TO_INTERNET) {

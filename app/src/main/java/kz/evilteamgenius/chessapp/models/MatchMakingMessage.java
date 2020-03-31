@@ -8,12 +8,14 @@ public class MatchMakingMessage {
 
     private MatchMakingMessageType messageType;
     private int gameType;
-    private ArrayList<String> players;
+    private String[] players;
+    private String room_id;
 
-    public MatchMakingMessage(MatchMakingMessageType messageType, int gameType, ArrayList<String> players) {
+    public MatchMakingMessage(MatchMakingMessageType messageType, int gameType, String[] players, String room_id) {
         this.messageType = messageType;
         this.gameType = gameType;
         this.players = players;
+        this.room_id = room_id;
     }
 
     public MatchMakingMessageType getMessageType() {
@@ -32,13 +34,19 @@ public class MatchMakingMessage {
         this.gameType = gameType;
     }
 
-    public ArrayList<String> getPlayers() {
+    public String[] getPlayers() {
         return players;
     }
 
-    public void setPlayers(ArrayList<String> players) {
+    public void setPlayers(String[] players) {
         this.players = players;
     }
 
+    public String getRoom_id() {
+        return room_id;
+    }
 
+    public void setRoom_id(String room_id) {
+        this.room_id = room_id;
+    }
 }
