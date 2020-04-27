@@ -28,8 +28,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.activity.KukaActivity;
 import kz.evilteamgenius.chessapp.activity.LoginActivity;
+import kz.evilteamgenius.chessapp.activity.MainActivity;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -67,7 +67,7 @@ public class FragmentOptionsFragment extends Fragment {
     }
 
     private void spinnerInit() {
-        ArrayAdapter mAdapter = new ArrayAdapter<String>(Objects.requireNonNull(getContext()), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.language_option));
+        ArrayAdapter mAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.language_option));
         languageSpinner.setAdapter(mAdapter);
         languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -81,7 +81,7 @@ public class FragmentOptionsFragment extends Fragment {
                 } else if (languageSpinner.getItemAtPosition(0).equals("选择语言")) {
                     getlanguageStat = "zh";
                 } else {
-                    Timber.d("DONT CHANGED " + adapterView.getChildAt(0).toString());
+                    Timber.d("DONT CHANGED %s", adapterView.getChildAt(0).toString());
                 }
 
                 switch (i) {
@@ -115,7 +115,7 @@ public class FragmentOptionsFragment extends Fragment {
             Configuration conf = res.getConfiguration();
             conf.locale = myLocale;
             res.updateConfiguration(conf, dm);
-            Intent refresh = new Intent(getContext(), KukaActivity.class);
+            Intent refresh = new Intent(getContext(), MainActivity.class);
             refresh.putExtra("buttonId", 1);
             refresh.putExtra(something, conf.locale.getLanguage());
             startActivity(refresh);
@@ -146,10 +146,14 @@ public class FragmentOptionsFragment extends Fragment {
                 startActivity(Intent.createChooser(intent, "Share"));
                 break;
             case R.id.backButtonInOption:
-                FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
-                tr.replace(R.id.frame, new NavigationPageFragment());
-                tr.commit();
+                getBack();
                 break;
         }
+    }
+
+    private void getBack() {
+        FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
+        tr.replace(R.id.frame, new NavigationPageFragment());
+        tr.commit();
     }
 }

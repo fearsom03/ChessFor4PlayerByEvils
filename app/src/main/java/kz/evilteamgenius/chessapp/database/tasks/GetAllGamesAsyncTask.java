@@ -11,7 +11,6 @@ import kz.evilteamgenius.chessapp.database.AppDatabase;
 import kz.evilteamgenius.chessapp.database.AppDatabaseWrapper;
 import kz.evilteamgenius.chessapp.database.dao.GameDao;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
-import kz.evilteamgenius.chessapp.models.Game;
 
 public class GetAllGamesAsyncTask extends AsyncTask<Void,Void, List<GameEntity>> {
     private GameRetrieveResultProcess process;

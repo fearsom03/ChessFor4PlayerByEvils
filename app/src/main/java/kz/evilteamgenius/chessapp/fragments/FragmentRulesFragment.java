@@ -34,11 +34,6 @@ public class FragmentRulesFragment extends Fragment {
         ButterKnife.bind(this, view);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
     @OnClick(R.id.backButtonInOption)
     public void onViewClicked() {
         FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();

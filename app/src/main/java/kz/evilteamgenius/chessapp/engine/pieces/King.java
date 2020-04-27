@@ -28,14 +28,14 @@ public class King extends Piece {
 
     @Override
     public List<Coordinate> getPossiblePositions() {
-        List<Coordinate> re = new LinkedList<Coordinate>();
+        List<Coordinate> re = new LinkedList<>();
         int x = position.x;
         int y = position.y;
         Coordinate c;
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 c = new Coordinate(x + i, y + j);
-                if (c.isValid() && !sameTeam(c)) {
+                if (c.isValid() && sameTeam(c)) {
                     re.add(c);
                 }
             }

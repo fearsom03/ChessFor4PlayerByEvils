@@ -1,15 +1,5 @@
 package kz.evilteamgenius.chessapp.api.loaders;
 
-import android.content.Intent;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
-
-import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.activity.LoginActivity;
-import kz.evilteamgenius.chessapp.activity.RegistrationActivity;
 import kz.evilteamgenius.chessapp.api.ChessService;
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;

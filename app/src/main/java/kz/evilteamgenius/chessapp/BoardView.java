@@ -12,9 +12,9 @@ import android.view.View;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
 import kz.evilteamgenius.chessapp.engine.Game;
-import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.engine.Player;
 import kz.evilteamgenius.chessapp.engine.pieces.Piece;
+import timber.log.Timber;
 
 /*
  * Copyright 2014 Thomas Hoffmann
@@ -49,17 +49,17 @@ public class BoardView extends View {
                 int max = Board.extendedBoard ? 12 : 8;
                 int x = (int) (event.getX() / getWidth() * max);
                 int y = max - 1 - (int) (event.getY() / getWidth() * max);
-                System.out.println("selection: " + x + " " + y);
+                Timber.d("selection: %s  %s ", x, y);
                 Coordinate c = new Coordinate(x, y);
                 if (c.isValid() && Board.getPiece(c) != null &&
                         Board.getPiece(c).getPlayerId().equals(Game.currentPlayer())) {
                     selection = c;
-                    System.out.println("Selected!");
+                    Timber.d("Selected!");
                     invalidate();
                 } else {
                     if (selection != null) { // we have a piece selected and clicked on a new position
                         if (Board.move(selection, c)) {
-                            System.out.println("Moved!");
+                            Timber.d("Moved!");
                             selection = null;
                             invalidate();
                         }
@@ -73,7 +73,7 @@ public class BoardView extends View {
     @Override
     public void draw(final Canvas canvas) {
         super.draw(canvas);
-        System.out.println("onDraw");
+        Timber.d("onDraw");
         int max = Board.extendedBoard ? 12 : 8;
         float cellWidth = canvas.getWidth() / (float) max;
         Coordinate c;
@@ -116,8 +116,9 @@ public class BoardView extends View {
         for (Player player : Game.players) {
             if (player.lastMove != null) {
                 boardPaint.setColor(player.color);
-                System.out.println("draw lastMove: " + player.lastMove.first.toString() + " to " +
-                        player.lastMove.second.toString());
+                Timber.d("draw lastMove: %s to %s "
+                        , player.lastMove.first.toString()
+                        , player.lastMove.second.toString());
                 drawCoordinate(player.lastMove.first, canvas, cellWidth, boardPaint, max);
                 drawCoordinate(player.lastMove.second, canvas, cellWidth, boardPaint, max);
             }

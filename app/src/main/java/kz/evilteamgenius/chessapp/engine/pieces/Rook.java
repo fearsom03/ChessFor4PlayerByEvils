@@ -39,7 +39,7 @@ public class Rook extends Piece {
      * @return a list of possible positions
      */
     public static List<Coordinate> moveStraight(final Piece p) {
-        List<Coordinate> re = new LinkedList<Coordinate>();
+        List<Coordinate> re = new LinkedList<>();
 
         // move to top
         int x = p.position.x;
@@ -50,7 +50,7 @@ public class Rook extends Piece {
             y++;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 
@@ -62,7 +62,7 @@ public class Rook extends Piece {
             y--;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 
@@ -75,7 +75,7 @@ public class Rook extends Piece {
             x++;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 
@@ -87,7 +87,7 @@ public class Rook extends Piece {
             x--;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 

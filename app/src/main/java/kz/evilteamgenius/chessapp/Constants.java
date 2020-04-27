@@ -1,8 +1,5 @@
 package kz.evilteamgenius.chessapp;
 
-import android.content.Context;
-import android.view.View;
-
 public class Constants {
 
     public static final String Url_BASE = "https://k-chess.herokuapp.com";

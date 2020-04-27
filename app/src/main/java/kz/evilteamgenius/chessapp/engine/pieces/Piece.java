@@ -68,7 +68,7 @@ public abstract class Piece {
      */
     boolean sameTeam(final Coordinate destination) {
         Piece p = Board.getPiece(destination);
-        return p != null && Game.sameTeam(p.ownerId, ownerId);
+        return p == null || !Game.sameTeam(p.ownerId, ownerId);
     }
 
     /**

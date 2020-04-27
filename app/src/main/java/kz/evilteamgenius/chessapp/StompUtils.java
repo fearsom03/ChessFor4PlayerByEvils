@@ -1,5 +1,6 @@
 package kz.evilteamgenius.chessapp;
 
+import timber.log.Timber;
 import ua.naiksoftware.stomp.StompClient;
 
 public class StompUtils {
@@ -8,15 +9,15 @@ public class StompUtils {
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
                 case OPENED:
-                    System.out.println( "Stomp connection opened");
+                    Timber.i("Stomp connection opened");
                     break;
 
                 case ERROR:
-                    System.out.println( "Error" + lifecycleEvent.getException().toString());
+                    Timber.e("Error%s", lifecycleEvent.getException().toString());
                     break;
 
                 case CLOSED:
-                    System.out.println( "Stomp connection closed");
+                    Timber.i("Stomp connection closed");
                     break;
             }
         });

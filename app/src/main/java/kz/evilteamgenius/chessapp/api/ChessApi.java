@@ -14,20 +14,20 @@ import retrofit2.http.POST;
 public interface ChessApi {
 
         @POST("registration/submit")
-        public Call<ResponseForRegistration> registerUser(@Body RegisterMyUser user);
+        Call<ResponseForRegistration> registerUser(@Body RegisterMyUser user);
 
         @Headers({ "Content-Type: application/json;charset=UTF-8"})
         @GET("game/new")
-        public Call<Game> makeNewGame(@Header("Authorization") String authHeader);
+        Call<Game> makeNewGame(@Header("Authorization") String authHeader);
 
         @POST("auth/token")
-        public Call<String> loginUser(@Body User user);
+        Call<String> loginUser(@Body User user);
 
         @GET("game/get/move")
 //        @Headers({
 //                "cache-control: application/vnd.yourapi.v1.full+json",
 //                "Authorization: Bearer"
 //        })
-        public Call<Game> getLastMove(@Header("cache-control") String header, @Header("Authorization") String Authorization);
+        Call<Game> getLastMove(@Header("cache-control") String header, @Header("Authorization") String Authorization);
 
 }

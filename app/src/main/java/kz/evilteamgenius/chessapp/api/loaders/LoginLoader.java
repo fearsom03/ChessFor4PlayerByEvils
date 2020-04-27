@@ -2,7 +2,6 @@ package kz.evilteamgenius.chessapp.api.loaders;
 
 import kz.evilteamgenius.chessapp.api.ChessService;
 import kz.evilteamgenius.chessapp.models.User;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,7 +20,7 @@ public class LoginLoader {
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        loginCallback.onGetGoodsLoaded(response.message().toString());
+                        loginCallback.onGetGoodsLoaded(response.message());
                     }
 
                     @Override

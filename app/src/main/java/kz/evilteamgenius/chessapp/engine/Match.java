@@ -15,8 +15,6 @@
  */
 package kz.evilteamgenius.chessapp.engine;
 
-import java.util.ArrayList;
-
 public class Match {
 
 //    TurnBasedMatch turnBasedMatch;

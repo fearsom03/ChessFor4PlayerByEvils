@@ -13,7 +13,7 @@ import java.io.IOException;
 import kz.evilteamgenius.chessapp.R;
 
 public class BackGroundMusic extends Service {
-
+    //todo register it in manifest
     MediaPlayer mediaPlayer;
     AudioManager audioManager;
     int volume;
@@ -26,28 +26,18 @@ public class BackGroundMusic extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println("TRY to start music KUKA");
         mediaPlayer = MediaPlayer.create(this, R.raw.coin);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.prepare();
         } catch (IOException e) {
-            System.out.println("TRY to start music KUKA 22");
             e.printStackTrace();
         }
         mediaPlayer.start();
         mediaPlayer.setLooping(true);
-        System.out.println("Song is started");
         return super.onStartCommand(intent, flags, startId);
     }
 
-
-    @Override
-    public boolean stopService(Intent name) {
-        System.out.println("Song is stopped");
-
-        return super.stopService(name);
-    }
 
     @Override
     public void onDestroy() {
@@ -57,7 +47,5 @@ public class BackGroundMusic extends Service {
         mediaPlayer = null;
 
     }
-
-
 
 }

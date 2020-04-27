@@ -1,9 +1,6 @@
 package kz.evilteamgenius.chessapp.activity;
 
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -81,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     }
 
     private void spinnerInit() {
-        ArrayAdapter mAdapter = new ArrayAdapter<String>(LoginActivity.this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.language_option));
+        ArrayAdapter mAdapter = new ArrayAdapter<>(LoginActivity.this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.language_option));
         spinner.setAdapter(mAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -166,6 +163,40 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     }
 
+    private void gotoMainPage() {
+        stopService(new Intent(LoginActivity.this, BackGroundMusic.class));
+        intent = new Intent(LoginActivity.this,
+                MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void showToast(final String Text) {
+        this.runOnUiThread(() -> Toast.makeText(LoginActivity.this,
+                Text, Toast.LENGTH_LONG).show());
+    }
+
+    public String getToken() {
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("token", null);
+    }
+
+    private void setLocale(String localeName) {
+        if (!localeName.equals(getlanguageStat)) {
+            myLocale = new Locale(localeName);
+            Resources res = getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
+            Configuration conf = res.getConfiguration();
+            conf.locale = myLocale;
+            res.updateConfiguration(conf, dm);
+            intent = new Intent(this, LoginActivity.class);
+            intent.putExtra(something, conf.locale.getLanguage());
+            startActivity(intent);
+        } else {
+            Toast.makeText(LoginActivity.this, getString(R.string.OOPS_TryAgain), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public class LoginUser extends AsyncTask<String, Void, String> {
 
         @Override
@@ -198,23 +229,17 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                         finish();
 
                     } else {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
-                                builder1.setMessage(R.string.errorEmailorLogin);
-                                builder1.setCancelable(true);
+                        runOnUiThread(() -> {
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
+                            builder1.setMessage(R.string.errorEmailorLogin);
+                            builder1.setCancelable(true);
 
-                                builder1.setPositiveButton(
-                                        getResources().getText(R.string.okText),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.cancel();
-                                            }
-                                        });
+                            builder1.setPositiveButton(
+                                    getResources().getText(R.string.okText),
+                                    (dialog, id) -> dialog.cancel());
 
-                                AlertDialog alert11 = builder1.create();
-                                alert11.show();
-                            }
+                            AlertDialog alert11 = builder1.create();
+                            alert11.show();
                         });
                     }
                 }
@@ -223,44 +248,5 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             }
             return null;
         }
-    }
-
-    private void gotoMainPage(){
-        stopService(new Intent(LoginActivity.this, BackGroundMusic.class));
-        intent = new Intent(LoginActivity.this,
-                KukaActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    public String getToken() {
-        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", null);
-    }
-
-    private void setLocale(String localeName) {
-        if (!localeName.equals(getlanguageStat)) {
-            myLocale = new Locale(localeName);
-            Resources res = getResources();
-            DisplayMetrics dm = res.getDisplayMetrics();
-            Configuration conf = res.getConfiguration();
-            conf.locale = myLocale;
-            res.updateConfiguration(conf, dm);
-            intent = new Intent(this, LoginActivity.class);
-            intent.putExtra(something, conf.locale.getLanguage());
-            startActivity(intent);
-        } else {
-            Toast.makeText(LoginActivity.this, getString(R.string.OOPS_TryAgain), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void showToast(final String Text) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(LoginActivity.this,
-                        Text, Toast.LENGTH_LONG).show();
-            }
-        });
     }
 }

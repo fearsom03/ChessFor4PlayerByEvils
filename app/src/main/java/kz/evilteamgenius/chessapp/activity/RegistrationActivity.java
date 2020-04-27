@@ -16,6 +16,7 @@ import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.api.loaders.RegistrationLoader;
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
+
 public class RegistrationActivity extends AppCompatActivity {
 
     @BindView(R.id.userNameRegistration)
@@ -38,25 +39,31 @@ public class RegistrationActivity extends AppCompatActivity {
 
     @OnClick(R.id.signInButtonRegistration)
     public void onRegisterClicked() {
-        if (userName.getText()!=null && userName.getText().length()>4){
-            if (email.getText()!=null && email.getText().length()>1){
-                if (password.getText()!=null && passwordConf.getText()!=null
-                        && password.getText().toString().equals(passwordConf.getText().toString())){
-                    registrationInServer(userName.getText().toString(),
-                            password.getText().toString(),email.getText().toString());
+        if (userName.getText() != null && userName.getText().length() > 4) {
+            if (email.getText() != null
+                    && email.getText().length() > 4
+                    && email.getText().toString().contains("@")) {
+                if (password.getText() != null
+                        && passwordConf.getText() != null
+                        && password.getText()
+                        .toString()
+                        .equals(passwordConf.getText().toString())) {
 
-                }else {
-                    Toast.makeText(this,getString(R.string.confirm_passwordText),Toast.LENGTH_SHORT).show();
+                    registrationInServer(userName.getText().toString(),
+                            password.getText().toString(), email.getText().toString());
+
+                } else {
+                    Toast.makeText(this, getString(R.string.confirm_passwordText), Toast.LENGTH_SHORT).show();
                 }
-            }else {
-                Toast.makeText(this,getString(R.string.InputEmailText),Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.InputEmailText), Toast.LENGTH_SHORT).show();
             }
-        }else {
-            Toast.makeText(this,getString(R.string.EmptyNameInputOrLess),Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getString(R.string.EmptyNameInputOrLess), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void registrationInServer(String login,String pass, String email) {
+    private void registrationInServer(String login, String pass, String email) {
         RegisterMyUser user = new RegisterMyUser();
         user.setLogin(login);
         user.setPass(pass);
@@ -65,44 +72,24 @@ public class RegistrationActivity extends AppCompatActivity {
         RegistrationLoader loader = new RegistrationLoader(new RegistrationLoader.GetRegistrationLoaderCallback() {
             @Override
             public void onGetGoodsLoaded(ResponseForRegistration responseForRegistration) {
-                        showToast(getString(R.string.RegisterSuccess));
-                        Intent i = new Intent(RegistrationActivity.this,
-                                LoginActivity.class);
-                        startActivity(i);
+                showToast(getString(R.string.RegisterSuccess));
+                Intent i = new Intent(RegistrationActivity.this,
+                        LoginActivity.class);
+                startActivity(i);
             }
 
             @Override
             public void onResponseFailed(String errorMessage) {
-                        showToast(getString(R.string.OOPS_TryAgain));
+                showToast(getString(R.string.OOPS_TryAgain));
             }
         });
         loader.loadRegistration(user);
 
     }
 
-    public void showToast(final String Text){
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(RegistrationActivity.this,
-                        Text, Toast.LENGTH_LONG).show();
-            }
-        });
+    public void showToast(final String Text) {
+        this.runOnUiThread(() -> Toast.makeText(RegistrationActivity.this,
+                Text, Toast.LENGTH_LONG).show());
     }
-    /*
-
-    {
-    "status": "error",
-    "content": [
-        [
-            "username.is.taken"
-        ]
-    ]
-}
-{
-    "status": "ok",
-    "content": []
-}
-     */
 }
 

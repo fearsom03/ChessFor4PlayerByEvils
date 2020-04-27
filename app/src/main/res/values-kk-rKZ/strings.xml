@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="language_option">
+        <item>Тiлдi танданыз</item>
+        <item>English</item>
+        <item>Қазақ</item>
+        <item>Русский</item>
+        <item>中文</item>
+    </string-array>
+
     <string name="app_name">ChessAppGG</string>
     <string name="login">Логин</string>
     <string name="passwordName">Купия соз</string>
@@ -26,38 +34,34 @@
     <string name="errorEmailorLogin">Сіздің пароліңіз немесе электрондық поштаңыз қате</string>
     <string name="shareApp">Бұл қолданбаны бөлісіңіз</string>
     <string name="fullRulesRealText">Жалпы ережелер:
-\n1) Ойыншылар өздерінің шахмат бөліктерін тек өз кезектерінде жылжыта алады.
-\n2) Егер ойыншы чекке қойылған болса, онда ол ойыншы қауіпті ескерту үшін тағайындалған кезегін күтуі керек. Алайда, көптеген варианттарда, егер ойыншының қозғалысы қарсыласты басқа қарсыластың қолына ұстап тұрса (мысалы, рыцарьды бір қарсыластың патшасын екіншісіне айналдыру үшін), екінші қарсыласты басып алуға тыйым салынады. бірінші патшаның чекпен айналысуға мүмкіндігі болғанша. Кейбір ауытқулар бір қарсыластың екіншісінің қолында болуына себеп болатын қозғалыстарға тыйым салады. Бұл шектеулер ойыншылар арасындағы келіспеушілікті болдырмауға арналған, әрі қарай төменде талқыланады.
-\n3) Қоймалар алға қарай қиғаш түрде шабуыл жасамаса ғана алға жылжиды.
-\n4) Егер ломбард Патша жолынан солға, оңға немесе тікелей сол жаққа жеткен жағдайда, ломбард дәстүрлі шахмат ойыны кезінде патша қатарына жететін ломбардтың барлық артықшылықтарын алады (яғни, көбіне патшайымға жылжыту) , епископ немесе рыцарь).
-\n5) Екі немесе одан да көп ойыншылардың топтасуы заңды.</string>
-
-    <string-array name="language_option">
-        <item>Тiлдi танданыз</item>
-        <item>English</item>
-        <item>Қазақ</item>
-        <item>Русский</item>
-        <item>中文</item>
-    </string-array>
+\n
+        1) Ойыншылар өздерінің шахмат бөліктерін тек өз кезектерінде жылжыта алады.
+\n\n
+        2) Егер ойыншы чекке қойылған болса, онда ол ойыншы қауіпті ескерту үшін тағайындалған кезегін күтуі керек. Алайда, көптеген варианттарда, егер ойыншының қозғалысы қарсыласты басқа қарсыластың қолына ұстап тұрса (мысалы, рыцарьды бір қарсыластың патшасын екіншісіне айналдыру үшін), екінші қарсыласты басып алуға тыйым салынады. бірінші патшаның чекпен айналысуға мүмкіндігі болғанша. Кейбір ауытқулар бір қарсыластың екіншісінің қолында болуына себеп болатын қозғалыстарға тыйым салады. Бұл шектеулер ойыншылар арасындағы келіспеушілікті болдырмауға арналған, әрі қарай төменде талқыланады.
+\n\n
+        3) Қоймалар алға қарай қиғаш түрде шабуыл жасамаса ғана алға жылжиды.
+\n\n
+        4) Егер ломбард Патша жолынан солға, оңға немесе тікелей сол жаққа жеткен жағдайда, ломбард дәстүрлі шахмат ойыны кезінде патша қатарына жететін ломбардтың барлық артықшылықтарын алады (яғни, көбіне патшайымға жылжыту) , епископ немесе рыцарь).
+\n\n
+        5) Екі немесе одан да көп ойыншылардың топтасуы заңды.</string>
 
 
-
-    <string name="achievements">Achievements</string>
-    <string name="reload">Reload</string>
-    <string name="mode1">2-player, standard chess board</string>
-    <string name="mode2">2-player, extended board</string>
-    <string name="mode3">4-player in 2 teams</string>
-    <string name="mode4">4-player, no teams</string>
-    <string name="theirturn">Their turn:</string>
-    <string name="yourturn">Your turn:</string>
-    <string name="localmatches">Local matches:</string>
-    <string name="history">Match history</string>
-    <string name="newgame">Start new game</string>
-    <string name="localgame">Local game</string>
-    <string name="gameover">Game Over!\n</string>
-    <string name="win">Congratulation, you\'ve won the match!</string>
-    <string name="loss">Sorry, you\'ve lost the match!</string>
-    <string name="winlocal">Congratulation %s, you\'ve won the match!</string>
-    <string name="deletematch">Do you really want to delete this match?</string>
-    <string name="leavematch">Do you really want to leave this match?</string>
+    <string name="achievements">Жетістіктер</string>
+    <string name="reload">Қайта жүктеу</string>
+    <string name="mode1">2 ойыншы, стандартты шахмат тақтасы</string>
+    <string name="mode2">2 ойыншы, кеңейтілген тақта</string>
+    <string name="mode3">2 командада 4 ойыншы</string>
+    <string name="mode4">4 ойыншы, командасыз</string>
+    <string name="theirturn">Олардың кезегі:</string>
+    <string name="yourturn">Сіздің қадамыңыз:</string>
+    <string name="localmatches">Локальды матчтар:</string>
+    <string name="history">Ойындар тарихы</string>
+    <string name="newgame">Жаңа ойынды бастаңыз</string>
+    <string name="localgame">Локалды ойын</string>
+    <string name="gameover">Ойын Аяқталды!\n</string>
+    <string name="win">Құттықтаймын, сіз матч ұтып алды!</string>
+    <string name="loss">Кешіріңіз, бірақ сіз матчты жеңілдіңіз!</string>
+    <string name="winlocal">Құттықтау %1$s, сіз ойынды ұтыңыз!</string>
+    <string name="deletematch">Сіз шынымен осы ойыннан жойғыңыз келе ме?</string>
+    <string name="leavematch">Сіз шынымен осы ойыннан шыққыңыз келе ме?</string>
 </resources>

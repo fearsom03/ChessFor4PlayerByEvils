@@ -31,7 +31,7 @@ public class RightPawn extends Piece {
 
     @Override
     public List<Coordinate> getPossiblePositions() {
-        List<Coordinate> re = new LinkedList<Coordinate>();
+        List<Coordinate> re = new LinkedList<>();
         Coordinate c;
         int x = position.x;
         int y = position.y;
@@ -50,11 +50,11 @@ public class RightPawn extends Piece {
 
         // check if we can attack another piece
         c = new Coordinate(x + 1, y - 1);
-        if (c.isValid() && Board.getPiece(c) != null && !sameTeam(c)) {
+        if (c.isValid() && Board.getPiece(c) != null && sameTeam(c)) {
             re.add(c);
         }
         c = new Coordinate(x + 1, y + 1);
-        if (c.isValid() && Board.getPiece(c) != null && !sameTeam(c)) {
+        if (c.isValid() && Board.getPiece(c) != null && sameTeam(c)) {
             re.add(c);
         }
         return re;

@@ -1,7 +1,5 @@
 package kz.evilteamgenius.chessapp.models;
 
-import java.util.ArrayList;
-
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
 
 public class MatchMakingMessage {

@@ -19,6 +19,7 @@
 
 
     <application
+        android:name=".activity.ApplicationController"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@drawable/chess_icon"
@@ -26,7 +27,7 @@
         android:roundIcon="@drawable/chess_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.KukaActivity"></activity>
+        <activity android:name=".activity.MainActivity"></activity>
         <activity
             android:name=".activity.RegistrationActivity"
             android:screenOrientation="portrait" />

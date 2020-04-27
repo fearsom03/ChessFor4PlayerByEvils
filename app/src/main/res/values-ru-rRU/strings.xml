@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string-array name="language_option">
+        <item>Выберите язык</item>
+        <item>English</item>
+        <item>Қазақ</item>
+        <item>Русский</item>
+        <item>中文</item>
+    </string-array>
+
     <string name="app_name">ChessAppGG</string>
     <string name="login">Логин</string>
     <string name="passwordName">Пароль</string>
@@ -26,37 +35,32 @@
     <string name="errorEmailorLogin">Ваш пароль или адрес электронной почты неверны</string>
     <string name="shareApp">Поделитесь этим приложением</string>
     <string name="fullRulesRealText">Общие правила:
-\n1) Игроки могут перемещать только свои шахматные фигуры в свой ход.
-\n2) Если игрок находится под контролем, этот игрок должен подождать до назначенного ему хода, прежде чем этот игрок сможет ответить на угрозу. Однако в большинстве вариантов, если ход игрока ставит противника под контроль другого противника (например, перемещая коня, чтобы выставить короля одного противника на ладью другого), второму противнику запрещается захватывать король первого, пока у него не будет возможности разобраться с чеком. Некоторые варианты запрещают ходы, которые могут привести к тому, что один противник будет контролировать чужие руки. Эти ограничения предназначены для предотвращения сговора между игроками, как более подробно обсуждается ниже.
-\n3) Пешки двигаются только вперед, если не атакуют по диагонали вперед.
-\n4) В случае, если пешка достигает ряда короля слева, справа или прямо поперек, эта пешка получает все привилегии пешки, достигающей ряда короля во время традиционной шахматной игры (т.е. превращения в ферзя (чаще всего) ладью епископ или рыцарь).
-\n5) Допускается объединение двух или более игроков.</string>
-
-    <string-array name="language_option">
-        <item>Выберите язык</item>
-        <item>English</item>
-        <item>Қазақ</item>
-        <item>Русский</item>
-        <item>中文</item>
-    </string-array>
-
-
-    <string name="achievements">Achievements</string>
-    <string name="reload">Reload</string>
-    <string name="mode1">2-player, standard chess board</string>
-    <string name="mode2">2-player, extended board</string>
-    <string name="mode3">4-player in 2 teams</string>
-    <string name="mode4">4-player, no teams</string>
-    <string name="theirturn">Their turn:</string>
-    <string name="yourturn">Your turn:</string>
-    <string name="localmatches">Local matches:</string>
-    <string name="history">Match history</string>
-    <string name="newgame">Start new game</string>
-    <string name="localgame">Local game</string>
-    <string name="gameover">Game Over!\n</string>
-    <string name="win">Congratulation, you\'ve won the match!</string>
-    <string name="loss">Sorry, you\'ve lost the match!</string>
-    <string name="winlocal">Congratulation %s, you\'ve won the match!</string>
-    <string name="deletematch">Do you really want to delete this match?</string>
-    <string name="leavematch">Do you really want to leave this match?</string>
+\n
+        1) Игроки могут перемещать только свои шахматные фигуры в свой ход.
+\n\n
+        2) Если игрок находится под контролем, этот игрок должен подождать до назначенного ему хода, прежде чем этот игрок сможет ответить на угрозу. Однако в большинстве вариантов, если ход игрока ставит противника под контроль другого противника (например, перемещая коня, чтобы выставить короля одного противника на ладью другого), второму противнику запрещается захватывать король первого, пока у него не будет возможности разобраться с чеком. Некоторые варианты запрещают ходы, которые могут привести к тому, что один противник будет контролировать чужие руки. Эти ограничения предназначены для предотвращения сговора между игроками, как более подробно обсуждается ниже.
+\n\n
+        3) Пешки двигаются только вперед, если не атакуют по диагонали вперед.
+\n\n
+        4) В случае, если пешка достигает ряда короля слева, справа или прямо поперек, эта пешка получает все привилегии пешки, достигающей ряда короля во время традиционной шахматной игры (т.е. превращения в ферзя (чаще всего) ладью епископ или рыцарь).
+\n\n
+        5) Допускается объединение двух или более игроков.</string>
+    <string name="achievements">Достижения</string>
+    <string name="reload">Перезаряжать</string>
+    <string name="mode1">2-х игроков, стандартная шахматная доска</string>
+    <string name="mode2">2 игрока, расширенная доска</string>
+    <string name="mode3">4 игрока в 2 командах</string>
+    <string name="mode4">4 игрока, без команд</string>
+    <string name="theirturn">Их очередь:</string>
+    <string name="yourturn">Ваш ход:</string>
+    <string name="localmatches">Местные совпадения:</string>
+    <string name="history">История игр</string>
+    <string name="newgame">Начать новую игру</string>
+    <string name="localgame">Локальная игра</string>
+    <string name="gameover">Игра окончена! \n</string>
+    <string name="win">Поздравляем, вы выиграли игру!</string>
+    <string name="loss">Извините, вы проиграли игру!</string>
+    <string name="winlocal">Поздравляем %1$s, вы выиграли игру!</string>
+    <string name="deletematch">Вы действительно хотите удалить эту игру?</string>
+    <string name="leavematch">Вы действительно хотите покинуть эту игру?</string>
 </resources>

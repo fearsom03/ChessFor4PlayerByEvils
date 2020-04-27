@@ -39,7 +39,7 @@ public class Bishop extends Piece {
      * @return a list of possible positions
      */
     public static List<Coordinate> moveDiagonal(final Piece p) {
-        List<Coordinate> re = new LinkedList<Coordinate>();
+        List<Coordinate> re = new LinkedList<>();
         int x = p.position.x + 1;
         int y = p.position.y + 1;
         Coordinate c = new Coordinate(x, y);
@@ -51,7 +51,7 @@ public class Bishop extends Piece {
             x++;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 
@@ -65,7 +65,7 @@ public class Bishop extends Piece {
             x++;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 
@@ -79,7 +79,7 @@ public class Bishop extends Piece {
             y++;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 
@@ -93,7 +93,7 @@ public class Bishop extends Piece {
             y--;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && !p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c)) {
             re.add(c);
         }
 

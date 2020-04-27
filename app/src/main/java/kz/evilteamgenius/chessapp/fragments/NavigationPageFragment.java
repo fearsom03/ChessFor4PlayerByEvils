@@ -3,14 +3,10 @@ package kz.evilteamgenius.chessapp.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,45 +16,30 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.gson.Gson;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.StompUtils;
-import kz.evilteamgenius.chessapp.activity.KukaActivity;
+import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
-import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
-import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
 import kz.evilteamgenius.chessapp.database.tasks.AddGameAsyncTask;
-import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.engine.Game;
-import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
-import kz.evilteamgenius.chessapp.models.MoveMessage;
-import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
-import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompClient;
-import ua.naiksoftware.stomp.dto.StompCommand;
-import ua.naiksoftware.stomp.dto.StompHeader;
-import ua.naiksoftware.stomp.dto.StompMessage;
+import kz.evilteamgenius.chessapp.engine.Match;
+import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -113,13 +94,16 @@ public class NavigationPageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_app_main_page, container, false);
-        ButterKnife.bind(this,view);
-        initData();
-        initUI();
-        return view;
+        return inflater.inflate(R.layout.activity_app_main_page, container, false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+        initData();
+        initUI();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -137,54 +121,51 @@ public class NavigationPageFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     @OnClick({R.id.playText, R.id.communityText, R.id.optionText, R.id.rulesText})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.playText:
-                final Dialog d = new Dialog(getActivity());
+                final Dialog d = new Dialog(getContext());
                 d.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 d.setContentView(R.layout.mode);
-                final RadioGroup mode = (RadioGroup) d.findViewById(R.id.game_mode);
-                final CheckBox local = (CheckBox) d.findViewById(R.id.local);
+                final RadioGroup mode = d.findViewById(R.id.game_mode);
+                final CheckBox local = d.findViewById(R.id.local);
                 mode.check(mode.getChildAt(0).getId());
-                d.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(final View v) {
-                        LAST_SELECTED_MATCH_MODE = Integer.parseInt(
-                                (String) d.findViewById(mode.getCheckedRadioButtonId()).getTag());
-                        if (local.isChecked()) {
-                            Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                                    LAST_SELECTED_MATCH_MODE, true);
-                            Game.newGame(match, null,null,null);
-                            startGame(match.id);
+                d.findViewById(R.id.ok).setOnClickListener(v -> {
+                    LAST_SELECTED_MATCH_MODE = Integer.parseInt(
+                            (String) d.findViewById(mode.getCheckedRadioButtonId()).getTag());
+                    if (local.isChecked()) {
+                        Match match = new Match(String.valueOf(System.currentTimeMillis()),
+                                LAST_SELECTED_MATCH_MODE, true);
+                        Game.newGame(match, null, null, null);
+                        startGame(match.id);
+                    } else {
+                        if (!IF_CONNECTED_TO_INTERNET) {
+                            AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(getActivity());
+                            builder.setTitle("Not connected to Google Play");
+                            builder.setMessage(
+                                    "You need to connect to Google Play Services to be able to find opponent players and start an online game")
+                                    .setPositiveButton(android.R.string.ok,
+                                            (dialog, id) -> dialog.dismiss());
+                            builder.create().show();
                         } else {
-                            if (!IF_CONNECTED_TO_INTERNET) {
-                                AlertDialog.Builder builder =
-                                        new AlertDialog.Builder(getActivity());
-                                builder.setTitle("Not connected to Google Play");
-                                builder.setMessage(
-                                        "You need to connect to Google Play Services to be able to find opponent players and start an online game")
-                                        .setPositiveButton(android.R.string.ok,
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
-                                builder.create().show();
-                            } else {
-                                // CONNECT TO WEBSCOKET AND START MATCHING
-                                ((KukaActivity)getActivity()).connectAndMakeMatch(LAST_SELECTED_MATCH_MODE);
-                            }
+                            // CONNECT TO WEBSCOKET AND START MATCHING
+                            ((MainActivity) getActivity()).connectAndMakeMatch(LAST_SELECTED_MATCH_MODE);
                         }
-                        d.dismiss();
                     }
+                    d.dismiss();
+                });
+                d.findViewById(R.id.back).setOnClickListener(v -> {
+                    d.dismiss();
                 });
                 d.show();
                 break;
             case R.id.communityText:
                 break;
             case R.id.optionText:
-                showToast(getToken());
+//                showToast(getToken());
                 fragment = new FragmentOptionsFragment();
                 replaceFragment(fragment);
                 break;
@@ -195,9 +176,9 @@ public class NavigationPageFragment extends Fragment {
         }
     }
 
-    private String getToken(){
+    private String getToken() {
         SharedPreferences preferences = Objects.requireNonNull(getContext()).getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token","");
+        return preferences.getString("token", "");
     }
 
     private void initData() {
@@ -227,16 +208,16 @@ public class NavigationPageFragment extends Fragment {
     }
 
     private void showToast(final String Text) {
-                Toast.makeText(getContext(),
-                        Text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),
+                Text, Toast.LENGTH_SHORT).show();
     }
 
     private void insertGameIntoDatabase(GameEntity game) {
-       AddGameAsyncTask addGameAsyncTask = new AddGameAsyncTask(getContext());
-       addGameAsyncTask.execute(game);
+        AddGameAsyncTask addGameAsyncTask = new AddGameAsyncTask(getContext());
+        addGameAsyncTask.execute(game);
     }
 
-    public void replaceFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment) {
         FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
         tr.replace(R.id.frame, fragment);
         tr.commit();
@@ -247,7 +228,7 @@ public class NavigationPageFragment extends Fragment {
     }
 
     public void startGame(final String matchID) {
-        System.out.println("startGame");
+        Timber.d("startGame");
         fragment = new GameFragment();
         Bundle b = new Bundle();
         b.putString("matchID", matchID);

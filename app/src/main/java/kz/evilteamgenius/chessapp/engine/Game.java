@@ -2,15 +2,14 @@ package kz.evilteamgenius.chessapp.engine;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Pair;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
+import timber.log.Timber;
 
 /*
  * Copyright 2014 Thomas Hoffmann
@@ -69,15 +68,15 @@ public class Game {
      * Should be called when a move is made
      */
     public static void moved() {
-        System.out.println("moved function!");
+        Timber.d("moved function!");
         turns++;
         String next = players[turns % players.length].id;
         while (deadPlayers.contains(next)) {
-            System.out.println("skipping " + next);
+            Timber.d("skipping %s", next);
             turns++; // skip dead players
             next = players[turns % players.length].id;
         }
-        System.out.println("Game.moved, next player " + next);
+        Timber.d("Game.moved, next player %s", next);
         if (next.startsWith("AutoMatch_")) next = null;
         if (!match.isLocal) {
             //TODO SEND MOVES TO WEBSCOKET
@@ -90,7 +89,7 @@ public class Game {
         if (match.isLocal) {
             c.getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
                     .putString("match_" + match.id + "_" + match.mode, new String(toBytes()))
-                    .commit();
+                    .apply();
         }
     }
 
@@ -150,11 +149,12 @@ public class Game {
      * @return true, if the game is over
      */
     public static boolean isGameOver() {
-        System.out.println(
-                "Game.isGameOver: #Player: " + players.length + " #Dead: " + deadPlayers.size() +
-                        ((deadPlayers.size() == 2) ?
-                                " sameTeam: " + sameTeam(deadPlayers.get(0), deadPlayers.get(1)) :
-                                "-"));
+        String someText = deadPlayers.size() + ((deadPlayers.size() == 2) ?
+                " sameTeam: " + sameTeam(deadPlayers.get(0), deadPlayers.get(1)) :
+                "-");
+        Timber.d("Game.isGameOver: #Player: %s  #Dead:  %s "
+                , String.valueOf(players.length)
+                , someText);
         return (players.length - deadPlayers.size() <= 1) ||
                 (deadPlayers.size() == 2 && sameTeam(deadPlayers.get(0), deadPlayers.get(1)));
     }
@@ -194,10 +194,10 @@ public class Game {
     }
 
 
-    /**
-     * Load game data
-     *
-     * @param data the data to load
+    /*
+      Load game data
+
+      @param data the data to load
      * @param m    the match
      * @param w    the ApiClient
      * @return false, if protocol version is too old and the app should be updated first
@@ -268,20 +268,20 @@ public class Game {
             sb.append(dead).append(",");
         sb.append(":");
         Coordinate oldPos, newPos;
-        for (int i = 0; i < players.length; i++) {
-            if (players[i].lastMove == null) {
+        for (Player player : players) {
+            if (player.lastMove == null) {
                 sb.append("-");
             } else {
-                oldPos = new Coordinate(players[i].lastMove.first.x, players[i].lastMove.first.y,
+                oldPos = new Coordinate(player.lastMove.first.x, player.lastMove.first.y,
                         (4 - Board.getRotation()) % 4);
-                newPos = new Coordinate(players[i].lastMove.second.x, players[i].lastMove.second.y,
+                newPos = new Coordinate(player.lastMove.second.x, player.lastMove.second.y,
                         (4 - Board.getRotation()) % 4);
                 sb.append(oldPos.toString()).append(",").append(newPos.toString());
             }
             sb.append(";");
         }
         sb.append(":").append(match.mode).append(":").append(PROTOCOL_VERSION);
-        System.out.println("  save: " + sb.toString());
+        Timber.d("  save: %s", sb.toString());
         return sb.toString().getBytes();
     }
 
@@ -295,9 +295,9 @@ public class Game {
         match = m;
         turns = 0;
         myPlayerId = "0";
-        deadPlayers = new LinkedList<String>();
+        deadPlayers = new LinkedList<>();
         createPlayers(receivedPlayers, myName);
-        System.out.println("Game.newGame, players: " + players.length);
+        Timber.d("Game.newGame, players: %s", players.length);
         Board.newGame(players);
         if (room_id != null)
             roomAdress = Const.makeMoveAddress.replace(Const.placeholder, room_id);
@@ -322,10 +322,9 @@ public class Game {
             }
 
         }
-
-        System.out.println("Game.createPlayers, " + players[0].id + ", " +
-                players[1].id +
-                ((players.length > 2) ? ", " + players[2].id + ", " + players[3].id : ""));
+        String someText = players[1].id +
+                ((players.length > 2) ? ", " + players[2].id + ", " + players[3].id : "");
+        Timber.d("Game.createPlayers , %s , %s ", players[0].id, someText);
     }
 
     /**
