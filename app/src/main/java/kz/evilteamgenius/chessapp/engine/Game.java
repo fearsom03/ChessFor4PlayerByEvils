@@ -294,6 +294,7 @@ public class Game {
 //        stompClient = s;
         match = m;
         turns = 0;
+        myPlayerId = "0";
         deadPlayers = new LinkedList<String>();
         createPlayers(receivedPlayers, myName);
         System.out.println("Game.newGame, players: " + players.length);

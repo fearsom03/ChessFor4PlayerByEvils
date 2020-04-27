@@ -46,6 +46,7 @@ public class Board {
     }
 
     private static Piece[][] BOARD;
+    public static int rotations;
 
     public static boolean extendedBoard; // true, if 12x12 board, false if 8x8
 
@@ -262,33 +263,35 @@ public class Board {
      * @param players the players
      */
     public static void newGame(final Player[] players) {
+        rotations = getRotation();
+        int myId = Integer.parseInt(Game.myPlayerId);
         if (Game.match.mode == Game.MODE_2_PLAYER_2_SIDES) {
             BOARD = new Piece[8][8];
             extendedBoard = false;
 
             // setup player 1 (bottom)
-            setupPlayerTopBottom(0, 1, 0, players[0].id);
+            setupPlayerTopBottom(0, 1, 0, players[myId].id);
 
             // setup player 2 (top)
-            setupPlayerTopBottom(0, 6, 7, players[1].id);
+            setupPlayerTopBottom(0, 6, 7, players[(myId+1)%2].id);
         } else {
             BOARD = new Piece[12][12];
             extendedBoard = true;
 
             // setup player 1 (bottom)
-            setupPlayerTopBottom(2, 1, 0, players[0].id);
+            setupPlayerTopBottom(2, 1, 0, players[myId].id);
 
             // setup player 2 (right)
             setupPlayerLeftRight(10, 11,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[0].id : players[1].id);
+                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[myId].id : players[(myId+1)%4].id);
 
             // setup player 3 (top)
             setupPlayerTopBottom(2, 10, 11,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[1].id : players[2].id);
+                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId+1)%4].id : players[(myId+2)%4].id);
 
             // setup player 4 (left)
             setupPlayerLeftRight(1, 0,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[1].id : players[3].id);
+                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId+1)%4].id : players[(myId+3)%4].id);
         }
     }
 

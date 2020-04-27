@@ -109,8 +109,10 @@ public class KukaActivity extends AppCompatActivity implements NavigationPageFra
         }, throwable -> Log.e("ConnectAndMakeMatch", "Throwable " + throwable.getMessage()));
     }
 
-    public static void sendMove(final Coordinate old_pos, final Coordinate new_pos, boolean ifOver) {
+    public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
         System.out.println("Send move!");
+        old_pos = new Coordinate(old_pos.x, old_pos.y,Board.rotations);
+        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
         MoveMessage message = new MoveMessage(old_pos.x, old_pos.y, new_pos.x, new_pos.y, Game.myPlayerUserame, MoveMessageType.OK);
         if (ifOver)
             message.setType(MoveMessageType.OVER);
@@ -137,7 +139,9 @@ public class KukaActivity extends AppCompatActivity implements NavigationPageFra
             if(message.getPlayerID().equals(Game.myPlayerUserame))
                 return;
             System.out.println("Received: *****\n" + message.toString() + "*****\n");
-            Board.moveWhenReceived(new Coordinate(message.getFrom_x(), message.getFrom_y()), new Coordinate(message.getTo_x(), message.getTo_y()));
+            Coordinate pos1 = new Coordinate(message.getFrom_x(), message.getFrom_y(),Board.rotations);
+            Coordinate pos2 = new Coordinate(message.getTo_x(), message.getTo_y(), Board.rotations);
+            Board.moveWhenReceived(pos1, pos2);
             this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
