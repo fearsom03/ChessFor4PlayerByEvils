@@ -57,7 +57,8 @@ public class BoardView extends View {
                     Timber.d("Selected!");
                     invalidate();
                 } else {
-                    if (selection != null) { // we have a piece selected and clicked on a new position
+                    if (selection != null) {
+                        // we have a piece selected and clicked on a new position
                         if (Board.move(selection, c)) {
                             Timber.d("Moved!");
                             selection = null;

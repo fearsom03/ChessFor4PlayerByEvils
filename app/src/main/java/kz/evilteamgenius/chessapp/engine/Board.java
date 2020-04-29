@@ -17,7 +17,7 @@ import timber.log.Timber;
 
 /*
  * Copyright 2014 Thomas Hoffmann
- *
+ * Updated by evilteamgenius team
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -263,7 +263,7 @@ public class Board {
             setupPlayerTopBottom(0, 1, 0, players[myId].id);
 
             // setup player 2 (top)
-            setupPlayerTopBottom(0, 6, 7, players[(myId+1)%2].id);
+            setupPlayerTopBottom(0, 6, 7, players[(myId + 1) % 2].id);
         } else {
             BOARD = new Piece[12][12];
             extendedBoard = true;
@@ -273,15 +273,15 @@ public class Board {
 
             // setup player 2 (right)
             setupPlayerLeftRight(10, 11,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[myId].id : players[(myId+1)%4].id);
+                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[myId].id : players[(myId + 1) % 4].id);
 
             // setup player 3 (top)
             setupPlayerTopBottom(2, 10, 11,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId+1)%4].id : players[(myId+2)%4].id);
+                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 2) % 4].id);
 
             // setup player 4 (left)
             setupPlayerLeftRight(1, 0,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId+1)%4].id : players[(myId+3)%4].id);
+                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 3) % 4].id);
         }
     }
 

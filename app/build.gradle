@@ -1,9 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
-    dataBinding{
-        enabled=true
+    dataBinding {
+        enabled = true
     }
     defaultConfig {
         applicationId "kz.evilteamgenius.chessapp"
@@ -22,7 +24,7 @@ android {
             }
         }
 
-        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -86,4 +88,8 @@ dependencies {
 
     implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.4'
     api "io.reactivex.rxjava2:rxjava:2.2.5"
+
+    implementation "androidx.core:core-ktx:1.2.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
 }

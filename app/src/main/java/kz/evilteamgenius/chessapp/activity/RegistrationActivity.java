@@ -41,25 +41,25 @@ public class RegistrationActivity extends AppCompatActivity {
     public void onRegisterClicked() {
         if (userName.getText() != null && userName.getText().length() > 4) {
             if (email.getText() != null
-                    && email.getText().length() > 4
-                    && email.getText().toString().contains("@")) {
+                    && isValidEmailAddress(email.getText().toString())) {
                 if (password.getText() != null
                         && passwordConf.getText() != null
                         && password.getText()
                         .toString()
                         .equals(passwordConf.getText().toString())) {
 
-                    registrationInServer(userName.getText().toString(),
-                            password.getText().toString(), email.getText().toString());
+                    registrationInServer(userName.getText().toString()
+                            , password.getText().toString()
+                            , email.getText().toString());
 
                 } else {
-                    Toast.makeText(this, getString(R.string.confirm_passwordText), Toast.LENGTH_SHORT).show();
+                    showToast(getString(R.string.confirm_passwordText));
                 }
             } else {
-                Toast.makeText(this, getString(R.string.InputEmailText), Toast.LENGTH_SHORT).show();
+                showToast(getString(R.string.InputEmailText));
             }
         } else {
-            Toast.makeText(this, getString(R.string.EmptyNameInputOrLess), Toast.LENGTH_SHORT).show();
+            showToast(getString(R.string.EmptyNameInputOrLess));
         }
     }
 
@@ -90,6 +90,13 @@ public class RegistrationActivity extends AppCompatActivity {
     public void showToast(final String Text) {
         this.runOnUiThread(() -> Toast.makeText(RegistrationActivity.this,
                 Text, Toast.LENGTH_LONG).show());
+    }
+
+    public boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
     }
 }
 

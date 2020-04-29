@@ -1,6 +1,8 @@
 package kz.evilteamgenius.chessapp.api.loaders;
 
+import kz.evilteamgenius.chessapp.api.ApiError;
 import kz.evilteamgenius.chessapp.api.ChessService;
+import kz.evilteamgenius.chessapp.api.RetrofitErrorUtil;
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
 import retrofit2.Call;
@@ -20,7 +22,12 @@ public class RegistrationLoader {
                 .enqueue(new Callback<ResponseForRegistration>() {
                     @Override
                     public void onResponse(Call<ResponseForRegistration> call, Response<ResponseForRegistration> response) {
-                        mCallback.onGetGoodsLoaded(response.body());
+                        if (response.isSuccessful()) {
+                            mCallback.onGetGoodsLoaded(response.body());
+                        } else {
+                            ApiError apiError = RetrofitErrorUtil.parseError(response);
+                            mCallback.onResponseFailed(apiError.getMessage());
+                        }
                     }
 
                     @Override

@@ -1,4 +1,4 @@
-package kz.evilteamgenius.chessapp.database.tasks;
+package kz.evilteamgenius.chessapp.database.asyncTasksDB;
 
 import android.content.Context;
 import android.os.AsyncTask;
