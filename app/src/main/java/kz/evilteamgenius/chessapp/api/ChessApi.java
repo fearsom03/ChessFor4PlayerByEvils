@@ -3,7 +3,7 @@ package kz.evilteamgenius.chessapp.api;
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.Game;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
-import kz.evilteamgenius.chessapp.models.User;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -21,7 +21,7 @@ public interface ChessApi {
         Call<Game> makeNewGame(@Header("Authorization") String authHeader);
 
         @POST("auth/token")
-        Call<String> loginUser(@Body User user);
+        Call<String> loginUser(@Body RequestBody body);
 
         @GET("game/get/move")
 //        @Headers({

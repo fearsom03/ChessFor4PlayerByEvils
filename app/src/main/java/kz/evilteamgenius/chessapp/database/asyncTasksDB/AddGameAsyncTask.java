@@ -1,4 +1,4 @@
-package kz.evilteamgenius.chessapp.database.tasks;
+package kz.evilteamgenius.chessapp.database.asyncTasksDB;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -8,7 +8,7 @@ import kz.evilteamgenius.chessapp.database.AppDatabaseWrapper;
 import kz.evilteamgenius.chessapp.database.dao.GameDao;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
 
-public class AddGameAsyncTask extends AsyncTask<GameEntity,Void,Void> {
+public class AddGameAsyncTask extends AsyncTask<GameEntity, Void, Void> {
 
     private Context weakReference;
 
@@ -20,7 +20,7 @@ public class AddGameAsyncTask extends AsyncTask<GameEntity,Void,Void> {
     @Override
     protected Void doInBackground(GameEntity... games) {
         Context context = weakReference;
-        if (context!=null){
+        if (context != null) {
             AppDatabase appDatabase = AppDatabaseWrapper.GetDatabase(context);
             GameDao dao = appDatabase.gameDao();
             dao.insert(games[0]);

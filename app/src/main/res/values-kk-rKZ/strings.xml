@@ -31,7 +31,7 @@
     <string name="changeUserText">Колданушыны ауыстыру</string>
     <string name="backText">Артқа</string>
     <string name="okText">OK</string>
-    <string name="errorEmailorLogin">Сіздің пароліңіз немесе электрондық поштаңыз қате</string>
+    <string name="errorLoginOrPass">Сіздің пароліңіз немесе логиныңыз қате</string>
     <string name="shareApp">Бұл қолданбаны бөлісіңіз</string>
     <string name="fullRulesRealText">Жалпы ережелер:
 \n

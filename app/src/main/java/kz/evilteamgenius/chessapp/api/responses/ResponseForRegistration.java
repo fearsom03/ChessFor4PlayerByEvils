@@ -3,9 +3,10 @@ package kz.evilteamgenius.chessapp.api.responses;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ResponseForRegistration {
+public class ResponseForRegistration implements Serializable {
     @SerializedName("status")
     @Expose
     private String status;

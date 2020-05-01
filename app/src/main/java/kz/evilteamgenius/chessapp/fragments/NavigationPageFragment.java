@@ -14,7 +14,6 @@ import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,8 +34,8 @@ import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
+import kz.evilteamgenius.chessapp.database.asyncTasksDB.AddGameAsyncTask;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
-import kz.evilteamgenius.chessapp.database.tasks.AddGameAsyncTask;
 import kz.evilteamgenius.chessapp.engine.Game;
 import kz.evilteamgenius.chessapp.engine.Match;
 import timber.log.Timber;
@@ -165,7 +164,6 @@ public class NavigationPageFragment extends Fragment {
             case R.id.communityText:
                 break;
             case R.id.optionText:
-//                showToast(getToken());
                 fragment = new FragmentOptionsFragment();
                 replaceFragment(fragment);
                 break;
@@ -205,11 +203,6 @@ public class NavigationPageFragment extends Fragment {
         imageSlider.setIndicatorUnselectedColor(Color.GRAY);
         imageSlider.setScrollTimeInSec(3); //set scroll delay in seconds :
         imageSlider.startAutoCycle();
-    }
-
-    private void showToast(final String Text) {
-        Toast.makeText(getContext(),
-                Text, Toast.LENGTH_SHORT).show();
     }
 
     private void insertGameIntoDatabase(GameEntity game) {

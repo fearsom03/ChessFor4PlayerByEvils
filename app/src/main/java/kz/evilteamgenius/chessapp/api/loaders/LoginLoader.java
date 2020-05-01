@@ -1,7 +1,10 @@
 package kz.evilteamgenius.chessapp.api.loaders;
 
+import kz.evilteamgenius.chessapp.api.ApiError;
 import kz.evilteamgenius.chessapp.api.ChessService;
-import kz.evilteamgenius.chessapp.models.User;
+import kz.evilteamgenius.chessapp.api.RetrofitErrorUtil;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -14,13 +17,22 @@ public class LoginLoader {
         this.loginCallback = loginCallback;
     }
 
-    public void loginUser(User user){
-        ChessService.getInstance().getJSONApi().
-                loginUser(user)
+    public void loginUser(String name, String pass) {
+        RequestBody formBody = new FormBody.Builder()
+                .add("username", name)
+                .add("password", pass)
+                .build();
+
+        ChessService.getInstance().getJSONApi().loginUser(formBody)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        loginCallback.onGetGoodsLoaded(response.message());
+                        if (response.isSuccessful()) {
+                            loginCallback.onGetGoodsLoaded(response.body(), name);
+                        } else {
+                            ApiError apiError = RetrofitErrorUtil.parseError(response);
+                            loginCallback.onResponseFailed(apiError.getMessage());
+                        }
                     }
 
                     @Override
@@ -31,6 +43,8 @@ public class LoginLoader {
     }
 
     public interface LoginCallback {
-        void onGetGoodsLoaded(String responseForRegistration);
+        void onGetGoodsLoaded(String responseForRegistration, String username);
+
         void onResponseFailed(String errorMessage);
-    }}
+    }
+}

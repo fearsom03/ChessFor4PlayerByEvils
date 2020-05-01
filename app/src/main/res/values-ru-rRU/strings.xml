@@ -32,7 +32,7 @@
     <string name="changeUserText">Поменять пользователя</string>
     <string name="backText">Назад</string>
     <string name="okText">OK</string>
-    <string name="errorEmailorLogin">Ваш пароль или адрес электронной почты неверны</string>
+    <string name="errorLoginOrPass">Ваш пароль или логин неверны</string>
     <string name="shareApp">Поделитесь этим приложением</string>
     <string name="fullRulesRealText">Общие правила:
 \n
@@ -60,7 +60,7 @@
     <string name="gameover">Игра окончена! \n</string>
     <string name="win">Поздравляем, вы выиграли игру!</string>
     <string name="loss">Извините, вы проиграли игру!</string>
-    <string name="winlocal">Поздравляем %1$s, вы выиграли игру!</string>
+    <string name="winlocal">Поздравляем  , вы выиграли игру!</string>
     <string name="deletematch">Вы действительно хотите удалить эту игру?</string>
     <string name="leavematch">Вы действительно хотите покинуть эту игру?</string>
 </resources>

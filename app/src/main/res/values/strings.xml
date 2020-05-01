@@ -29,7 +29,7 @@
     <string name="changeUserText">Change user</string>
     <string name="backText">Back</string>
     <string name="okText">OK</string>
-    <string name="errorEmailorLogin">Your password or Email is wrong</string>
+    <string name="errorLoginOrPass">Your password or login is wrong</string>
     <string name="shareApp">Share this app</string>
     <string name="fullRulesRealText">Common rules: \n
         1)Players can only move their chess pieces on their turn.

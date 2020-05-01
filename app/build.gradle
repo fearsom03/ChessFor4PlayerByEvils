@@ -1,9 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
-    dataBinding{
-        enabled=true
+    dataBinding {
+        enabled = true
     }
     defaultConfig {
         applicationId "kz.evilteamgenius.chessapp"
@@ -22,7 +24,7 @@ android {
             }
         }
 
-        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -41,7 +43,7 @@ android {
 
 dependencies {
 
-    def room_version = "2.2.3"
+    def room_version = "2.2.5"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
 
@@ -52,6 +54,9 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.yarolegovich:discrete-scrollview:1.4.9'
     implementation 'com.github.bumptech.glide:glide:4.10.0'
+    implementation("io.coil-kt:coil:0.10.1")
+    implementation("io.coil-kt:coil-video:0.10.1")
+    implementation("io.coil-kt:coil-gif:0.10.1")
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     //end kuka
 
@@ -69,7 +74,6 @@ dependencies {
     implementation 'androidx.media2:media2-exoplayer:1.0.3'
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
-
     // end AndroidX
 
     //noinspection GradleCompatible
@@ -86,4 +90,18 @@ dependencies {
 
     implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.4'
     api "io.reactivex.rxjava2:rxjava:2.2.5"
+<<<<<<< HEAD
+    //kotlin things
+    implementation "androidx.core:core-ktx:1.2.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha02"
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha02")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha02")
+    // end kotlin
+=======
+
+    implementation "androidx.core:core-ktx:1.2.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+>>>>>>> origin/websocket
 }

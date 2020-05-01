@@ -32,7 +32,7 @@
     <string name="changeUserText">变更使用者</string>
     <string name="backText">背部</string>
     <string name="okText">好</string>
-    <string name="errorEmailorLogin">您的密码或电子邮件错误</string>
+    <string name="errorLoginOrPass">您的密码或电子邮件错误</string>
     <string name="shareApp">分享这个应用程式</string>
 
     <string name="fullRulesRealText">通用规则：

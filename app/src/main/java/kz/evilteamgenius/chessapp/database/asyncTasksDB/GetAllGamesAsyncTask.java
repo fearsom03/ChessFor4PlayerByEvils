@@ -1,4 +1,4 @@
-package kz.evilteamgenius.chessapp.database.tasks;
+package kz.evilteamgenius.chessapp.database.asyncTasksDB;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,7 +12,7 @@ import kz.evilteamgenius.chessapp.database.AppDatabaseWrapper;
 import kz.evilteamgenius.chessapp.database.dao.GameDao;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
 
-public class GetAllGamesAsyncTask extends AsyncTask<Void,Void, List<GameEntity>> {
+public class GetAllGamesAsyncTask extends AsyncTask<Void, Void, List<GameEntity>> {
     private GameRetrieveResultProcess process;
     private WeakReference<Context> weakReference;
 
@@ -25,23 +25,22 @@ public class GetAllGamesAsyncTask extends AsyncTask<Void,Void, List<GameEntity>>
     protected List<GameEntity> doInBackground(Void... voids) {
         List<GameEntity> arr = new ArrayList<>();
         Context context = weakReference.get();
-        if (context!=null){
+        if (context != null) {
             AppDatabase appDatabase = AppDatabaseWrapper.GetDatabase(context);
             GameDao dao = appDatabase.gameDao();
-            arr=dao.getAllGame();
+            arr = dao.getAllGame();
             AppDatabaseWrapper.CloseDatabase();
         }
         return arr;
-    }
-
-
-    public interface GameRetrieveResultProcess {
-        void process(List<GameEntity> games);
     }
 
     @Override
     protected void onPostExecute(List<GameEntity> games) {
         process.process(games);
         super.onPostExecute(games);
+    }
+
+    public interface GameRetrieveResultProcess {
+        void process(List<GameEntity> games);
     }
 }

@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -33,6 +32,7 @@ import kz.evilteamgenius.chessapp.activity.MainActivity;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
+import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
 public class FragmentOptionsFragment extends Fragment {
 
@@ -121,7 +121,7 @@ public class FragmentOptionsFragment extends Fragment {
             startActivity(refresh);
             Objects.requireNonNull(getActivity()).finish();
         } else {
-            Toast.makeText(getContext(), getString(R.string.OOPS_TryAgain), Toast.LENGTH_SHORT).show();
+            toast(getContext(), getString(R.string.OOPS_TryAgain));
         }
     }
 

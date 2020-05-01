@@ -126,7 +126,7 @@ public class GameFragment extends Fragment {
      * Update the 'current turn' information view
      */
     public void updateTurn() {
-        Timber.d(" UI:updateTurn() turn=null?" + (turn == null));
+        Timber.d(" UI:updateTurn() turn=null?%s", (turn == null));
         if (turn == null) return;
         if (Game.isGameOver()) {
             gameOver(Game.getWinnerTeam() == Game.getPlayer(Game.myPlayerId).team);

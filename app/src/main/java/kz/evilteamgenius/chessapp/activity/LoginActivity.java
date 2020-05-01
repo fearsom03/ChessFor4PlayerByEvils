@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -31,16 +29,16 @@ import kz.evilteamgenius.chessapp.api.loaders.LoginLoader;
 import kz.evilteamgenius.chessapp.databinding.ActivityLoginBinding;
 import kz.evilteamgenius.chessapp.models.BackGroundMusic;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
-import kz.evilteamgenius.chessapp.models.User;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import timber.log.Timber;
 
-import static kz.evilteamgenius.chessapp.Constants.UrlForLogin;
+import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
-public class LoginActivity extends AppCompatActivity implements OnClickListener {
+<<<<<<<HEAD
+
+=======
+        >>>>>>>origin/websocket
+
+public class LoginActivity extends AppCompatActivity implements OnClickListener, LoginLoader.LoginCallback {
 
 
     @BindView(R.id.signInButton)
@@ -55,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     Spinner spinner;
 
     private Locale myLocale;
-    private String currentLanguage ="def",something, getlanguageStat;
+    private String currentLanguage = "def", something, getlanguageStat;
     private Intent intent;
 
     @Override
@@ -63,8 +61,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ActivityLoginBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
-        if (getToken()!=null&&!getToken().isEmpty()){
-            gotoMainPage();
+        if (getToken() != null && !getToken().isEmpty()) {
+            goToMainPage();
         }
         startService(new Intent(LoginActivity.this, BackGroundMusic.class));
         RegisterMyUser user = new RegisterMyUser();
@@ -93,11 +91,12 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     case 3:
                         setLocale("ru");
                         break;
-                    case 4 :
+                    case 4:
                         setLocale("zh");
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -108,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     private void initUI() {
         signInButton.setOnClickListener(this);
         createAccount.setOnClickListener(this);
-        getlanguageStat =getIntent().getStringExtra(something);
+        getlanguageStat = getIntent().getStringExtra(something);
 
     }
 
@@ -118,13 +117,16 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
         switch (view.getId()) {
             case R.id.signInButton:
-                if (usernameEditText.getText() != null && passwordEditText.getText() != null) {
+                if (usernameEditText.getText() != null
+                        && passwordEditText.getText() != null
+                        && !usernameEditText.getText().toString().isEmpty()
+                        && !passwordEditText.getText().toString().isEmpty()
+                ) {
                     String username = usernameEditText.getText().toString();
                     String password = passwordEditText.getText().toString();
-                    new LoginUser().execute(username, password);
-//                    loginFunction(username,password);
+                    loginFunction(username, password);
                 } else {
-                    showToast(getResources().getString(R.string.EmptyInput));
+                    toast(this, getString(R.string.EmptyInput));
                 }
                 break;
             case R.id.createAccTextView:
@@ -134,46 +136,17 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
-    // todo later need to realize
     private void loginFunction(String username, String password) {
-
-        User user = new User(username,password);
-        LoginLoader loginLoader = new LoginLoader(new LoginLoader.LoginCallback() {
-            @Override
-            public void onGetGoodsLoaded(String token) {
-                if (!token.isEmpty()) {
-                    //showToast(JWTtoken);
-                    SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-                    showToast(token);
-                    preferences.edit().putString("token", token).apply();
-                    preferences.edit().putString("username", username).apply();
-                    gotoMainPage();
-                    finish();
-                } else {
-                    showToast("Wrong Email or Password!");
-                }
-            }
-
-            @Override
-            public void onResponseFailed(String errorMessage) {
-
-            }
-        });
-        loginLoader.loginUser(user);
-
+        LoginLoader loginLoader = new LoginLoader(this);
+        loginLoader.loginUser(username, password);
     }
 
-    private void gotoMainPage() {
+    private void goToMainPage() {
         stopService(new Intent(LoginActivity.this, BackGroundMusic.class));
         intent = new Intent(LoginActivity.this,
                 MainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    public void showToast(final String Text) {
-        this.runOnUiThread(() -> Toast.makeText(LoginActivity.this,
-                Text, Toast.LENGTH_LONG).show());
     }
 
     public String getToken() {
@@ -193,60 +166,32 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             intent.putExtra(something, conf.locale.getLanguage());
             startActivity(intent);
         } else {
-            Toast.makeText(LoginActivity.this, getString(R.string.OOPS_TryAgain), Toast.LENGTH_SHORT).show();
+            toast(this, getString(R.string.OOPS_TryAgain));
         }
     }
 
-    public class LoginUser extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String username = strings[0];
-            String password = strings[1];
-
-            OkHttpClient okHttpClient = new OkHttpClient();
-            RequestBody formBody = new FormBody.Builder()
-                    .add("username", username)
-                    .add("password", password)
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url(UrlForLogin)
-                    .post(formBody)
-                    .build();
-
-            Response response = null;
-            try {
-                response = okHttpClient.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    String JWTtoken = response.body().string();
-                    if (!JWTtoken.isEmpty()) {
-                        //showToast(JWTtoken);
-                        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-                        preferences.edit().putString("token", JWTtoken).apply();
-                        preferences.edit().putString("username", username).apply();
-                        gotoMainPage();
-                        finish();
-
-                    } else {
-                        runOnUiThread(() -> {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
-                            builder1.setMessage(R.string.errorEmailorLogin);
-                            builder1.setCancelable(true);
-
-                            builder1.setPositiveButton(
-                                    getResources().getText(R.string.okText),
-                                    (dialog, id) -> dialog.cancel());
-
-                            AlertDialog alert11 = builder1.create();
-                            alert11.show();
-                        });
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
+    @Override
+    public void onGetGoodsLoaded(String responseForRegistration, String username) {
+        if (!responseForRegistration.isEmpty()) {
+            SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+            preferences.edit().putString("token", responseForRegistration).apply();
+            preferences.edit().putString("username", username).apply();
+            goToMainPage();
+            finish();
         }
+    }
+
+    @Override
+    public void onResponseFailed(String errorMessage) {
+        Timber.e(errorMessage);
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
+        builder1.setMessage(R.string.errorLoginOrPass);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(
+                getResources().getText(R.string.okText),
+                (dialog, id) -> dialog.cancel());
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 }

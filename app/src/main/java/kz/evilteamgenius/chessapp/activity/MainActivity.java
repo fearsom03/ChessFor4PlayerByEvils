@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationPageFra
     Thread thread;
     private Fragment fragment;
 
+    //todo need to change this shit))
     public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
         Timber.d("Send move!");
         old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
@@ -62,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements NavigationPageFra
                 // Stomp payload
                 json)
         ).subscribe();
-
     }
 
     @Override
