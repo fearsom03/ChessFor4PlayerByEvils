@@ -33,11 +33,6 @@ import timber.log.Timber;
 
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
-<<<<<<<HEAD
-
-=======
-        >>>>>>>origin/websocket
-
 public class LoginActivity extends AppCompatActivity implements OnClickListener, LoginLoader.LoginCallback {
 
 

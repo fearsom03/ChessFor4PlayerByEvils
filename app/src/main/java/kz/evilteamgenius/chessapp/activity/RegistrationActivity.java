@@ -2,7 +2,6 @@ package kz.evilteamgenius.chessapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,10 +12,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
-
 import kz.evilteamgenius.chessapp.api.loaders.RegistrationLoader;
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
+
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.isValidEmailAddress;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
@@ -64,7 +63,7 @@ public class RegistrationActivity extends AppCompatActivity {
         } else {
             toast(this, getString(R.string.EmptyNameInputOrLess));
         }
-}
+    }
 
 
     private void registrationInServer(String login, String pass, String email) {
@@ -76,7 +75,7 @@ public class RegistrationActivity extends AppCompatActivity {
         RegistrationLoader loader = new RegistrationLoader(new RegistrationLoader.GetRegistrationLoaderCallback() {
             @Override
             public void onGetGoodsLoaded(ResponseForRegistration responseForRegistration) {
-        toast(RegistrationActivity.this,getString(R.string.RegisterSuccess));
+                toast(RegistrationActivity.this, getString(R.string.RegisterSuccess));
                 Intent i = new Intent(RegistrationActivity.this,
                         LoginActivity.class);
                 startActivity(i);
@@ -84,16 +83,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
             @Override
             public void onResponseFailed(String errorMessage) {
-        toast(RegistrationActivity.this,getString(R.string.OOPS_TryAgain));
+                toast(RegistrationActivity.this, getString(R.string.OOPS_TryAgain));
             }
         });
         loader.loadRegistration(user);
 
-    }
-
-    public void showToast(final String Text) {
-        this.runOnUiThread(() -> Toast.makeText(RegistrationActivity.this,
-                Text, Toast.LENGTH_LONG).show());
     }
 }
 

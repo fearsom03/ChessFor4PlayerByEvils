@@ -90,7 +90,6 @@ dependencies {
 
     implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.4'
     api "io.reactivex.rxjava2:rxjava:2.2.5"
-<<<<<<< HEAD
     //kotlin things
     implementation "androidx.core:core-ktx:1.2.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -98,10 +97,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha02")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha02")
     // end kotlin
-=======
 
     implementation "androidx.core:core-ktx:1.2.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
->>>>>>> origin/websocket
 }
