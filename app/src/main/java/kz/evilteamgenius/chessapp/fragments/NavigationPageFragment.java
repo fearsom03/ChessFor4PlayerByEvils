@@ -229,8 +229,4 @@ public class NavigationPageFragment extends Fragment {
         replaceFragment(fragment);
     }
 
-    public String getUsername() {
-        SharedPreferences preferences = this.getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("username", null);
-    }
 }

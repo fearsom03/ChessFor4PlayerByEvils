@@ -1,6 +1,5 @@
 package kz.evilteamgenius.chessapp.activity;
 
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -32,6 +31,9 @@ import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompCommand;
 import ua.naiksoftware.stomp.dto.StompHeader;
 import ua.naiksoftware.stomp.dto.StompMessage;
+
+import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.checkInternet;
+import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 
@@ -93,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements NavigationPageFra
         MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT, LAST_SELECTED_MATCH_MODE, null, null);
         Gson gson = new Gson();
         String json = gson.toJson(matchMakingMessageToSend);
+        if (!checkInternet(this)) {
+            Timber.e("INTERNET CONNECTION LOST");
+        }
         stompClient.send(new StompMessage(
                 // Stomp command
                 StompCommand.SEND,
@@ -100,13 +105,13 @@ public class MainActivity extends AppCompatActivity implements NavigationPageFra
                 // the first header is required, and the other can be customized by ourselves
                 Arrays.asList(
                         new StompHeader(StompHeader.DESTINATION, Const.makeMatchAddress),
-                        new StompHeader("authorization", getUsername())
+                        new StompHeader("authorization", getUsername(this))
                 ),
                 // Stomp payload
                 json)
         ).subscribe();
 //
-        String dest = Const.makeMatchResponse.replace(Const.placeholder, getUsername());
+        String dest = Const.makeMatchResponse.replace(Const.placeholder, getUsername(this));
         stompClient.topic(dest).subscribe(stompMessage -> {
             MatchMakingMessage matchMakingMessageReceived = new Gson().fromJson(stompMessage.getPayload(), MatchMakingMessage.class);
             //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
@@ -114,10 +119,15 @@ public class MainActivity extends AppCompatActivity implements NavigationPageFra
             if (matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED) {
                 Match match = new Match(String.valueOf(System.currentTimeMillis()),
                         LAST_SELECTED_MATCH_MODE, false);
-                Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(), matchMakingMessageReceived.getRoom_id());
+                Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
                 startGame(match.id);
             }
-        }, throwable -> Timber.e("Throwable %s", throwable.getMessage()));
+        }, throwable -> {
+            Timber.e("Throwable %s", throwable.getMessage());
+            if (!checkInternet(this)) {
+                Timber.e("ITS INTERNET CONNECTION kuka ");
+            }
+        });
     }
 
     public void getMove(BoardView board) {
@@ -131,13 +141,14 @@ public class MainActivity extends AppCompatActivity implements NavigationPageFra
             Board.moveWhenReceived(pos1, pos2);
             // Stuff that updates the UI
             this.runOnUiThread(board::invalidate);
-        }, throwable -> Timber.e("Throwable %s", throwable.getMessage()));
+        }, throwable -> {
+            Timber.e("Throwable %s", throwable.getMessage());
+            if (!checkInternet(this)) {
+                Timber.e("Kuka its internet connection");
+            }
+        });
     }
 
-    public String getUsername() {
-        SharedPreferences preferences = this.getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("username", null);
-    }
 
     public void startGame(final String matchID) {
         Timber.d("startGame");
