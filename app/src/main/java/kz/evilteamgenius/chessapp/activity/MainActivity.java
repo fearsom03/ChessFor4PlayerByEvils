@@ -1,6 +1,5 @@
 package kz.evilteamgenius.chessapp.activity;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,7 +36,7 @@ import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 
-public class MainActivity extends AppCompatActivity implements NavigationPageFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     public static StompClient stompClient;
     Thread thread;
@@ -76,14 +75,11 @@ public class MainActivity extends AppCompatActivity implements NavigationPageFra
     }
 
     public void replaceFragment(Fragment fragment) {
-        FragmentTransaction tr = this.getSupportFragmentManager().beginTransaction();
+        FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
         tr.replace(R.id.frame, fragment);
-        tr.commit();
+        tr.commitNow();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-    }
 
     public void connectAndMakeMatch(int LAST_SELECTED_MATCH_MODE) {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Const.address);

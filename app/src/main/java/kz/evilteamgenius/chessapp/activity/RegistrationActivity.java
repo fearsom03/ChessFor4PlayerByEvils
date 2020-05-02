@@ -15,6 +15,7 @@ import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.api.loaders.RegistrationLoader;
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
+import timber.log.Timber;
 
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.isValidEmailAddress;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
@@ -71,7 +72,7 @@ public class RegistrationActivity extends AppCompatActivity {
         user.setLogin(login);
         user.setPass(pass);
         user.setPassCheck(pass);
-
+        Timber.d("User %s", user.toString());
         RegistrationLoader loader = new RegistrationLoader(new RegistrationLoader.GetRegistrationLoaderCallback() {
             @Override
             public void onGetGoodsLoaded(ResponseForRegistration responseForRegistration) {
@@ -83,7 +84,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
             @Override
             public void onResponseFailed(String errorMessage) {
+                Timber.e("kuka %s", errorMessage);
                 toast(RegistrationActivity.this, getString(R.string.OOPS_TryAgain));
+                onBackPressed();
             }
         });
         loader.loadRegistration(user);

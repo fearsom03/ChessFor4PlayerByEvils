@@ -140,6 +140,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         stopService(new Intent(LoginActivity.this, BackGroundMusic.class));
         intent = new Intent(LoginActivity.this,
                 MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }

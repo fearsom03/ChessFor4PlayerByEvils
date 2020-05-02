@@ -2,10 +2,7 @@ package kz.evilteamgenius.chessapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +15,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Timer;
 
 import butterknife.BindView;
@@ -40,16 +35,8 @@ import kz.evilteamgenius.chessapp.engine.Game;
 import kz.evilteamgenius.chessapp.engine.Match;
 import timber.log.Timber;
 
-import static android.content.Context.MODE_PRIVATE;
+import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.replaceFragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NavigationPageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 public class NavigationPageFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -74,20 +61,6 @@ public class NavigationPageFragment extends Fragment {
     private ArrayList<String> imageLinks;
     private SliderAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
-
-    public NavigationPageFragment() {
-        // Required empty public constructor
-    }
-
-    public static NavigationPageFragment newInstance(String param1, String param2) {
-        NavigationPageFragment fragment = new NavigationPageFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
 
     @Override
@@ -104,22 +77,6 @@ public class NavigationPageFragment extends Fragment {
         initUI();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
     @OnClick({R.id.playText, R.id.communityText, R.id.optionText, R.id.rulesText})
     public void onViewClicked(View view) {
@@ -165,18 +122,13 @@ public class NavigationPageFragment extends Fragment {
                 break;
             case R.id.optionText:
                 fragment = new FragmentOptionsFragment();
-                replaceFragment(fragment);
+                replaceFragment(this, fragment);
                 break;
             case R.id.rulesText:
                 fragment = new FragmentRulesFragment();
-                replaceFragment(fragment);
+                replaceFragment(this, fragment);
                 break;
         }
-    }
-
-    private String getToken() {
-        SharedPreferences preferences = Objects.requireNonNull(getContext()).getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", "");
     }
 
     private void initData() {
@@ -210,23 +162,13 @@ public class NavigationPageFragment extends Fragment {
         addGameAsyncTask.execute(game);
     }
 
-    public void replaceFragment(Fragment fragment) {
-        FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
-        tr.replace(R.id.frame, fragment);
-        tr.commit();
-    }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public void startGame(final String matchID) {
+    private void startGame(final String matchID) {
         Timber.d("startGame");
         fragment = new GameFragment();
         Bundle b = new Bundle();
         b.putString("matchID", matchID);
         fragment.setArguments(b);
-        replaceFragment(fragment);
+        replaceFragment(this, fragment);
     }
-
 }

@@ -16,7 +16,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
 
@@ -32,6 +31,7 @@ import kz.evilteamgenius.chessapp.activity.MainActivity;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
+import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getBackFragment;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
 public class FragmentOptionsFragment extends Fragment {
@@ -146,14 +146,9 @@ public class FragmentOptionsFragment extends Fragment {
                 startActivity(Intent.createChooser(intent, "Share"));
                 break;
             case R.id.backButtonInOption:
-                getBack();
+                getBackFragment(this, new NavigationPageFragment());
                 break;
         }
     }
 
-    private void getBack() {
-        FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
-        tr.replace(R.id.frame, new NavigationPageFragment());
-        tr.commit();
-    }
 }

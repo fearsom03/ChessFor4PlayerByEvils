@@ -6,16 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
+
+import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getBackFragment;
 
 public class FragmentRulesFragment extends Fragment {
 
@@ -36,8 +35,6 @@ public class FragmentRulesFragment extends Fragment {
 
     @OnClick(R.id.backButtonInOption)
     public void onViewClicked() {
-        FragmentTransaction tr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
-        tr.replace(R.id.frame, new NavigationPageFragment());
-        tr.commit();
+        getBackFragment(this, new NavigationPageFragment());
     }
 }
