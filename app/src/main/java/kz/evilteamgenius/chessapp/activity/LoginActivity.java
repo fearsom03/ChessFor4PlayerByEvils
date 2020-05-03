@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         RegisterMyUser user = new RegisterMyUser();
         user.setLogin("testkuka");
         user.setPass("12345qw");
-        user.setPassCheck("12345qw");
+        //user.setPassCheck("12345qw");
         binding.setUser(user);
         ButterKnife.bind(this);
         initUI();

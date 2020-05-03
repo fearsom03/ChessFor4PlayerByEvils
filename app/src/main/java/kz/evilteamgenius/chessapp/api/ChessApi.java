@@ -14,7 +14,7 @@ import retrofit2.http.POST;
 public interface ChessApi {
 
         @POST("registration/submit")
-        Call<ResponseForRegistration> registerUser(@Body RegisterMyUser user);
+        Call<ResponseForRegistration> registerUser(@Body RequestBody user);
 
         @Headers({ "Content-Type: application/json;charset=UTF-8"})
         @GET("game/new")

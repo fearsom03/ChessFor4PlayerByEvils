@@ -23,8 +23,8 @@ android {
                         "room.expandProjection": "true"]
             }
         }
-
     }
+
     buildTypes {
         release {
             minifyEnabled false

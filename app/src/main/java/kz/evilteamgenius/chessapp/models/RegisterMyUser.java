@@ -12,9 +12,9 @@ public class RegisterMyUser {
     @Expose
     private String pass;
 
-    @SerializedName("passwordVerification")
-    @Expose
-    private String passCheck;
+//    @SerializedName("passwordVerification")
+//    @Expose
+//    private String passCheck;
 
 
 
@@ -34,11 +34,11 @@ public class RegisterMyUser {
         this.pass = pass;
     }
 
-    public String getPassCheck() {
-        return passCheck;
-    }
-
-    public void setPassCheck(String passCheck) {
-        this.passCheck = passCheck;
-    }
+//    public String getPassCheck() {
+//        return passCheck;
+//    }
+//
+//    public void setPassCheck(String passCheck) {
+//        this.passCheck = passCheck;
+//    }
 }

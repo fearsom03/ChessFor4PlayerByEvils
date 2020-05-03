@@ -71,7 +71,7 @@ public class RegistrationActivity extends AppCompatActivity {
         RegisterMyUser user = new RegisterMyUser();
         user.setLogin(login);
         user.setPass(pass);
-        user.setPassCheck(pass);
+        //user.setPassCheck(pass);
         Timber.d("User %s", user.toString());
         RegistrationLoader loader = new RegistrationLoader(new RegistrationLoader.GetRegistrationLoaderCallback() {
             @Override
