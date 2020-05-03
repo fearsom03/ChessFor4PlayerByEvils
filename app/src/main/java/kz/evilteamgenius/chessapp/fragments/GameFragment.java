@@ -16,7 +16,9 @@
 package kz.evilteamgenius.chessapp.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +27,24 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import kz.evilteamgenius.chessapp.BoardView;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.MainActivity;
+import kz.evilteamgenius.chessapp.api.loaders.LastMove2PLoader;
+import kz.evilteamgenius.chessapp.engine.Board;
+import kz.evilteamgenius.chessapp.engine.Coordinate;
 import kz.evilteamgenius.chessapp.engine.Game;
+import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.engine.Player;
+import kz.evilteamgenius.chessapp.models.Game2P;
 import timber.log.Timber;
+
+import static android.content.Context.MODE_PRIVATE;
+import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 public class GameFragment extends Fragment {
@@ -38,6 +52,15 @@ public class GameFragment extends Fragment {
     private TextView turn;
     private BoardView board;
     public String currentMatch;
+    boolean infunc;
+
+    private final Handler handler = new Handler();
+    private Timer timer = new Timer();
+    Runnable runnable = new Runnable() {
+        public void run() {
+            getLastMove();
+        }
+    };
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -59,6 +82,12 @@ public class GameFragment extends Fragment {
         board = v.findViewById(R.id.board);
         Game.UI = this;
         updateTurn();
+
+        if (!Game.match.isLocal){
+            callAsynchronousTask();
+            infunc = false;
+        }
+
         //TODO: remove websocket get move with polling
 //        if (!Game.match.isLocal) {
 //            ((MainActivity) getActivity()).getMove(board);
@@ -157,5 +186,48 @@ public class GameFragment extends Fragment {
         }
     }
 
+    private void getLastMove() {
+        if(infunc)
+            return;
+        infunc = true;
+        String token = getToken();
+//        toast(getContext(),token);
+        LastMove2PLoader lastMoveLoader = new LastMove2PLoader(new LastMove2PLoader.LastMoveCallback() {
+            @Override
+            public void onMoveLoaded(Game2P game2P) {
+                if ( !game2P.getMade_by().equals(Game.myPlayerUserame) && !game2P.getMade_by().isEmpty()){
+                    Coordinate pos1 = new Coordinate(game2P.getFrom_x(), game2P.getFrom_y(), Board.rotations);
+                    Coordinate pos2 = new Coordinate(game2P.getTo_x(), game2P.getTo_y(), Board.rotations);
+//                    System.out.println("testFunc: " + Calendar.getInstance().getTime() + " " +  pos1.toString());
+                    Board.moveWhenReceived(pos1, pos2);
+                    toast(getContext(), game2P.toString());
+                    getActivity().runOnUiThread(board::invalidate);
+                    Game.game2P = game2P;
+                }
+            }
 
+            @Override
+            public void onResponseFailed(String errorMessage) {
+                toast(getContext(), errorMessage);
+            }
+        });
+        lastMoveLoader.getLastMove(token);
+        infunc = false;
+    }
+
+
+    private String getToken() {
+        SharedPreferences preferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("token", "");
+    }
+
+    public void callAsynchronousTask() {
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(runnable);
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 1000); //execute in every 50000 ms
+    }
 }

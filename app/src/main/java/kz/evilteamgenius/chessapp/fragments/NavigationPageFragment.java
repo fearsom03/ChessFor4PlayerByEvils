@@ -70,8 +70,8 @@ public class NavigationPageFragment extends Fragment {
     private ArrayList<String> imageLinks;
     private SliderAdapter adapter;
 
-    private final Handler handler = new Handler();
 
+    private final Handler handler = new Handler();
     private Timer timer = new Timer();
     Runnable runnable = new Runnable() {
         public void run() {

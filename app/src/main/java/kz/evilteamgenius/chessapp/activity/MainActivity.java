@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     //todo need to change this shit))
     public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
         Timber.d("sendMove 2");
+        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
+        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
         Game.game2P.setMade_by(Game.myPlayerUserame);
         Game.game2P.setFrom_x(old_pos.x);
         Game.game2P.setFrom_y(old_pos.y);

@@ -107,10 +107,12 @@ public class Board {
     public static void moveWhenReceived(final Coordinate old_pos, final Coordinate new_pos) {
 
         Piece p = BOARD[old_pos.x][old_pos.y];
+        if(p == null)
+            return;
         Piece target = BOARD[new_pos.x][new_pos.y];
         BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
         BOARD[old_pos.x][old_pos.y] = null;
-        p.position = new_pos;
+        p.position = new_pos;  //error: p is null, and write to null.pos
         Game.getPlayer(Game.currentPlayer()).lastMove =
                 new Pair<>(old_pos, new_pos);
         if (target instanceof King && Game.removePlayer(target.getPlayerId())) {
