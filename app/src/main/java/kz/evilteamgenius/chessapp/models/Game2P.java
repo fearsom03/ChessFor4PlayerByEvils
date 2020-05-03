@@ -155,17 +155,18 @@ public class Game2P implements Serializable {
 
     @Override
     public String toString() {
-        return "Game{" +
+        return "Game2P{" +
                 "id=" + id +
-                ", white='" + player1 + '\'' +
-                ", black='" + player2 + '\'' +
-                ", fen='" + FEN + '\'' +
+                ", player1='" + player1 + '\'' +
+                ", player2='" + player2 + '\'' +
+                ", FEN='" + FEN + '\'' +
                 ", result='" + result + '\'' +
                 ", from_x=" + from_x +
                 ", from_y=" + from_y +
                 ", to_x=" + to_x +
                 ", to_y=" + to_y +
-                ", next_move='" + made_by + '\'' +
+                ", made_by='" + made_by + '\'' +
+                ", game_type=" + game_type +
                 '}';
     }
 }

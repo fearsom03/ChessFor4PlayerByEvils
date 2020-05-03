@@ -23,7 +23,7 @@ public interface ChessApi {
         @POST("auth/token")
         Call<String> loginUser(@Body RequestBody body);
 
-        @GET("game/get/move")
+        @GET("game2p/get/move")
 //        @Headers({
 //                "cache-control: application/vnd.yourapi.v1.full+json",
 //                "Authorization: Bearer"

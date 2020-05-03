@@ -59,9 +59,10 @@ public class GameFragment extends Fragment {
         board = v.findViewById(R.id.board);
         Game.UI = this;
         updateTurn();
-        if (!Game.match.isLocal) {
-            ((MainActivity) getActivity()).getMove(board);
-        }
+        //TODO: remove websocket get move with polling
+//        if (!Game.match.isLocal) {
+//            ((MainActivity) getActivity()).getMove(board);
+//        }
         return v;
     }
 

@@ -20,6 +20,7 @@ import kz.evilteamgenius.chessapp.engine.Game;
 import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
 import kz.evilteamgenius.chessapp.fragments.NavigationPageFragment;
+import kz.evilteamgenius.chessapp.models.Game2P;
 import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
 import kz.evilteamgenius.chessapp.models.MoveMessage;
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
@@ -44,26 +45,26 @@ public class MainActivity extends AppCompatActivity {
 
     //todo need to change this shit))
     public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
-        Timber.d("Send move!");
-        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
-        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
-        MoveMessage message = new MoveMessage(old_pos.x, old_pos.y, new_pos.x, new_pos.y, Game.myPlayerUserame, MoveMessageType.OK);
-        if (ifOver)
-            message.setType(MoveMessageType.OVER);
-        Gson gson = new Gson();
-        String json = gson.toJson(message);
-        stompClient.send(new StompMessage(
-                // Stomp command
-                StompCommand.SEND,
-                // Stomp Headers, Send Headers with STOMP
-                // the first header is required, and the other can be customized by ourselves
-                Arrays.asList(
-                        new StompHeader(StompHeader.DESTINATION, Game.roomAdress),
-                        new StompHeader("authorization", Game.myPlayerUserame)
-                ),
-                // Stomp payload
-                json)
-        ).subscribe();
+//        Timber.d("Send move!");
+//        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
+//        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
+//        Game2P game2P = new Game2P();
+//        if (ifOver)
+//            message.setType(MoveMessageType.OVER);
+//        Gson gson = new Gson();
+//        String json = gson.toJson(message);
+//        stompClient.send(new StompMessage(
+//                // Stomp command
+//                StompCommand.SEND,
+//                // Stomp Headers, Send Headers with STOMP
+//                // the first header is required, and the other can be customized by ourselves
+//                Arrays.asList(
+//                        new StompHeader(StompHeader.DESTINATION, Game.roomAdress),
+//                        new StompHeader("authorization", Game.myPlayerUserame)
+//                ),
+//                // Stomp payload
+//                json)
+//        ).subscribe();
     }
 
     @Override

@@ -2,9 +2,10 @@ package kz.evilteamgenius.chessapp;
 
 public class Constants {
 
-    public static final String Url_BASE = "https://k-chess.herokuapp.com";
+    public static final String Url_BASE = "http://192.168.0.103:5000";
+    //   public static final String Url_BASE = "https://k-chess.herokuapp.com";
 //    public static final String UrlDefault ="https://k-chess.herokuapp.com/";
-    public static final String UrlDefault ="https://k-chess.herokuapp.com/";
+    public static final String UrlDefault ="http://192.168.0.103:5000/";
     public static final String UrlForLogin ="https://k-chess.herokuapp.com/api/auth/token";
     public static final String Url_RegisterSubmit = "https://k-chess.herokuapp.com/api/registration/submit";
     public static final String url_IsUserNameAvailable = "https://k-chess.herokuapp.com/api/registration/isUsernameAvailable";

@@ -2,8 +2,10 @@ package kz.evilteamgenius.chessapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,10 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,14 +34,19 @@ import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
+import kz.evilteamgenius.chessapp.api.loaders.LastMove2PLoader;
+import kz.evilteamgenius.chessapp.api.loaders.MakeNew2PGameLoader;
 import kz.evilteamgenius.chessapp.database.asyncTasksDB.AddGameAsyncTask;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
 import kz.evilteamgenius.chessapp.engine.Game;
 import kz.evilteamgenius.chessapp.engine.Match;
+import kz.evilteamgenius.chessapp.models.Game2P;
 import timber.log.Timber;
 
+import static android.content.Context.MODE_PRIVATE;
+import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
 import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.replaceFragment;
-
+import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 public class NavigationPageFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -51,7 +61,6 @@ public class NavigationPageFragment extends Fragment {
     TextView optionText;
     @BindView(R.id.rulesText)
     TextView rulesText;
-    private Timer timer = new Timer();
     private Fragment fragment;
     private String mode = "online";
     static int LAST_SELECTED_MATCH_MODE;
@@ -60,6 +69,15 @@ public class NavigationPageFragment extends Fragment {
 
     private ArrayList<String> imageLinks;
     private SliderAdapter adapter;
+
+    private final Handler handler = new Handler();
+
+    private Timer timer = new Timer();
+    Runnable runnable = new Runnable() {
+        public void run() {
+            getLastMove();
+        }
+    };
 
 
 
@@ -107,8 +125,8 @@ public class NavigationPageFragment extends Fragment {
                                             (dialog, id) -> dialog.dismiss());
                             builder.create().show();
                         } else {
-                            // CONNECT TO WEBSCOKET AND START MATCHING
-                            ((MainActivity) getActivity()).connectAndMakeMatch(LAST_SELECTED_MATCH_MODE);
+                            makeNewGame();
+                            callAsynchronousTask();
                         }
                     }
                     d.dismiss();
@@ -130,6 +148,7 @@ public class NavigationPageFragment extends Fragment {
                 break;
         }
     }
+
 
     private void initData() {
         //add advertisment images
@@ -162,6 +181,64 @@ public class NavigationPageFragment extends Fragment {
         addGameAsyncTask.execute(game);
     }
 
+    private void makeNewGame() {
+        MakeNew2PGameLoader loader = new MakeNew2PGameLoader(new MakeNew2PGameLoader.GetMakeNewGameLoaderCallback() {
+            @Override
+            public void onGetGoodsLoaded(Game2P game2P) {
+                checkIfMatched(game2P);
+                toast( getContext(),game2P.toString());
+            }
+
+            @Override
+            public void onResponseFailed(String errorMessage) {
+                toast(getContext(), errorMessage);
+
+            }
+        });
+
+        loader.loadMakeNew2PGame(getToken(), LAST_SELECTED_MATCH_MODE);
+    }
+
+    private void checkIfMatched(Game2P game2P){
+        if(!game2P.getPlayer1().isEmpty() && !game2P.getPlayer2().isEmpty()){
+            timer.cancel();  // Terminates this timer, discarding any currently scheduled tasks.
+            timer.purge();   // Removes all cancelled tasks from this timer's task queue.
+            Match match = new Match(String.valueOf(System.currentTimeMillis()),
+                    LAST_SELECTED_MATCH_MODE, false);
+            String[] players = {game2P.getPlayer1(), game2P.getPlayer2()};
+            //TODO: remove room id
+            Game.newGame(match, players, getUsername(getContext()), "matchMakingMessageReceived.getRoom_id()");
+            startGame(match.id);
+        }
+    }
+
+    private void callAsynchronousTask() {
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(runnable);
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 6000); //execute in every 50000 ms
+    }
+
+    private void getLastMove() {
+        String token = getToken();
+//        toast(getContext(),token);
+        LastMove2PLoader lastMoveLoader = new LastMove2PLoader(new LastMove2PLoader.LastMoveCallback() {
+            @Override
+            public void onMoveLoaded(Game2P game2P) {
+                checkIfMatched(game2P);
+                toast(getContext(),game2P.toString());
+            }
+
+            @Override
+            public void onResponseFailed(String errorMessage) {
+                toast(getContext(), errorMessage);
+            }
+        });
+        lastMoveLoader.getLastMove(token);
+    }
 
     private void startGame(final String matchID) {
         Timber.d("startGame");
@@ -170,5 +247,10 @@ public class NavigationPageFragment extends Fragment {
         b.putString("matchID", matchID);
         fragment.setArguments(b);
         replaceFragment(this, fragment);
+    }
+
+    private String getToken(){
+        SharedPreferences preferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("token","");
     }
 }
