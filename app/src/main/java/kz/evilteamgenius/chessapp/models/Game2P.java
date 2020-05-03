@@ -47,11 +47,11 @@ public class Game2P implements Serializable {
     @Expose
     private String made_by;
 
-    @SerializedName("game_type")
+    @SerializedName("type")
     @Expose
-    private int game_type;
+    private int type;
 
-    public Game2P(Long id, String player1, String player2, String FEN, String result, int from_x, int from_y, int to_x, int to_y, String made_by, int game_type) {
+    public Game2P(Long id, String player1, String player2, String FEN, String result, int from_x, int from_y, int to_x, int to_y, String made_by, int type) {
         this.id = id;
         this.player1 = player1;
         this.player2 = player2;
@@ -62,7 +62,7 @@ public class Game2P implements Serializable {
         this.to_x = to_x;
         this.to_y = to_y;
         this.made_by = made_by;
-        this.game_type = game_type;
+        this.type = type;
     }
 
     public Long getId() {
@@ -145,12 +145,12 @@ public class Game2P implements Serializable {
         this.made_by = made_by;
     }
 
-    public int getGame_type() {
-        return game_type;
+    public int getType() {
+        return type;
     }
 
-    public void setGame_type(int game_type) {
-        this.game_type = game_type;
+    public void setType(int type) {
+        this.type = type;
     }
 
     @Override
@@ -166,7 +166,7 @@ public class Game2P implements Serializable {
                 ", to_x=" + to_x +
                 ", to_y=" + to_y +
                 ", made_by='" + made_by + '\'' +
-                ", game_type=" + game_type +
+                ", type=" + type +
                 '}';
     }
 }

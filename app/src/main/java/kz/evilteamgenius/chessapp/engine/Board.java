@@ -87,6 +87,7 @@ public class Board {
         Game.getPlayer(Game.currentPlayer()).lastMove =
                 new Pair<>(old_pos, new_pos);
 
+        Timber.d("sendMove 1");
         if (target instanceof King && Game.removePlayer(target.getPlayerId())) {
             // game ended
             ifOver = true;

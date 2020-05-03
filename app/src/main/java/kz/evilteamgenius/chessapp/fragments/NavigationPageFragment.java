@@ -126,7 +126,6 @@ public class NavigationPageFragment extends Fragment {
                             builder.create().show();
                         } else {
                             makeNewGame();
-                            callAsynchronousTask();
                         }
                     }
                     d.dismiss();
@@ -185,8 +184,10 @@ public class NavigationPageFragment extends Fragment {
         MakeNew2PGameLoader loader = new MakeNew2PGameLoader(new MakeNew2PGameLoader.GetMakeNewGameLoaderCallback() {
             @Override
             public void onGetGoodsLoaded(Game2P game2P) {
-                checkIfMatched(game2P);
                 toast( getContext(),game2P.toString());
+                if(!checkIfMatched(game2P))
+                    callAsynchronousTask();
+
             }
 
             @Override
@@ -199,17 +200,20 @@ public class NavigationPageFragment extends Fragment {
         loader.loadMakeNew2PGame(getToken(), LAST_SELECTED_MATCH_MODE);
     }
 
-    private void checkIfMatched(Game2P game2P){
+    private boolean checkIfMatched(Game2P game2P){
         if(!game2P.getPlayer1().isEmpty() && !game2P.getPlayer2().isEmpty()){
             timer.cancel();  // Terminates this timer, discarding any currently scheduled tasks.
             timer.purge();   // Removes all cancelled tasks from this timer's task queue.
             Match match = new Match(String.valueOf(System.currentTimeMillis()),
                     LAST_SELECTED_MATCH_MODE, false);
             String[] players = {game2P.getPlayer1(), game2P.getPlayer2()};
+            Game.game2P = game2P;
             //TODO: remove room id
             Game.newGame(match, players, getUsername(getContext()), "matchMakingMessageReceived.getRoom_id()");
             startGame(match.id);
+            return true;
         }
+        return false;
     }
 
     private void callAsynchronousTask() {

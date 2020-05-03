@@ -1,5 +1,7 @@
 package kz.evilteamgenius.chessapp.activity;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -24,7 +28,11 @@ import kz.evilteamgenius.chessapp.models.Game2P;
 import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
 import kz.evilteamgenius.chessapp.models.MoveMessage;
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
-import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import timber.log.Timber;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
@@ -32,6 +40,7 @@ import ua.naiksoftware.stomp.dto.StompCommand;
 import ua.naiksoftware.stomp.dto.StompHeader;
 import ua.naiksoftware.stomp.dto.StompMessage;
 
+import static kz.evilteamgenius.chessapp.Constants.URL_MAKE_MOVE_GAME2P;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.checkInternet;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
 
@@ -42,38 +51,90 @@ public class MainActivity extends AppCompatActivity {
     public static StompClient stompClient;
     Thread thread;
     private Fragment fragment;
+    static String token;
 
-    //todo need to change this shit))
-    public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
-//        Timber.d("Send move!");
-//        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
-//        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
-//        Game2P game2P = new Game2P();
-//        if (ifOver)
-//            message.setType(MoveMessageType.OVER);
-//        Gson gson = new Gson();
-//        String json = gson.toJson(message);
-//        stompClient.send(new StompMessage(
-//                // Stomp command
-//                StompCommand.SEND,
-//                // Stomp Headers, Send Headers with STOMP
-//                // the first header is required, and the other can be customized by ourselves
-//                Arrays.asList(
-//                        new StompHeader(StompHeader.DESTINATION, Game.roomAdress),
-//                        new StompHeader("authorization", Game.myPlayerUserame)
-//                ),
-//                // Stomp payload
-//                json)
-//        ).subscribe();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        token = getToken();
         fragment = new NavigationPageFragment();
         replaceFragment(fragment);
     }
+
+    //todo need to change this shit))
+    public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
+        Timber.d("sendMove 2");
+        Game.game2P.setMade_by(Game.myPlayerUserame);
+        Game.game2P.setFrom_x(old_pos.x);
+        Game.game2P.setFrom_y(old_pos.y);
+        Game.game2P.setTo_x(new_pos.x);
+        Game.game2P.setTo_y(new_pos.y);
+        if(ifOver)
+            Game.game2P.setResult(Game.myPlayerUserame + " wins!");
+        new MakeMoveToServer().execute();
+    }
+
+    public static class MakeMoveToServer extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Timber.d("sendMove 3");
+            Game2P game2P = Game.game2P;
+            OkHttpClient okHttpClient = new OkHttpClient();
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("id", String.valueOf(game2P.getId()))
+                    .add("player1", game2P.getPlayer1())
+                    .add("player2", game2P.getPlayer2())
+                    .add("fen", game2P.getFEN() == null ? "" : game2P.getFEN())
+                    .add("result", game2P.getResult() == null ? "" : game2P.getResult())
+                    .add("from_x", String.valueOf(game2P.getFrom_x()))
+                    .add("from_y", String.valueOf(game2P.getFrom_y()))
+                    .add("to_x", String.valueOf(game2P.getTo_x()))
+                    .add("to_y", String.valueOf(game2P.getTo_y()))
+                    .add("made_by", game2P.getMade_by() == null ? "" : game2P.getMade_by())
+                    .add("type", String.valueOf(game2P.getType()))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(URL_MAKE_MOVE_GAME2P)
+                    .post(formBody)
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("Authorization", "Bearer " + token)
+                    .build();
+
+            Response response = null;
+            try {
+                response = okHttpClient.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String result = response.body().string();
+                    if (!result.isEmpty()) {
+                        JSONObject jsonObject = new JSONObject(result);
+                        Game2P receivedGame2p = new Game2P(jsonObject.getLong("id"),
+                                jsonObject.getString("play1"),
+                                jsonObject.getString("play2"),
+                                jsonObject.getString("fen"),
+                                jsonObject.getString("result"),
+                                jsonObject.getInt("from_x"),
+                                jsonObject.getInt("from_y"),
+                                jsonObject.getInt("to_x"),
+                                jsonObject.getInt("to_y"),
+                                jsonObject.getString("made_by"),
+                                jsonObject.getInt("type"));
+                        //showToast(receivedGame.toString());
+                    } else {
+                        //toast(getContext(),"Make move to server failed in Game Activity");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 
     public void replaceFragment(Fragment fragment) {
         FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
@@ -154,5 +215,11 @@ public class MainActivity extends AppCompatActivity {
         b.putString("matchID", matchID);
         fragment.setArguments(b);
         replaceFragment(fragment);
+    }
+
+
+    public String getToken() {
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("token", "");
     }
 }
