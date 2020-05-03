@@ -6,22 +6,22 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class Game implements Serializable {
+public class Game2P implements Serializable {
     @SerializedName("id")
     @Expose
     private Long id;
 
-    @SerializedName("white")
+    @SerializedName("player1")
     @Expose
-    private String white;
+    private String player1;
 
-    @SerializedName("black")
+    @SerializedName("player2")
     @Expose
-    private String black;
+    private String player2;
 
-    @SerializedName("fen")
+    @SerializedName("FEN")
     @Expose
-    private String fen;
+    private String FEN;
 
     @SerializedName("result")
     @Expose
@@ -43,21 +43,26 @@ public class Game implements Serializable {
     @Expose
     private int to_y;
 
-    @SerializedName("next_move")
+    @SerializedName("made_by")
     @Expose
-    private String next_move;
+    private String made_by;
 
-    public Game(Long id, String white, String black, String fen, String result, int from_x, int from_y, int to_x, int to_y, String next_move) {
+    @SerializedName("game_type")
+    @Expose
+    private int game_type;
+
+    public Game2P(Long id, String player1, String player2, String FEN, String result, int from_x, int from_y, int to_x, int to_y, String made_by, int game_type) {
         this.id = id;
-        this.white = white;
-        this.black = black;
-        this.fen = fen;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.FEN = FEN;
         this.result = result;
         this.from_x = from_x;
         this.from_y = from_y;
         this.to_x = to_x;
         this.to_y = to_y;
-        this.next_move = next_move;
+        this.made_by = made_by;
+        this.game_type = game_type;
     }
 
     public Long getId() {
@@ -68,28 +73,28 @@ public class Game implements Serializable {
         this.id = id;
     }
 
-    public String getWhite() {
-        return white;
+    public String getPlayer1() {
+        return player1;
     }
 
-    public void setWhite(String white) {
-        this.white = white;
+    public void setPlayer1(String player1) {
+        this.player1 = player1;
     }
 
-    public String getBlack() {
-        return black;
+    public String getPlayer2() {
+        return player2;
     }
 
-    public void setBlack(String black) {
-        this.black = black;
+    public void setPlayer2(String player2) {
+        this.player2 = player2;
     }
 
-    public String getFen() {
-        return fen;
+    public String getFEN() {
+        return FEN;
     }
 
-    public void setFen(String fen) {
-        this.fen = fen;
+    public void setFEN(String FEN) {
+        this.FEN = FEN;
     }
 
     public String getResult() {
@@ -132,27 +137,35 @@ public class Game implements Serializable {
         this.to_y = to_y;
     }
 
-    public String getNext_move() {
-        return next_move;
+    public String getMade_by() {
+        return made_by;
     }
 
-    public void setNext_move(String next_move) {
-        this.next_move = next_move;
+    public void setMade_by(String made_by) {
+        this.made_by = made_by;
+    }
+
+    public int getGame_type() {
+        return game_type;
+    }
+
+    public void setGame_type(int game_type) {
+        this.game_type = game_type;
     }
 
     @Override
     public String toString() {
         return "Game{" +
                 "id=" + id +
-                ", white='" + white + '\'' +
-                ", black='" + black + '\'' +
-                ", fen='" + fen + '\'' +
+                ", white='" + player1 + '\'' +
+                ", black='" + player2 + '\'' +
+                ", fen='" + FEN + '\'' +
                 ", result='" + result + '\'' +
                 ", from_x=" + from_x +
                 ", from_y=" + from_y +
                 ", to_x=" + to_x +
                 ", to_y=" + to_y +
-                ", next_move='" + next_move + '\'' +
+                ", next_move='" + made_by + '\'' +
                 '}';
     }
 }
