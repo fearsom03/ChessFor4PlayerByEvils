@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +27,7 @@ import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.LoginActivity;
 import kz.evilteamgenius.chessapp.activity.MainActivity;
+import kz.evilteamgenius.chessapp.service.MusicService;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -67,7 +67,7 @@ public class FragmentOptionsFragment extends Fragment {
     }
 
     private void spinnerInit() {
-        ArrayAdapter mAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.language_option));
+        ArrayAdapter mAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.language_option));
         languageSpinner.setAdapter(mAdapter);
         languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -119,7 +119,7 @@ public class FragmentOptionsFragment extends Fragment {
             refresh.putExtra("buttonId", 1);
             refresh.putExtra(something, conf.locale.getLanguage());
             startActivity(refresh);
-            Objects.requireNonNull(getActivity()).finish();
+            requireActivity().finish();
         } else {
             toast(getContext(), getString(R.string.OOPS_TryAgain));
         }
@@ -131,6 +131,9 @@ public class FragmentOptionsFragment extends Fragment {
             case R.id.exitTextView:
                 intent = new Intent(this.getContext(), LoginActivity.class);
                 startActivity(intent);
+                requireActivity()
+                        .stopService(new Intent(requireActivity()
+                                , MusicService.class));
                 SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.clear();
@@ -150,5 +153,4 @@ public class FragmentOptionsFragment extends Fragment {
                 break;
         }
     }
-
 }

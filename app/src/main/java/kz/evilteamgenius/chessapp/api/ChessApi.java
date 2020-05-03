@@ -2,7 +2,6 @@ package kz.evilteamgenius.chessapp.api;
 
 import kz.evilteamgenius.chessapp.api.responses.ResponseForRegistration;
 import kz.evilteamgenius.chessapp.models.Game;
-import kz.evilteamgenius.chessapp.models.RegisterMyUser;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;

@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.api.loaders.LoginLoader;
 import kz.evilteamgenius.chessapp.databinding.ActivityLoginBinding;
-import kz.evilteamgenius.chessapp.models.BackGroundMusic;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
 import timber.log.Timber;
 
@@ -59,7 +58,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         if (getToken() != null && !getToken().isEmpty()) {
             goToMainPage();
         }
-        startService(new Intent(LoginActivity.this, BackGroundMusic.class));
         RegisterMyUser user = new RegisterMyUser();
         user.setLogin("testkuka");
         user.setPass("12345qw");
@@ -137,7 +135,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
     }
 
     private void goToMainPage() {
-        stopService(new Intent(LoginActivity.this, BackGroundMusic.class));
         intent = new Intent(LoginActivity.this,
                 MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

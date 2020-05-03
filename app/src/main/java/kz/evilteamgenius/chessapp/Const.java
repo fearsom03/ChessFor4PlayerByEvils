@@ -7,4 +7,8 @@ public class Const {
 	public static final String makeMatchResponse = "/queue/" + placeholder;
 	public static final String makeMoveAddress = "/topic/"+placeholder;
 	public static final String makeMoveResponse = "/topic/"+placeholder;
+
+
+    public static final String PLAY_MUSIC = "PLAY";
+    public static final String PAUSE_MUSIC = "PAUSE";
 }
