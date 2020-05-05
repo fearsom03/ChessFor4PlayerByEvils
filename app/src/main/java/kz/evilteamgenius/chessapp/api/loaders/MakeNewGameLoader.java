@@ -3,22 +3,22 @@ package kz.evilteamgenius.chessapp.api.loaders;
 import kz.evilteamgenius.chessapp.api.ApiError;
 import kz.evilteamgenius.chessapp.api.ChessService;
 import kz.evilteamgenius.chessapp.api.RetrofitErrorUtil;
-import kz.evilteamgenius.chessapp.models.Game2P;
+import kz.evilteamgenius.chessapp.models.Game;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MakeNew2PGameLoader {
+public class MakeNewGameLoader {
     private GetMakeNewGameLoaderCallback getMakeNewGameLoaderCallback;
 
-    public MakeNew2PGameLoader(GetMakeNewGameLoaderCallback getMakeNewGameLoaderCallback) {
+    public MakeNewGameLoader(GetMakeNewGameLoaderCallback getMakeNewGameLoaderCallback) {
         this.getMakeNewGameLoaderCallback = getMakeNewGameLoaderCallback;
     }
 
     public void loadMakeNew2PGame(String token, int mode){
-        ChessService.getInstance().getJSONApi().makeNewGame2P("Bearer "+token, mode).enqueue(new Callback<Game2P>() {
+        ChessService.getInstance().getJSONApi().makeNewGame2P("Bearer "+token, mode).enqueue(new Callback<Game>() {
             @Override
-            public void onResponse(Call<Game2P> call, Response<Game2P> response) {
+            public void onResponse(Call<Game> call, Response<Game> response) {
                 if (response.isSuccessful()) {
                     getMakeNewGameLoaderCallback.onGetGoodsLoaded(response.body());
                 } else {
@@ -28,14 +28,14 @@ public class MakeNew2PGameLoader {
             }
 
             @Override
-            public void onFailure(Call<Game2P> call, Throwable t) {
+            public void onFailure(Call<Game> call, Throwable t) {
                 getMakeNewGameLoaderCallback.onResponseFailed(t.getMessage());
             }
         });
     }
 
     public interface GetMakeNewGameLoaderCallback {
-        void onGetGoodsLoaded(Game2P game2P);
+        void onGetGoodsLoaded(Game game);
         void onResponseFailed(String errorMessage);
     }
 }

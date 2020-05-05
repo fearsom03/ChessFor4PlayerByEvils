@@ -27,20 +27,16 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import kz.evilteamgenius.chessapp.BoardView;
 import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.activity.MainActivity;
-import kz.evilteamgenius.chessapp.api.loaders.LastMove2PLoader;
+import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
-import kz.evilteamgenius.chessapp.engine.Game;
-import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.engine.Player;
-import kz.evilteamgenius.chessapp.models.Game2P;
+import kz.evilteamgenius.chessapp.models.Game;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -72,7 +68,7 @@ public class GameFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        if (Game.match == null) {
+        if (kz.evilteamgenius.chessapp.engine.Game.match == null) {
             // ((Main) getActivity()).showStartFragment();
             return null;
         }
@@ -80,10 +76,10 @@ public class GameFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_game, container, false);
         turn = v.findViewById(R.id.turn);
         board = v.findViewById(R.id.board);
-        Game.UI = this;
+        kz.evilteamgenius.chessapp.engine.Game.UI = this;
         updateTurn();
 
-        if (!Game.match.isLocal){
+        if (!kz.evilteamgenius.chessapp.engine.Game.match.isLocal){
             callAsynchronousTask();
             infunc = false;
         }
@@ -98,7 +94,7 @@ public class GameFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (!Game.isGameOver()) Game.save(getActivity());
+        if (!kz.evilteamgenius.chessapp.engine.Game.isGameOver()) kz.evilteamgenius.chessapp.engine.Game.save(getActivity());
     }
 
 
@@ -139,7 +135,7 @@ public class GameFragment extends Fragment {
             String text = getString(R.string.gameover)
                     + "\n" + " "
                     + getString(R.string.winlocal,
-                    Game.match.mode == Game.MODE_4_PLAYER_TEAMS
+                    kz.evilteamgenius.chessapp.engine.Game.match.mode == kz.evilteamgenius.chessapp.engine.Game.MODE_4_PLAYER_TEAMS
                             ? "Team " + winnerPlayer.team :
                             winnerPlayer.name);
             turn.setText(text);
@@ -148,8 +144,8 @@ public class GameFragment extends Fragment {
 
         });
         getActivity().getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
-                .remove("match_" + Game.match.id + "_" + Game.match.mode).apply();
-        Timber.d("Deleting match_%s_%s", Game.match.id, Game.match.mode);
+                .remove("match_" + kz.evilteamgenius.chessapp.engine.Game.match.id + "_" + kz.evilteamgenius.chessapp.engine.Game.match.mode).apply();
+        Timber.d("Deleting match_%s_%s", kz.evilteamgenius.chessapp.engine.Game.match.id, kz.evilteamgenius.chessapp.engine.Game.match.mode);
     }
 
     /**
@@ -158,19 +154,19 @@ public class GameFragment extends Fragment {
     public void updateTurn() {
         Timber.d(" UI:updateTurn() turn=null?%s", (turn == null));
         if (turn == null) return;
-        if (Game.isGameOver()) {
-            gameOver(Game.getWinnerTeam() == Game.getPlayer(Game.myPlayerId).team);
+        if (kz.evilteamgenius.chessapp.engine.Game.isGameOver()) {
+            gameOver(kz.evilteamgenius.chessapp.engine.Game.getWinnerTeam() == kz.evilteamgenius.chessapp.engine.Game.getPlayer(kz.evilteamgenius.chessapp.engine.Game.myPlayerId).team);
         } else {
             StringBuilder sb = new StringBuilder();
-            String current = Game.players[Game.turns % Game.players.length].id;
+            String current = kz.evilteamgenius.chessapp.engine.Game.players[kz.evilteamgenius.chessapp.engine.Game.turns % kz.evilteamgenius.chessapp.engine.Game.players.length].id;
             Timber.d(" current player: %s", current);
-            for (Player p : Game.players) {
+            for (Player p : kz.evilteamgenius.chessapp.engine.Game.players) {
                 Timber.d(" UI:updateTurn() player " + p.id + " " + p.name + " " + p.team);
                 sb.append("<font color='")
-                        .append(String.format("#%06X", (0xFFFFFF & Game.getPlayerColor(p.id))))
+                        .append(String.format("#%06X", (0xFFFFFF & kz.evilteamgenius.chessapp.engine.Game.getPlayerColor(p.id))))
                         .append("'>");
                 if (p.id.equals(current)) sb.append("-> ");
-                if (Game.match.mode == Game.MODE_4_PLAYER_TEAMS) {
+                if (kz.evilteamgenius.chessapp.engine.Game.match.mode == kz.evilteamgenius.chessapp.engine.Game.MODE_4_PLAYER_TEAMS) {
                     sb.append(p.name).append(" [").append(p.team).append("]</font><br />");
                 } else {
                     sb.append(p.name).append("</font><br />");
@@ -192,17 +188,17 @@ public class GameFragment extends Fragment {
         infunc = true;
         String token = getToken();
 //        toast(getContext(),token);
-        LastMove2PLoader lastMoveLoader = new LastMove2PLoader(new LastMove2PLoader.LastMoveCallback() {
+        LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
             @Override
-            public void onMoveLoaded(Game2P game2P) {
-                if ( !game2P.getMade_by().equals(Game.myPlayerUserame) && !game2P.getMade_by().isEmpty()){
-                    Coordinate pos1 = new Coordinate(game2P.getFrom_x(), game2P.getFrom_y(), Board.rotations);
-                    Coordinate pos2 = new Coordinate(game2P.getTo_x(), game2P.getTo_y(), Board.rotations);
+            public void onMoveLoaded(Game game) {
+                if ( !game.getMade_by().equals(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame) && !game.getMade_by().isEmpty()){
+                    Coordinate pos1 = new Coordinate(game.getFrom_x(), game.getFrom_y(), Board.rotations);
+                    Coordinate pos2 = new Coordinate(game.getTo_x(), game.getTo_y(), Board.rotations);
 //                    System.out.println("testFunc: " + Calendar.getInstance().getTime() + " " +  pos1.toString());
                     Board.moveWhenReceived(pos1, pos2);
-                    toast(getContext(), game2P.toString());
+                    toast(getContext(), game.toString());
                     getActivity().runOnUiThread(board::invalidate);
-                    Game.game2P = game2P;
+                    kz.evilteamgenius.chessapp.engine.Game.game = game;
                 }
             }
 

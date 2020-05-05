@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class Game2P implements Serializable {
+public class Game implements Serializable {
     @SerializedName("id")
     @Expose
     private Long id;
@@ -18,6 +18,14 @@ public class Game2P implements Serializable {
     @SerializedName("player2")
     @Expose
     private String player2;
+
+    @SerializedName("player3")
+    @Expose
+    private String player3;
+
+    @SerializedName("player4")
+    @Expose
+    private String player4;
 
     @SerializedName("FEN")
     @Expose
@@ -51,10 +59,12 @@ public class Game2P implements Serializable {
     @Expose
     private int type;
 
-    public Game2P(Long id, String player1, String player2, String FEN, String result, int from_x, int from_y, int to_x, int to_y, String made_by, int type) {
+    public Game(Long id, String player1, String player2, String player3, String player4, String FEN, String result, int from_x, int from_y, int to_x, int to_y, String made_by, int type) {
         this.id = id;
         this.player1 = player1;
         this.player2 = player2;
+        this.player3 = player3;
+        this.player4 = player4;
         this.FEN = FEN;
         this.result = result;
         this.from_x = from_x;
@@ -87,6 +97,22 @@ public class Game2P implements Serializable {
 
     public void setPlayer2(String player2) {
         this.player2 = player2;
+    }
+
+    public String getPlayer3() {
+        return player3;
+    }
+
+    public void setPlayer3(String player3) {
+        this.player3 = player3;
+    }
+
+    public String getPlayer4() {
+        return player4;
+    }
+
+    public void setPlayer4(String player4) {
+        this.player4 = player4;
     }
 
     public String getFEN() {
@@ -155,10 +181,12 @@ public class Game2P implements Serializable {
 
     @Override
     public String toString() {
-        return "Game2P{" +
+        return "Game{" +
                 "id=" + id +
                 ", player1='" + player1 + '\'' +
                 ", player2='" + player2 + '\'' +
+                ", player3='" + player3 + '\'' +
+                ", player4='" + player4 + '\'' +
                 ", FEN='" + FEN + '\'' +
                 ", result='" + result + '\'' +
                 ", from_x=" + from_x +

@@ -23,8 +23,6 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,21 +30,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
-import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
-import kz.evilteamgenius.chessapp.api.loaders.LastMove2PLoader;
-import kz.evilteamgenius.chessapp.api.loaders.MakeNew2PGameLoader;
+import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
+import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
 import kz.evilteamgenius.chessapp.database.asyncTasksDB.AddGameAsyncTask;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
-import kz.evilteamgenius.chessapp.engine.Game;
 import kz.evilteamgenius.chessapp.engine.Match;
-import kz.evilteamgenius.chessapp.models.Game2P;
+import kz.evilteamgenius.chessapp.models.Game;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
 import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.replaceFragment;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
+
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 public class NavigationPageFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -80,7 +77,6 @@ public class NavigationPageFragment extends Fragment {
     };
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,7 +108,7 @@ public class NavigationPageFragment extends Fragment {
                     if (local.isChecked()) {
                         Match match = new Match(String.valueOf(System.currentTimeMillis()),
                                 LAST_SELECTED_MATCH_MODE, true);
-                        Game.newGame(match, null, null, null);
+                        kz.evilteamgenius.chessapp.engine.Game.newGame(match, null, null, null);
                         startGame(match.id);
                     } else {
                         if (!IF_CONNECTED_TO_INTERNET) {
@@ -181,11 +177,11 @@ public class NavigationPageFragment extends Fragment {
     }
 
     private void makeNewGame() {
-        MakeNew2PGameLoader loader = new MakeNew2PGameLoader(new MakeNew2PGameLoader.GetMakeNewGameLoaderCallback() {
+        MakeNewGameLoader loader = new MakeNewGameLoader(new MakeNewGameLoader.GetMakeNewGameLoaderCallback() {
             @Override
-            public void onGetGoodsLoaded(Game2P game2P) {
-                toast( getContext(),game2P.toString());
-                if(!checkIfMatched(game2P))
+            public void onGetGoodsLoaded(Game game) {
+                toast(getContext(), game.toString());
+                if (!checkIfMatched(game))
                     callAsynchronousTask();
 
             }
@@ -200,20 +196,36 @@ public class NavigationPageFragment extends Fragment {
         loader.loadMakeNew2PGame(getToken(), LAST_SELECTED_MATCH_MODE);
     }
 
-    private boolean checkIfMatched(Game2P game2P){
-        if(!game2P.getPlayer1().isEmpty() && !game2P.getPlayer2().isEmpty()){
-            timer.cancel();  // Terminates this timer, discarding any currently scheduled tasks.
-            timer.purge();   // Removes all cancelled tasks from this timer's task queue.
-            Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                    LAST_SELECTED_MATCH_MODE, false);
-            String[] players = {game2P.getPlayer1(), game2P.getPlayer2()};
-            Game.game2P = game2P;
-            //TODO: remove room id
-            Game.newGame(match, players, getUsername(getContext()), "matchMakingMessageReceived.getRoom_id()");
-            startGame(match.id);
-            return true;
+    private boolean checkIfMatched(Game game) {
+        if (LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE == 2) {
+            if (!game.getPlayer1().isEmpty() && !game.getPlayer2().isEmpty()) {
+                timer.cancel();  // Terminates this timer, discarding any currently scheduled tasks.
+                timer.purge();   // Removes all cancelled tasks from this timer's task queue.
+                Match match = new Match(String.valueOf(System.currentTimeMillis()),
+                        LAST_SELECTED_MATCH_MODE, false);
+                String[] players = {game.getPlayer1(), game.getPlayer2()};
+                kz.evilteamgenius.chessapp.engine.Game.game = game;
+                //TODO: remove room id
+                kz.evilteamgenius.chessapp.engine.Game.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
+                startGame(match.id);
+                return true;
+            }
+            return false;
+        } else {
+            if (!game.getPlayer1().isEmpty() && !game.getPlayer2().isEmpty() && !game.getPlayer3().isEmpty() && !game.getPlayer4().isEmpty()) {
+                timer.cancel();
+                timer.purge();
+                Match match = new Match(String.valueOf(System.currentTimeMillis()),
+                        LAST_SELECTED_MATCH_MODE, false);
+                String[] players = {game.getPlayer1(), game.getPlayer2(), game.getPlayer3(), game.getPlayer4()};
+                kz.evilteamgenius.chessapp.engine.Game.game = game;
+                //TODO: remove room id
+                kz.evilteamgenius.chessapp.engine.Game.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
+                startGame(match.id);
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     private void callAsynchronousTask() {
@@ -229,11 +241,11 @@ public class NavigationPageFragment extends Fragment {
     private void getLastMove() {
         String token = getToken();
 //        toast(getContext(),token);
-        LastMove2PLoader lastMoveLoader = new LastMove2PLoader(new LastMove2PLoader.LastMoveCallback() {
+        LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
             @Override
-            public void onMoveLoaded(Game2P game2P) {
-                checkIfMatched(game2P);
-                toast(getContext(),game2P.toString());
+            public void onMoveLoaded(Game game) {
+                checkIfMatched(game);
+                toast(getContext(), game.toString());
             }
 
             @Override
@@ -253,8 +265,8 @@ public class NavigationPageFragment extends Fragment {
         replaceFragment(this, fragment);
     }
 
-    private String getToken(){
+    private String getToken() {
         SharedPreferences preferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token","");
+        return preferences.getString("token", "");
     }
 }

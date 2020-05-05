@@ -20,11 +20,10 @@ import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.StompUtils;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
-import kz.evilteamgenius.chessapp.engine.Game;
 import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
 import kz.evilteamgenius.chessapp.fragments.NavigationPageFragment;
-import kz.evilteamgenius.chessapp.models.Game2P;
+import kz.evilteamgenius.chessapp.models.Game;
 import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
 import kz.evilteamgenius.chessapp.models.MoveMessage;
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
@@ -40,9 +39,10 @@ import ua.naiksoftware.stomp.dto.StompCommand;
 import ua.naiksoftware.stomp.dto.StompHeader;
 import ua.naiksoftware.stomp.dto.StompMessage;
 
-import static kz.evilteamgenius.chessapp.Constants.URL_MAKE_MOVE_GAME2P;
+import static kz.evilteamgenius.chessapp.Constants.URL_MAKE_MOVE;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.checkInternet;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
+import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 
@@ -68,13 +68,13 @@ public class MainActivity extends AppCompatActivity {
         Timber.d("sendMove 2");
         old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
         new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
-        Game.game2P.setMade_by(Game.myPlayerUserame);
-        Game.game2P.setFrom_x(old_pos.x);
-        Game.game2P.setFrom_y(old_pos.y);
-        Game.game2P.setTo_x(new_pos.x);
-        Game.game2P.setTo_y(new_pos.y);
-        if(ifOver)
-            Game.game2P.setResult(Game.myPlayerUserame + " wins!");
+        kz.evilteamgenius.chessapp.engine.Game.game.setMade_by(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame);
+        kz.evilteamgenius.chessapp.engine.Game.game.setFrom_x(old_pos.x);
+        kz.evilteamgenius.chessapp.engine.Game.game.setFrom_y(old_pos.y);
+        kz.evilteamgenius.chessapp.engine.Game.game.setTo_x(new_pos.x);
+        kz.evilteamgenius.chessapp.engine.Game.game.setTo_y(new_pos.y);
+        if (ifOver)
+            kz.evilteamgenius.chessapp.engine.Game.game.setResult(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame + " wins!");
         new MakeMoveToServer().execute();
     }
 
@@ -83,25 +83,27 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             Timber.d("sendMove 3");
-            Game2P game2P = Game.game2P;
+            Game game = kz.evilteamgenius.chessapp.engine.Game.game;
             OkHttpClient okHttpClient = new OkHttpClient();
 
             RequestBody formBody = new FormBody.Builder()
-                    .add("id", String.valueOf(game2P.getId()))
-                    .add("player1", game2P.getPlayer1())
-                    .add("player2", game2P.getPlayer2())
-                    .add("fen", game2P.getFEN() == null ? "" : game2P.getFEN())
-                    .add("result", game2P.getResult() == null ? "" : game2P.getResult())
-                    .add("from_x", String.valueOf(game2P.getFrom_x()))
-                    .add("from_y", String.valueOf(game2P.getFrom_y()))
-                    .add("to_x", String.valueOf(game2P.getTo_x()))
-                    .add("to_y", String.valueOf(game2P.getTo_y()))
-                    .add("made_by", game2P.getMade_by() == null ? "" : game2P.getMade_by())
-                    .add("type", String.valueOf(game2P.getType()))
+                    .add("id", String.valueOf(game.getId()))
+                    .add("player1", game.getPlayer1())
+                    .add("player2", game.getPlayer2())
+                    .add("player3", game.getPlayer1())
+                    .add("player4", game.getPlayer2())
+                    .add("FEN", game.getFEN() == null ? "" : game.getFEN())
+                    .add("result", game.getResult() == null ? "" : game.getResult())
+                    .add("from_x", String.valueOf(game.getFrom_x()))
+                    .add("from_y", String.valueOf(game.getFrom_y()))
+                    .add("to_x", String.valueOf(game.getTo_x()))
+                    .add("to_y", String.valueOf(game.getTo_y()))
+                    .add("made_by", game.getMade_by() == null ? "" : game.getMade_by())
+                    .add("type", String.valueOf(game.getType()))
                     .build();
 
             Request request = new Request.Builder()
-                    .url(URL_MAKE_MOVE_GAME2P)
+                    .url(URL_MAKE_MOVE)
                     .post(formBody)
                     .addHeader("cache-control", "no-cache")
                     .addHeader("Authorization", "Bearer " + token)
@@ -114,10 +116,12 @@ public class MainActivity extends AppCompatActivity {
                     String result = response.body().string();
                     if (!result.isEmpty()) {
                         JSONObject jsonObject = new JSONObject(result);
-                        Game2P receivedGame2p = new Game2P(jsonObject.getLong("id"),
+                        Game receivedGame = new Game(jsonObject.getLong("id"),
                                 jsonObject.getString("play1"),
                                 jsonObject.getString("play2"),
-                                jsonObject.getString("fen"),
+                                jsonObject.getString("play3"),
+                                jsonObject.getString("play4"),
+                                jsonObject.getString("FEN"),
                                 jsonObject.getString("result"),
                                 jsonObject.getInt("from_x"),
                                 jsonObject.getInt("from_y"),
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                                 jsonObject.getInt("type"));
                         //showToast(receivedGame.toString());
                     } else {
-                        //toast(getContext(),"Make move to server failed in Game Activity");
+//                        toast(this,"Make move to server failed in Game Activity");
                     }
                 }
             } catch (Exception e) {
@@ -179,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             if (matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED) {
                 Match match = new Match(String.valueOf(System.currentTimeMillis()),
                         LAST_SELECTED_MATCH_MODE, false);
-                Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
+                kz.evilteamgenius.chessapp.engine.Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
                 startGame(match.id);
             }
         }, throwable -> {
@@ -191,9 +195,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getMove(BoardView board) {
-        stompClient.topic(Game.roomAdress).subscribe(stompMessage -> {
+        stompClient.topic(kz.evilteamgenius.chessapp.engine.Game.roomAdress).subscribe(stompMessage -> {
             MoveMessage message = new Gson().fromJson(stompMessage.getPayload(), MoveMessage.class);
-            if (message.getPlayerID().equals(Game.myPlayerUserame))
+            if (message.getPlayerID().equals(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame))
                 return;
             Timber.d("Received: *****\n %s ***** \n", message.toString());
             Coordinate pos1 = new Coordinate(message.getFrom_x(), message.getFrom_y(), Board.rotations);
@@ -218,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
         fragment.setArguments(b);
         replaceFragment(fragment);
     }
-
 
     public String getToken() {
         SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);

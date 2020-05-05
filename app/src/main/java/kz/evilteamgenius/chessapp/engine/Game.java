@@ -9,7 +9,6 @@ import java.util.List;
 import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
-import kz.evilteamgenius.chessapp.models.Game2P;
 import timber.log.Timber;
 
 /*
@@ -46,7 +45,7 @@ public class Game {
     public static Player[] players;
     public static int turns;
 
-    public static Game2P game2P;
+    public static kz.evilteamgenius.chessapp.models.Game game;
     public static String roomAdress;
     private static List<String> deadPlayers;
 
