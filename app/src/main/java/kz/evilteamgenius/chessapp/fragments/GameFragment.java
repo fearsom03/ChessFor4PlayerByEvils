@@ -207,7 +207,7 @@ public class GameFragment extends Fragment {
                 toast(getContext(), errorMessage);
             }
         });
-        lastMoveLoader.getLastMove(token);
+        lastMoveLoader.getLastMove(token, kz.evilteamgenius.chessapp.engine.Game.game.getId());
         infunc = false;
     }
 

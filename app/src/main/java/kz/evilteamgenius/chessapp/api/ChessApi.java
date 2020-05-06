@@ -18,16 +18,15 @@ public interface ChessApi {
 
         @Headers({ "Content-Type: application/json;charset=UTF-8"})
         @GET("game/new/{type}")
-        Call<Game> makeNewGame2P(@Header("Authorization") String authHeader, @Path("type") int type);
+        Call<Game> makeNewGame2P(@Header("Authorization") String authHeader,
+                                 @Path("type") int type);
 
         @POST("auth/token")
         Call<String> loginUser(@Body RequestBody body);
 
-        @GET("game/get/move")
-//        @Headers({
-//                "cache-control: application/vnd.yourapi.v1.full+json",
-//                "Authorization: Bearer"
-//        })
-        Call<Game> getLastMove2P(@Header("cache-control") String header, @Header("Authorization") String Authorization);
+        @GET("game/get/move/{id}")
+        Call<Game> getLastMove(@Header("cache-control") String header,
+                               @Header("Authorization") String Authorization,
+                               @Path("id") long id);
 
 }

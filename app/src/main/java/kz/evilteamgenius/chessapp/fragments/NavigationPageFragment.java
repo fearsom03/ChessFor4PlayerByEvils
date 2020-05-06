@@ -180,10 +180,10 @@ public class NavigationPageFragment extends Fragment {
         MakeNewGameLoader loader = new MakeNewGameLoader(new MakeNewGameLoader.GetMakeNewGameLoaderCallback() {
             @Override
             public void onGetGoodsLoaded(Game game) {
+                kz.evilteamgenius.chessapp.engine.Game.game = game;
                 toast(getContext(), game.toString());
                 if (!checkIfMatched(game))
                     callAsynchronousTask();
-
             }
 
             @Override
@@ -253,7 +253,7 @@ public class NavigationPageFragment extends Fragment {
                 toast(getContext(), errorMessage);
             }
         });
-        lastMoveLoader.getLastMove(token);
+        lastMoveLoader.getLastMove(token, kz.evilteamgenius.chessapp.engine.Game.game.getId());
     }
 
     private void startGame(final String matchID) {
