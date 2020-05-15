@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Locale;
 
@@ -46,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
     @BindView(R.id.spLanguage)
     Spinner spinner;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     private Locale myLocale;
     private String currentLanguage = "def", something, getlanguageStat;
     private Intent intent;
@@ -53,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_login);
         ActivityLoginBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         if (getToken() != null && !getToken().isEmpty()) {
@@ -164,11 +167,12 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
     }
 
     @Override
-    public void onGetGoodsLoaded(String responseForRegistration, String username) {
+    public void onUserLoaded(String responseForRegistration, String username) {
         if (!responseForRegistration.isEmpty()) {
             SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
             preferences.edit().putString("token", responseForRegistration).apply();
             preferences.edit().putString("username", username).apply();
+            mFirebaseAnalytics.setUserId(username);
             goToMainPage();
             finish();
         }

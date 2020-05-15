@@ -28,7 +28,7 @@ public class LoginLoader {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if (response.isSuccessful()) {
-                            loginCallback.onGetGoodsLoaded(response.body(), name);
+                            loginCallback.onUserLoaded(response.body(), name);
                         } else {
                             ApiError apiError = RetrofitErrorUtil.parseError(response);
                             loginCallback.onResponseFailed(apiError.getMessage());
@@ -43,7 +43,7 @@ public class LoginLoader {
     }
 
     public interface LoginCallback {
-        void onGetGoodsLoaded(String responseForRegistration, String username);
+        void onUserLoaded(String responseForRegistration, String username);
 
         void onResponseFailed(String errorMessage);
     }

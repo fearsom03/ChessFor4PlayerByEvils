@@ -2,6 +2,7 @@ package kz.evilteamgenius.chessapp.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.os.Binder;
@@ -10,10 +11,10 @@ import android.widget.MediaController;
 
 import java.util.ArrayList;
 
+import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import timber.log.Timber;
 
-//---------------------------------------------------------------------------------------
 public class MusicService extends Service
         implements
         OnErrorListener,
@@ -21,21 +22,30 @@ public class MusicService extends Service
         MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnCompletionListener {
 
-    private final IBinder mBinder = new ServiceBinder();
-    private MediaPlayer mPlayer;
-    private int mBuffer = 0;
+    private final IBinder serviceBinder = new ServiceBinder();
+    private MediaPlayer mediaPlayer;
+    private int pausedSecond = 0;
     private int currentPosition = 0;
     private ArrayList sourceArray = new ArrayList<Integer>();
+    private boolean isPlay;
+    private SharedPreferences preferences;
 
     @Override
     public IBinder onBind(Intent context) {
-        return mBinder;
+        return serviceBinder;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
         create();
+        isPlay = preferences.getBoolean(Const.PLAY_MUSIC, true);
+        if (!isPlay) {
+            pause();
+        } else {
+            start();
+        }
     }
 
     @Override
@@ -46,33 +56,33 @@ public class MusicService extends Service
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mPlayer != null) {
+        if (mediaPlayer != null) {
             try {
-                mPlayer.stop();
-                mPlayer.release();
+                mediaPlayer.stop();
+                mediaPlayer.release();
             } finally {
-                mPlayer = null;
+                mediaPlayer = null;
             }
         }
     }
 
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Timber.e("Music player failed");
-        if (mPlayer != null) {
+        if (mediaPlayer != null) {
             try {
-                mPlayer.stop();
-                mPlayer.release();
+                mediaPlayer.stop();
+                mediaPlayer.release();
             } finally {
-                mPlayer = null;
+                mediaPlayer = null;
             }
         }
         return false;
     }
 
     public void create() {
-        mPlayer = MediaPlayer.create(this, R.raw.kobyz1);
-        mPlayer.setOnErrorListener(this);
-        mPlayer.setOnCompletionListener(this);
+        mediaPlayer = MediaPlayer.create(this, R.raw.kobyz1);
+        mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnCompletionListener(this);
         sourceArray.add(R.raw.kobyz1);
         sourceArray.add(R.raw.sybyzgy);
         sourceArray.add(R.raw.kobyz2);
@@ -83,18 +93,18 @@ public class MusicService extends Service
     public void onCompletion(MediaPlayer mp) {
         currentPosition++;
         if (currentPosition < sourceArray.size()) {
-            mPlayer.reset();
+            mediaPlayer.reset();
             int resId = (int) sourceArray.get(currentPosition);
-            mPlayer = MediaPlayer.create(this, resId);
-            mPlayer.setOnCompletionListener(this);
-            mPlayer.start();
+            mediaPlayer = MediaPlayer.create(this, resId);
+            mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.start();
         } else {
             currentPosition = 0;
-            mPlayer.reset();
+            mediaPlayer.reset();
             int resId = (int) sourceArray.get(currentPosition);
-            mPlayer = MediaPlayer.create(this, resId);
-            mPlayer.setOnCompletionListener(this);
-            mPlayer.start();
+            mediaPlayer = MediaPlayer.create(this, resId);
+            mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.start();
         }
     }
 
@@ -120,46 +130,52 @@ public class MusicService extends Service
 
     @Override
     public int getBufferPercentage() {
-        return mBuffer;
+        return pausedSecond;
     }
 
     @Override
     public int getCurrentPosition() {
-        return mPlayer.getCurrentPosition();
+        return mediaPlayer.getCurrentPosition();
     }
 
     @Override
     public int getDuration() {
-        return mPlayer.getDuration();
+        return mediaPlayer.getDuration();
     }
 
     @Override
     public boolean isPlaying() {
-        return mPlayer.isPlaying();
+        return mediaPlayer.isPlaying();
     }
 
     @Override
     public void pause() {
-        if (mPlayer != null && isPlaying()) {
-            mPlayer.pause();
+        if (mediaPlayer != null && isPlaying()) {
+            mediaPlayer.pause();
         }
     }
 
     @Override
     public void seekTo(int pos) {
-        mPlayer.seekTo(pos);
+        mediaPlayer.seekTo(pos);
     }
 
     @Override
     public void start() {
-        if (mPlayer == null) create();
-        Thread th = new Thread(() -> mPlayer.start());
-        th.start();
+        isPlay = preferences.getBoolean(Const.PLAY_MUSIC, true);
+        if (isPlay) {
+            if (mediaPlayer == null) {
+                create();
+            }
+            Thread th = new Thread(() -> mediaPlayer.start());
+            th.start();
+        }
+
     }
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        mBuffer = percent;
+        pausedSecond = percent;
     }
 
     // Called by the interface ServiceConnected when calling the service

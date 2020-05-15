@@ -1,21 +1,26 @@
 package kz.evilteamgenius.chessapp.fragments;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 
@@ -24,17 +29,19 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.LoginActivity;
 import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.service.MusicService;
+import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getBackFragment;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
-public class FragmentOptionsFragment extends Fragment {
+public class FragmentOptionsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, ServiceConnection {
 
     @BindView(R.id.languageSpinner)
     Spinner languageSpinner;
@@ -52,6 +59,9 @@ public class FragmentOptionsFragment extends Fragment {
     private Locale myLocale;
     private String something, getlanguageStat;
     private Intent intent;
+    private SharedPreferences preferences;
+    private MusicService mServ;
+    private GameViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +73,19 @@ public class FragmentOptionsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+
+        preferences
+                = requireActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
         spinnerInit();
+        initToggle();
+    }
+
+    private void initToggle() {
+        boolean forMusic = preferences.getBoolean(Const.PLAY_MUSIC, true);
+        soundSwitch.setChecked(forMusic);
+        soundSwitch.setOnCheckedChangeListener(this);
+        notificationSwitch.setOnCheckedChangeListener(this);
     }
 
     private void spinnerInit() {
@@ -134,7 +156,6 @@ public class FragmentOptionsFragment extends Fragment {
                 requireActivity()
                         .stopService(new Intent(requireActivity()
                                 , MusicService.class));
-                SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.clear();
                 editor.apply();
@@ -152,5 +173,33 @@ public class FragmentOptionsFragment extends Fragment {
                 getBackFragment(this, new NavigationPageFragment());
                 break;
         }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        SharedPreferences.Editor editor = preferences.edit();
+        switch (buttonView.getId()) {
+            case R.id.notificationSwitch:
+                editor.putBoolean(Const.NOTIFICATION, isChecked);
+                editor.apply();
+                editor.commit();
+                break;
+            case R.id.soundSwitch:
+                editor.putBoolean(Const.PLAY_MUSIC, isChecked);
+                editor.apply();
+                editor.commit();
+                viewModel.setMusic(isChecked);
+                break;
+        }
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        mServ = ((MusicService.ServiceBinder) service).getService();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        mServ = null;
     }
 }

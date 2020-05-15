@@ -10,6 +10,7 @@ import android.os.IBinder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.gson.Gson;
 
@@ -30,6 +31,7 @@ import kz.evilteamgenius.chessapp.models.MoveMessage;
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
 import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
 import kz.evilteamgenius.chessapp.service.MusicService;
+import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
 import timber.log.Timber;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
@@ -46,14 +48,13 @@ import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.startMusicA
 public class MainActivity extends AppCompatActivity implements ServiceConnection {
 
     public static StompClient stompClient;
-    Thread thread;
     private Fragment fragment;
     // indicates whether the activity is linked to service player.
     private boolean mIsBound = false;
     private MusicService mServ;
+    private GameViewModel viewModel;
 
 
-    //todo need to change this shit))
     public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
         Timber.d("Send move!");
         old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
@@ -81,9 +82,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        viewModel = new ViewModelProvider(this).get(GameViewModel.class);
         //music staff
         startMusicAction(this);
         doBindService();
+        viewModel.getMusicValue().observe(this, aBoolean -> {
+            if (aBoolean) {
+                startMusic();
+            } else {
+                stopMusic();
+            }
+        });
         //end music staff
         fragment = new NavigationPageFragment();
         replaceFragment(fragment);
@@ -204,16 +213,24 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onStop() {
         super.onStop();
-        if (mServ != null) {
-            mServ.pause();
-        }
+        stopMusic();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        startMusic();
+    }
+
+    public void startMusic() {
         if (mServ != null) {
             mServ.start();
+        }
+    }
+
+    public void stopMusic() {
+        if (mServ != null) {
+            mServ.pause();
         }
     }
 }

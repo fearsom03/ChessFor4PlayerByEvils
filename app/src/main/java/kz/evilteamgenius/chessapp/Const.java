@@ -9,6 +9,6 @@ public class Const {
 	public static final String makeMoveResponse = "/topic/"+placeholder;
 
 
-    public static final String PLAY_MUSIC = "PLAY";
-    public static final String PAUSE_MUSIC = "PAUSE";
+    public static final String NOTIFICATION = "NOTIFICATION";
+    public static final String PLAY_MUSIC = "MUSIC";
 }
