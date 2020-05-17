@@ -1,11 +1,11 @@
 package kz.evilteamgenius.chessapp.activity;
 
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 
@@ -26,6 +26,7 @@ import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.StompUtils;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
+import kz.evilteamgenius.chessapp.engine.GameEngine;
 import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
 import kz.evilteamgenius.chessapp.fragments.NavigationPageFragment;
@@ -33,14 +34,13 @@ import kz.evilteamgenius.chessapp.models.Game;
 import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
 import kz.evilteamgenius.chessapp.models.MoveMessage;
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
+import kz.evilteamgenius.chessapp.service.MusicService;
+import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
-import kz.evilteamgenius.chessapp.service.MusicService;
-import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
 import timber.log.Timber;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
@@ -51,7 +51,6 @@ import ua.naiksoftware.stomp.dto.StompMessage;
 import static kz.evilteamgenius.chessapp.Constants.URL_MAKE_MOVE;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.checkInternet;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
-import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.startMusicAction;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
@@ -65,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private boolean mIsBound = false;
     private MusicService mServ;
     private GameViewModel viewModel;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,19 +86,110 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         replaceFragment(fragment);
     }
 
-
     public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
         Timber.d("sendMove 2");
         old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
         new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
-        kz.evilteamgenius.chessapp.engine.Game.game.setMade_by(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame);
-        kz.evilteamgenius.chessapp.engine.Game.game.setFrom_x(old_pos.x);
-        kz.evilteamgenius.chessapp.engine.Game.game.setFrom_y(old_pos.y);
-        kz.evilteamgenius.chessapp.engine.Game.game.setTo_x(new_pos.x);
-        kz.evilteamgenius.chessapp.engine.Game.game.setTo_y(new_pos.y);
+        GameEngine.game.setMade_by(GameEngine.myPlayerUserame);
+        GameEngine.game.setFrom_x(old_pos.x);
+        GameEngine.game.setFrom_y(old_pos.y);
+        GameEngine.game.setTo_x(new_pos.x);
+        GameEngine.game.setTo_y(new_pos.y);
         if (ifOver)
-            kz.evilteamgenius.chessapp.engine.Game.game.setResult(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame + " wins!");
+            GameEngine.game.setResult(GameEngine.myPlayerUserame + " wins!");
         new MakeMoveToServer().execute();
+    }
+
+    public void connectAndMakeMatch(int LAST_SELECTED_MATCH_MODE) {
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Const.address);
+        StompUtils.lifecycle(stompClient);
+        Timber.d("Start connecting to server");
+        // Connect to WebSocket server
+        stompClient.connect();
+        int numberOfPlayers = LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE == 2 ? 2 : 4;
+        MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT, LAST_SELECTED_MATCH_MODE, null, null);
+        Gson gson = new Gson();
+        String json = gson.toJson(matchMakingMessageToSend);
+        if (!checkInternet(this)) {
+            Timber.e("INTERNET CONNECTION LOST");
+        }
+        stompClient.send(new StompMessage(
+                // Stomp command
+                StompCommand.SEND,
+                // Stomp Headers, Send Headers with STOMP
+                // the first header is required, and the other can be customized by ourselves
+                Arrays.asList(
+                        new StompHeader(StompHeader.DESTINATION, Const.makeMatchAddress),
+                        new StompHeader("authorization", getUsername(this))
+                ),
+                // Stomp payload
+                json)
+        ).subscribe();
+//
+        String dest = Const.makeMatchResponse.replace(Const.placeholder, getUsername(this));
+        stompClient.topic(dest).subscribe(stompMessage -> {
+            MatchMakingMessage matchMakingMessageReceived = new Gson().fromJson(stompMessage.getPayload(), MatchMakingMessage.class);
+            //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
+            Timber.d("Received: *****\n %s *****\n", matchMakingMessageReceived.toString());
+            if (matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED) {
+                Match match = new Match(String.valueOf(System.currentTimeMillis()),
+                        LAST_SELECTED_MATCH_MODE, false);
+                GameEngine.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
+                startGame(match.id);
+            }
+        }, throwable -> {
+            Timber.e("Throwable %s", throwable.getMessage());
+            if (!checkInternet(this)) {
+                Timber.e("ITS INTERNET CONNECTION kuka ");
+            }
+        });
+    }
+
+    public void getMove(BoardView board) {
+        stompClient.topic(GameEngine.roomAdress).subscribe(stompMessage -> {
+            MoveMessage message = new Gson().fromJson(stompMessage.getPayload(), MoveMessage.class);
+            if (message.getPlayerID().equals(GameEngine.myPlayerUserame))
+                return;
+            Timber.d("Received: *****\n %s ***** \n", message.toString());
+            Coordinate pos1 = new Coordinate(message.getFrom_x(), message.getFrom_y(), Board.rotations);
+            Coordinate pos2 = new Coordinate(message.getTo_x(), message.getTo_y(), Board.rotations);
+            Board.moveWhenReceived(pos1, pos2);
+            // Stuff that updates the UI
+            this.runOnUiThread(board::invalidate);
+        }, throwable -> {
+            Timber.e("Throwable %s", throwable.getMessage());
+            if (!checkInternet(this)) {
+                Timber.e("Kuka its internet connection");
+            }
+        });
+    }
+
+    public void replaceFragment(Fragment fragment) {
+        FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+        tr.replace(R.id.frame, fragment);
+        tr.commitNow();
+    }
+
+
+    public void startGame(final String matchID) {
+        Timber.d("startGame");
+        fragment = new GameFragment();
+        Bundle b = new Bundle();
+        b.putString("matchID", matchID);
+        fragment.setArguments(b);
+        replaceFragment(fragment);
+    }
+
+    public String getToken() {
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("token", "");
+    }
+
+    //start music methods
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        doUnbindService();
     }
 
     public static class MakeMoveToServer extends AsyncTask<String, Void, String> {
@@ -109,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         @Override
         protected String doInBackground(String... strings) {
             Timber.d("sendMove 3");
-            Game game = kz.evilteamgenius.chessapp.engine.Game.game;
+            Game game = GameEngine.game;
             OkHttpClient okHttpClient = new OkHttpClient();
 
             RequestBody formBody = new FormBody.Builder()
@@ -167,98 +255,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
-    public void replaceFragment(Fragment fragment) {
-        FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
-        tr.replace(R.id.frame, fragment);
-        tr.commitNow();
-    }
-
-
-    public void connectAndMakeMatch(int LAST_SELECTED_MATCH_MODE) {
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Const.address);
-        StompUtils.lifecycle(stompClient);
-        Timber.d("Start connecting to server");
-        // Connect to WebSocket server
-        stompClient.connect();
-        int numberOfPlayers = LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE == 2 ? 2 : 4;
-        MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT, LAST_SELECTED_MATCH_MODE, null, null);
-        Gson gson = new Gson();
-        String json = gson.toJson(matchMakingMessageToSend);
-        if (!checkInternet(this)) {
-            Timber.e("INTERNET CONNECTION LOST");
-        }
-        stompClient.send(new StompMessage(
-                // Stomp command
-                StompCommand.SEND,
-                // Stomp Headers, Send Headers with STOMP
-                // the first header is required, and the other can be customized by ourselves
-                Arrays.asList(
-                        new StompHeader(StompHeader.DESTINATION, Const.makeMatchAddress),
-                        new StompHeader("authorization", getUsername(this))
-                ),
-                // Stomp payload
-                json)
-        ).subscribe();
-//
-        String dest = Const.makeMatchResponse.replace(Const.placeholder, getUsername(this));
-        stompClient.topic(dest).subscribe(stompMessage -> {
-            MatchMakingMessage matchMakingMessageReceived = new Gson().fromJson(stompMessage.getPayload(), MatchMakingMessage.class);
-            //JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
-            Timber.d("Received: *****\n %s *****\n", matchMakingMessageReceived.toString());
-            if (matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED) {
-                Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                        LAST_SELECTED_MATCH_MODE, false);
-                kz.evilteamgenius.chessapp.engine.Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
-                startGame(match.id);
-            }
-        }, throwable -> {
-            Timber.e("Throwable %s", throwable.getMessage());
-            if (!checkInternet(this)) {
-                Timber.e("ITS INTERNET CONNECTION kuka ");
-            }
-        });
-    }
-
-    public void getMove(BoardView board) {
-        stompClient.topic(kz.evilteamgenius.chessapp.engine.Game.roomAdress).subscribe(stompMessage -> {
-            MoveMessage message = new Gson().fromJson(stompMessage.getPayload(), MoveMessage.class);
-            if (message.getPlayerID().equals(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame))
-                return;
-            Timber.d("Received: *****\n %s ***** \n", message.toString());
-            Coordinate pos1 = new Coordinate(message.getFrom_x(), message.getFrom_y(), Board.rotations);
-            Coordinate pos2 = new Coordinate(message.getTo_x(), message.getTo_y(), Board.rotations);
-            Board.moveWhenReceived(pos1, pos2);
-            // Stuff that updates the UI
-            this.runOnUiThread(board::invalidate);
-        }, throwable -> {
-            Timber.e("Throwable %s", throwable.getMessage());
-            if (!checkInternet(this)) {
-                Timber.e("Kuka its internet connection");
-            }
-        });
-    }
-
-
-    public void startGame(final String matchID) {
-        Timber.d("startGame");
-        fragment = new GameFragment();
-        Bundle b = new Bundle();
-        b.putString("matchID", matchID);
-        fragment.setArguments(b);
-        replaceFragment(fragment);
-    }
-
-    public String getToken() {
-        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", "");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        doUnbindService();
-    }
-
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         mServ = ((MusicService.ServiceBinder) service).getService();
@@ -308,4 +304,5 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             mServ.pause();
         }
     }
+    //end music methods
 }

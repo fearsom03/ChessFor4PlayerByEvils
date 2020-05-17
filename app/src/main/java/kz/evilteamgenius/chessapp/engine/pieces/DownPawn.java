@@ -20,7 +20,7 @@ import java.util.List;
 
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
-import kz.evilteamgenius.chessapp.engine.Game;
+import kz.evilteamgenius.chessapp.engine.GameEngine;
 
 /**
  * Just like a "normal" pawn, but can only move from top to down
@@ -42,7 +42,7 @@ public class DownPawn extends Piece {
         }
         // can move two squares at the beginning
         // (only if no other piece stands 1 before us)
-        if (((Game.match.mode == Game.MODE_2_PLAYER_2_SIDES && y == 6) || (y == 10)) &&
+        if (((GameEngine.match.mode == GameEngine.MODE_2_PLAYER_2_SIDES && y == 6) || (y == 10)) &&
                 Board.getPiece(c) == null) {
             c = new Coordinate(x, y - 2);
             if (c.isValid() && Board.getPiece(c) == null) {

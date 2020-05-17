@@ -26,7 +26,7 @@ import timber.log.Timber;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class Game {
+public class GameEngine {
 
     private final static int PROTOCOL_VERSION = 1;
 

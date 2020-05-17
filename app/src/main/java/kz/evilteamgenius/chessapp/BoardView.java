@@ -11,7 +11,7 @@ import android.view.View;
 
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
-import kz.evilteamgenius.chessapp.engine.Game;
+import kz.evilteamgenius.chessapp.engine.GameEngine;
 import kz.evilteamgenius.chessapp.engine.Player;
 import kz.evilteamgenius.chessapp.engine.pieces.Piece;
 import timber.log.Timber;
@@ -44,7 +44,7 @@ public class BoardView extends View {
 
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
-        if ((Game.myTurn() || Game.match.isLocal) && !Game.isGameOver()) {
+        if ((GameEngine.myTurn() || GameEngine.match.isLocal) && !GameEngine.isGameOver()) {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 int max = Board.extendedBoard ? 12 : 8;
                 int x = (int) (event.getX() / getWidth() * max);
@@ -52,7 +52,7 @@ public class BoardView extends View {
                 Timber.d("selection: %s  %s ", x, y);
                 Coordinate c = new Coordinate(x, y);
                 if (c.isValid() && Board.getPiece(c) != null &&
-                        Board.getPiece(c).getPlayerId().equals(Game.currentPlayer())) {
+                        Board.getPiece(c).getPlayerId().equals(GameEngine.currentPlayer())) {
                     selection = c;
                     Timber.d("Selected!");
                     invalidate();
@@ -92,7 +92,7 @@ public class BoardView extends View {
                     if (isInEditMode()) continue;
                     p = Board.getPiece(c);
                     if (p != null) {
-                        textPaint.setColor(Game.getPlayerColor(p.getPlayerId()));
+                        textPaint.setColor(GameEngine.getPlayerColor(p.getPlayerId()));
                         canvas.drawText(p.getString(), x * cellWidth,
                                 (max - y) * cellWidth - textOffset, textPaint);
                     }
@@ -104,7 +104,7 @@ public class BoardView extends View {
             boardPaint.setColor(Color.CYAN);
             canvas.drawCircle(selection.x * cellWidth + cellWidth / 2,
                     (max - selection.y - 1) * cellWidth + cellWidth / 2, cellWidth / 2, boardPaint);
-            textPaint.setColor(Game.getPlayerColor(p.getPlayerId()));
+            textPaint.setColor(GameEngine.getPlayerColor(p.getPlayerId()));
             canvas.drawText(p.getString(), selection.x * cellWidth,
                     (max - selection.y) * cellWidth - 10, textPaint);
             for (Coordinate possible : p.getPossiblePositions()) {
@@ -114,7 +114,7 @@ public class BoardView extends View {
         // print last moves
         boardPaint.setStyle(Paint.Style.STROKE);
         boardPaint.setStrokeWidth(5f);
-        for (Player player : Game.players) {
+        for (Player player : GameEngine.players) {
             if (player.lastMove != null) {
                 boardPaint.setColor(player.color);
                 Timber.d("draw lastMove: %s to %s "

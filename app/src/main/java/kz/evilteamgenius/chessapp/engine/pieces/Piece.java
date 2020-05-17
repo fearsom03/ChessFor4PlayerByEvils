@@ -19,7 +19,7 @@ import java.util.List;
 
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
-import kz.evilteamgenius.chessapp.engine.Game;
+import kz.evilteamgenius.chessapp.engine.GameEngine;
 
 public abstract class Piece {
 
@@ -68,7 +68,7 @@ public abstract class Piece {
      */
     boolean sameTeam(final Coordinate destination) {
         Piece p = Board.getPiece(destination);
-        return p == null || !Game.sameTeam(p.ownerId, ownerId);
+        return p == null || !GameEngine.sameTeam(p.ownerId, ownerId);
     }
 
     /**

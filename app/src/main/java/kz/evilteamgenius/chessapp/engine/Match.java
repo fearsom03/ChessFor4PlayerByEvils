@@ -37,7 +37,7 @@ public class Match {
         this.mode = mode;
         this.id = id;
         this.numPlayers =
-                (mode == Game.MODE_2_PLAYER_2_SIDES || mode == Game.MODE_2_PLAYER_4_SIDES) ? 2 : 4;
+                (mode == GameEngine.MODE_2_PLAYER_2_SIDES || mode == GameEngine.MODE_2_PLAYER_4_SIDES) ? 2 : 4;
     }
 
 //    public int getStatus() {

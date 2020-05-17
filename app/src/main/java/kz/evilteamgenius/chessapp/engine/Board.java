@@ -65,7 +65,7 @@ public class Board {
     public static boolean move(final Coordinate old_pos, final Coordinate new_pos) {
         Timber.d("move function");
         boolean ifOver = false;
-        if (!Game.myTurn()) return false;
+        if (!GameEngine.myTurn()) return false;
 
         Timber.d("move function 2 ");
         if (!new_pos.isValid()) return false; // not a valid new position
@@ -84,22 +84,22 @@ public class Board {
         BOARD[old_pos.x][old_pos.y] = null;
         p.position = new_pos;
 
-        Game.getPlayer(Game.currentPlayer()).lastMove =
+        GameEngine.getPlayer(GameEngine.currentPlayer()).lastMove =
                 new Pair<>(old_pos, new_pos);
 
         Timber.d("sendMove 1");
-        if (target instanceof King && Game.removePlayer(target.getPlayerId())) {
+        if (target instanceof King && GameEngine.removePlayer(target.getPlayerId())) {
             // game ended
             ifOver = true;
-            if (!Game.match.isLocal && Game.myTurn()) {
+            if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
                 MainActivity.sendMove(old_pos, new_pos, ifOver);
             }
-            Game.over();
+            GameEngine.over();
         } else {
-            if (!Game.match.isLocal && Game.myTurn()) {
+            if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
                 MainActivity.sendMove(old_pos, new_pos, ifOver);
             }
-            Game.moved();
+            GameEngine.moved();
         }
         return true;
     }
@@ -113,13 +113,13 @@ public class Board {
         BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
         BOARD[old_pos.x][old_pos.y] = null;
         p.position = new_pos;  //error: p is null, and write to null.pos
-        Game.getPlayer(Game.currentPlayer()).lastMove =
+        GameEngine.getPlayer(GameEngine.currentPlayer()).lastMove =
                 new Pair<>(old_pos, new_pos);
-        if (target instanceof King && Game.removePlayer(target.getPlayerId())) {
+        if (target instanceof King && GameEngine.removePlayer(target.getPlayerId())) {
             // game ended
-            Game.over();
+            GameEngine.over();
         } else {
-            Game.moved();
+            GameEngine.moved();
         }
     }
 
@@ -141,7 +141,7 @@ public class Board {
     public static void load(final String data, int match_mode) {
         String[] pieceData;
         Coordinate c;
-        extendedBoard = match_mode != Game.MODE_2_PLAYER_2_SIDES;
+        extendedBoard = match_mode != GameEngine.MODE_2_PLAYER_2_SIDES;
         BOARD = extendedBoard ? new Piece[12][12] : new Piece[8][8];
         for (String piece : data.split(";")) {
             pieceData = piece.split(",");
@@ -207,7 +207,7 @@ public class Board {
      */
     private static void setupPlayerTopBottom(int x_begin, int y_pawns, int y_others, final String owner) {
         for (int x = x_begin; x < x_begin + 8; x++) {
-            BOARD[x][y_pawns] = Game.match.isLocal && (y_pawns == 6 || y_pawns == 10) ?
+            BOARD[x][y_pawns] = GameEngine.match.isLocal && (y_pawns == 6 || y_pawns == 10) ?
                     new DownPawn(new Coordinate(x, y_pawns), owner) :
                     new Pawn(new Coordinate(x, y_pawns), owner);
         }
@@ -230,12 +230,12 @@ public class Board {
      */
     private static void setupPlayerLeftRight(int x_pawns, int x_others, final String owner) {
         for (int y = 2; y < 10; y++) {
-            if (Game.match.isLocal) {
+            if (GameEngine.match.isLocal) {
                 BOARD[x_pawns][y] =
                         x_pawns == 1 ? new RightPawn(new Coordinate(x_pawns, y), owner) :
                                 new LeftPawn(new Coordinate(x_pawns, y), owner);
             } else {
-                BOARD[x_pawns][y] = Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ?
+                BOARD[x_pawns][y] = GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ?
                         new LeftPawn(new Coordinate(x_pawns, y), owner) :
                         new Pawn(new Coordinate(x_pawns, y), owner);
             }
@@ -257,8 +257,8 @@ public class Board {
      */
     public static void newGame(final Player[] players) {
         rotations = getRotation();
-        int myId = Integer.parseInt(Game.myPlayerId);
-        if (Game.match.mode == Game.MODE_2_PLAYER_2_SIDES) {
+        int myId = Integer.parseInt(GameEngine.myPlayerId);
+        if (GameEngine.match.mode == GameEngine.MODE_2_PLAYER_2_SIDES) {
             BOARD = new Piece[8][8];
             extendedBoard = false;
 
@@ -276,15 +276,15 @@ public class Board {
 
             // setup player 2 (right)
             setupPlayerLeftRight(10, 11,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[myId].id : players[(myId + 1) % 4].id);
+                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[myId].id : players[(myId + 1) % 4].id);
 
             // setup player 3 (top)
             setupPlayerTopBottom(2, 10, 11,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 2) % 4].id);
+                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 2) % 4].id);
 
             // setup player 4 (left)
             setupPlayerLeftRight(1, 0,
-                    Game.match.mode == Game.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 3) % 4].id);
+                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 3) % 4].id);
         }
     }
 
@@ -294,10 +294,10 @@ public class Board {
      * @return number of rotations necessary to have this players start position at the bottom
      */
     public static int getRotation() {
-        if (Game.match.isLocal) return 0;
+        if (GameEngine.match.isLocal) return 0;
         for (int i = 0; i < 4; i++) {
-            if (Game.players[i].id.equals(Game.myPlayerId))
-                return Game.players.length > 2 ? i : i * 2;
+            if (GameEngine.players[i].id.equals(GameEngine.myPlayerId))
+                return GameEngine.players.length > 2 ? i : i * 2;
         }
         return 0;
     }

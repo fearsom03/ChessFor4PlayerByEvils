@@ -35,6 +35,7 @@ import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
+import kz.evilteamgenius.chessapp.engine.GameEngine;
 import kz.evilteamgenius.chessapp.engine.Player;
 import kz.evilteamgenius.chessapp.models.Game;
 import timber.log.Timber;
@@ -68,7 +69,7 @@ public class GameFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        if (kz.evilteamgenius.chessapp.engine.Game.match == null) {
+        if (GameEngine.match == null) {
             // ((Main) getActivity()).showStartFragment();
             return null;
         }
@@ -76,10 +77,10 @@ public class GameFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_game, container, false);
         turn = v.findViewById(R.id.turn);
         board = v.findViewById(R.id.board);
-        kz.evilteamgenius.chessapp.engine.Game.UI = this;
+        GameEngine.UI = this;
         updateTurn();
 
-        if (!kz.evilteamgenius.chessapp.engine.Game.match.isLocal){
+        if (!GameEngine.match.isLocal) {
             callAsynchronousTask();
             infunc = false;
         }
@@ -94,7 +95,7 @@ public class GameFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (!kz.evilteamgenius.chessapp.engine.Game.isGameOver()) kz.evilteamgenius.chessapp.engine.Game.save(getActivity());
+        if (!GameEngine.isGameOver()) GameEngine.save(getActivity());
     }
 
 
@@ -135,7 +136,7 @@ public class GameFragment extends Fragment {
             String text = getString(R.string.gameover)
                     + "\n" + " "
                     + getString(R.string.winlocal,
-                    kz.evilteamgenius.chessapp.engine.Game.match.mode == kz.evilteamgenius.chessapp.engine.Game.MODE_4_PLAYER_TEAMS
+                    GameEngine.match.mode == GameEngine.MODE_4_PLAYER_TEAMS
                             ? "Team " + winnerPlayer.team :
                             winnerPlayer.name);
             turn.setText(text);
@@ -144,8 +145,8 @@ public class GameFragment extends Fragment {
 
         });
         getActivity().getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
-                .remove("match_" + kz.evilteamgenius.chessapp.engine.Game.match.id + "_" + kz.evilteamgenius.chessapp.engine.Game.match.mode).apply();
-        Timber.d("Deleting match_%s_%s", kz.evilteamgenius.chessapp.engine.Game.match.id, kz.evilteamgenius.chessapp.engine.Game.match.mode);
+                .remove("match_" + GameEngine.match.id + "_" + GameEngine.match.mode).apply();
+        Timber.d("Deleting match_%s_%s", GameEngine.match.id, GameEngine.match.mode);
     }
 
     /**
@@ -154,19 +155,19 @@ public class GameFragment extends Fragment {
     public void updateTurn() {
         Timber.d(" UI:updateTurn() turn=null?%s", (turn == null));
         if (turn == null) return;
-        if (kz.evilteamgenius.chessapp.engine.Game.isGameOver()) {
-            gameOver(kz.evilteamgenius.chessapp.engine.Game.getWinnerTeam() == kz.evilteamgenius.chessapp.engine.Game.getPlayer(kz.evilteamgenius.chessapp.engine.Game.myPlayerId).team);
+        if (GameEngine.isGameOver()) {
+            gameOver(GameEngine.getWinnerTeam() == GameEngine.getPlayer(GameEngine.myPlayerId).team);
         } else {
             StringBuilder sb = new StringBuilder();
-            String current = kz.evilteamgenius.chessapp.engine.Game.players[kz.evilteamgenius.chessapp.engine.Game.turns % kz.evilteamgenius.chessapp.engine.Game.players.length].id;
+            String current = GameEngine.players[GameEngine.turns % GameEngine.players.length].id;
             Timber.d(" current player: %s", current);
-            for (Player p : kz.evilteamgenius.chessapp.engine.Game.players) {
+            for (Player p : GameEngine.players) {
                 Timber.d(" UI:updateTurn() player " + p.id + " " + p.name + " " + p.team);
                 sb.append("<font color='")
-                        .append(String.format("#%06X", (0xFFFFFF & kz.evilteamgenius.chessapp.engine.Game.getPlayerColor(p.id))))
+                        .append(String.format("#%06X", (0xFFFFFF & GameEngine.getPlayerColor(p.id))))
                         .append("'>");
                 if (p.id.equals(current)) sb.append("-> ");
-                if (kz.evilteamgenius.chessapp.engine.Game.match.mode == kz.evilteamgenius.chessapp.engine.Game.MODE_4_PLAYER_TEAMS) {
+                if (GameEngine.match.mode == GameEngine.MODE_4_PLAYER_TEAMS) {
                     sb.append(p.name).append(" [").append(p.team).append("]</font><br />");
                 } else {
                     sb.append(p.name).append("</font><br />");
@@ -191,14 +192,14 @@ public class GameFragment extends Fragment {
         LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
             @Override
             public void onMoveLoaded(Game game) {
-                if ( !game.getMade_by().equals(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame) && !game.getMade_by().isEmpty()){
+                if (!game.getMade_by().equals(GameEngine.myPlayerUserame) && !game.getMade_by().isEmpty()) {
                     Coordinate pos1 = new Coordinate(game.getFrom_x(), game.getFrom_y(), Board.rotations);
                     Coordinate pos2 = new Coordinate(game.getTo_x(), game.getTo_y(), Board.rotations);
 //                    System.out.println("testFunc: " + Calendar.getInstance().getTime() + " " +  pos1.toString());
                     Board.moveWhenReceived(pos1, pos2);
                     toast(getContext(), game.toString());
                     getActivity().runOnUiThread(board::invalidate);
-                    kz.evilteamgenius.chessapp.engine.Game.game = game;
+                    GameEngine.game = game;
                 }
             }
 
@@ -207,7 +208,7 @@ public class GameFragment extends Fragment {
                 toast(getContext(), errorMessage);
             }
         });
-        lastMoveLoader.getLastMove(token, kz.evilteamgenius.chessapp.engine.Game.game.getId());
+        lastMoveLoader.getLastMove(token, GameEngine.game.getId());
         infunc = false;
     }
 

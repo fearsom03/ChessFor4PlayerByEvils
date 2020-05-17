@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "911031191938",
+    "firebase_url": "https://chessforfourapp.firebaseio.com",
+    "project_id": "chessforfourapp",
+    "storage_bucket": "chessforfourapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911031191938:android:bc902da2a306da29f4679b",
+        "android_client_info": {
+          "package_name": "kz.evilteamgenius.chessapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911031191938-blcd8lpq7semcccq0i3a9t6lkd34d2ut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTyhXomnlErfzb7BURRJcqaQTqD0PIF04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911031191938-blcd8lpq7semcccq0i3a9t6lkd34d2ut.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

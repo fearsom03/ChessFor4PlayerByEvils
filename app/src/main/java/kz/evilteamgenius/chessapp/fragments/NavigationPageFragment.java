@@ -35,6 +35,7 @@ import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
 import kz.evilteamgenius.chessapp.database.asyncTasksDB.AddGameAsyncTask;
 import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
+import kz.evilteamgenius.chessapp.engine.GameEngine;
 import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.models.Game;
 import timber.log.Timber;
@@ -108,7 +109,7 @@ public class NavigationPageFragment extends Fragment {
                     if (local.isChecked()) {
                         Match match = new Match(String.valueOf(System.currentTimeMillis()),
                                 LAST_SELECTED_MATCH_MODE, true);
-                        kz.evilteamgenius.chessapp.engine.Game.newGame(match, null, null, null);
+                        GameEngine.newGame(match, null, null, null);
                         startGame(match.id);
                     } else {
                         if (!IF_CONNECTED_TO_INTERNET) {
@@ -180,7 +181,7 @@ public class NavigationPageFragment extends Fragment {
         MakeNewGameLoader loader = new MakeNewGameLoader(new MakeNewGameLoader.GetMakeNewGameLoaderCallback() {
             @Override
             public void onGetGoodsLoaded(Game game) {
-                kz.evilteamgenius.chessapp.engine.Game.game = game;
+                GameEngine.game = game;
                 toast(getContext(), game.toString());
                 if (!checkIfMatched(game))
                     callAsynchronousTask();
@@ -204,9 +205,9 @@ public class NavigationPageFragment extends Fragment {
                 Match match = new Match(String.valueOf(System.currentTimeMillis()),
                         LAST_SELECTED_MATCH_MODE, false);
                 String[] players = {game.getPlayer1(), game.getPlayer2()};
-                kz.evilteamgenius.chessapp.engine.Game.game = game;
+                GameEngine.game = game;
                 //TODO: remove room id
-                kz.evilteamgenius.chessapp.engine.Game.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
+                GameEngine.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
                 startGame(match.id);
                 return true;
             }
@@ -218,9 +219,9 @@ public class NavigationPageFragment extends Fragment {
                 Match match = new Match(String.valueOf(System.currentTimeMillis()),
                         LAST_SELECTED_MATCH_MODE, false);
                 String[] players = {game.getPlayer1(), game.getPlayer2(), game.getPlayer3(), game.getPlayer4()};
-                kz.evilteamgenius.chessapp.engine.Game.game = game;
+                GameEngine.game = game;
                 //TODO: remove room id
-                kz.evilteamgenius.chessapp.engine.Game.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
+                GameEngine.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
                 startGame(match.id);
                 return true;
             }
@@ -253,7 +254,7 @@ public class NavigationPageFragment extends Fragment {
                 toast(getContext(), errorMessage);
             }
         });
-        lastMoveLoader.getLastMove(token, kz.evilteamgenius.chessapp.engine.Game.game.getId());
+        lastMoveLoader.getLastMove(token, GameEngine.game.getId());
     }
 
     private void startGame(final String matchID) {
