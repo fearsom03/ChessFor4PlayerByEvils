@@ -1,11 +1,15 @@
 package kz.evilteamgenius.chessapp.extensions
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kz.evilteamgenius.chessapp.R
+import kz.evilteamgenius.chessapp.database.asyncTasksDB.AddGameAsyncTask
+import kz.evilteamgenius.chessapp.database.entitys.GameEntity
 
 inline fun <T> LifecycleOwner.observeLiveData(data: LiveData<T>, crossinline onChanged: (T) -> Unit) {
     data.removeObservers(this)
@@ -25,4 +29,15 @@ fun Fragment.getBackFragment(fragment: Fragment) {
     tr.replace(R.id.frame, fragment)
     tr.commitNow()
 }
+
+fun Context.getToken(): String {
+    val preferences: SharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+    return preferences.getString("token", "").toString()
+}
+
+private fun insertGameIntoDatabase(game: GameEntity, context: Context) {
+    val addGameAsyncTask = AddGameAsyncTask(context)
+    addGameAsyncTask.execute(game)
+}
+
 

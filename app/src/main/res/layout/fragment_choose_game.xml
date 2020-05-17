@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_image"
+    tools:context=".fragments.ChooseGame">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="35dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/noTeamForFour"
+            style="@style/textViewDesign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/four_players"
+            android:drawablePadding="15dp"
+            android:text="@string/mode4"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/withTeamForFour"
+            style="@style/textViewDesign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/four_players"
+            android:drawablePadding="15dp"
+            android:text="@string/mode3"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/regularForTwo"
+            style="@style/textViewDesign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/two_players"
+            android:drawablePadding="15dp"
+            android:text="@string/mode1"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/extendedForTwo"
+            style="@style/textViewDesign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/four_players"
+            android:drawablePadding="15dp"
+            android:text="@string/mode2"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

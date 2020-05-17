@@ -15,7 +15,8 @@
     <string name="usernameText_hint">Username</string>
     <string name="emailText">Email</string>
     <string name="confirm_passwordText">Confirm Password</string>
-    <string name="playText">Play</string>
+    <string name="onlineGameText">Play online</string>
+    <string name="offlineGameText">Online game</string>
     <string name="communityText">Community</string>
     <string name="optionText">Option</string>
     <string name="rulesText">Rules</string>
@@ -57,4 +58,6 @@
     <string name="winlocal">Congratulation %1$s, you\'ve won the match!</string>
     <string name="deletematch">Do you really want to delete this match?</string>
     <string name="leavematch">Do you really want to leave this match?</string>
+    <string name="online">Online</string>
+    <string name="needToBeOnline">Turn on internet for access online game</string>
 </resources>

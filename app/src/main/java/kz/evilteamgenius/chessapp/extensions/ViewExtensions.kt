@@ -24,6 +24,9 @@ fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
+fun toastKt(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
 fun Activity.startMusicAction() {
     val action = Intent(this, MusicService::class.java)
     startService(action)

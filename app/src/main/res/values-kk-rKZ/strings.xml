@@ -17,8 +17,9 @@
     <string name="usernameText_hint">Username</string>
     <string name="confirm_passwordText">Купия создi растау</string>
     <string name="emailText">Email</string>
-    <string name="playText">Онлайн ойын </string>
-    <string name="communityText">Оффлайн ойын</string>
+    <string name="onlineGameText">Онлайн ойын</string>
+    <string name="offlineGameText">Оффлайн ойын</string>
+    <string name="communityText">Бірлестік</string>
     <string name="optionText">Курыптау</string>
     <string name="rulesText">Ережелер</string>
     <string name="EmptyInput">Ештене енгiзiлмеген</string>
@@ -64,4 +65,6 @@
     <string name="winlocal">Құттықтау %1$s, сіз ойынды ұтыңыз!</string>
     <string name="deletematch">Сіз шынымен осы ойыннан жойғыңыз келе ме?</string>
     <string name="leavematch">Сіз шынымен осы ойыннан шыққыңыз келе ме?</string>
+    <string name="online">Онлайн</string>
+    <string name="needToBeOnline">Онлайн ойынға кіру үшін интернетті қосыңыз</string>
 </resources>

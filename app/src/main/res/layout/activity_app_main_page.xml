@@ -16,7 +16,8 @@
             android:id="@+id/imageSlider"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            app:sliderAnimationDuration="600"
+            android:layout_marginTop="20dp"
+            app:sliderAnimationDuration="1500"
             app:sliderAutoCycleDirection="back_and_forth"
             app:sliderAutoCycleEnabled="true"
             app:sliderCircularHandlerEnabled="true"
@@ -41,51 +42,31 @@
 
             <TextView
                 android:id="@+id/playText"
+                style="@style/textViewDesign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
-                android:background="@drawable/rounded_text"
-                android:text="@string/playText"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="35sp"
-                android:textStyle="bold" />
+                android:text="@string/online" />
 
             <TextView
                 android:id="@+id/communityText"
+                style="@style/textViewDesign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
-                android:background="@drawable/rounded_text"
-                android:text="@string/communityText"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="35sp"
-                android:textStyle="bold" />
+                android:text="@string/localgame" />
 
             <TextView
                 android:id="@+id/optionText"
+                style="@style/textViewDesign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
-                android:background="@drawable/rounded_text"
-                android:text="@string/optionText"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="35sp"
-                android:textStyle="bold" />
+                android:text="@string/optionText" />
 
             <TextView
                 android:id="@+id/rulesText"
+                style="@style/textViewDesign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
-                android:background="@drawable/rounded_text"
-                android:text="@string/rulesText"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="35sp"
-                android:textStyle="bold" />
+                android:text="@string/rulesText" />
 
         </LinearLayout>
     </LinearLayout>

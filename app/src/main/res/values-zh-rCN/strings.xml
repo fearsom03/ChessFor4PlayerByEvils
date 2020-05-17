@@ -18,8 +18,9 @@
     <string name="usernameText_hint">用户名</string>
     <string name="confirm_passwordText">确认密码</string>
     <string name="emailText">邮箱</string>
-    <string name="playText">网上游戏</string>
-    <string name="communityText">线下游戏</string>
+    <string name="onlineGameText">网上游戏</string>
+    <string name="offlineGameText">线下游戏</string>
+    <string name="communityText">Community</string>
     <string name="optionText">选项</string>
     <string name="rulesText">规则</string>
     <string name="EmptyInput">输入为空</string>
@@ -65,4 +66,6 @@
     <string name="winlocal">Congratulation %1$s, you\'ve won the match!</string>
     <string name="deletematch">Do you really want to delete this match?</string>
     <string name="leavematch">Do you really want to leave this match?</string>
+    <string name="online">Online</string>
+    <string name="needToBeOnline">Turn on internet for access online game</string>
 </resources>

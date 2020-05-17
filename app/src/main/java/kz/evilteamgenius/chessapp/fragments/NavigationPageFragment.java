@@ -1,54 +1,34 @@
 package kz.evilteamgenius.chessapp.fragments;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.CheckBox;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.adapters.SliderAdapter;
-import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
-import kz.evilteamgenius.chessapp.api.loaders.MakeNewGameLoader;
-import kz.evilteamgenius.chessapp.database.asyncTasksDB.AddGameAsyncTask;
-import kz.evilteamgenius.chessapp.database.entitys.GameEntity;
-import kz.evilteamgenius.chessapp.engine.GameEngine;
-import kz.evilteamgenius.chessapp.engine.Match;
-import kz.evilteamgenius.chessapp.models.Game;
-import timber.log.Timber;
+import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
 
-import static android.content.Context.MODE_PRIVATE;
-import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
 import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.replaceFragment;
-import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 public class NavigationPageFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     @BindView(R.id.imageSlider)
     SliderView imageSlider;
     @BindView(R.id.playText)
@@ -59,23 +39,11 @@ public class NavigationPageFragment extends Fragment {
     TextView optionText;
     @BindView(R.id.rulesText)
     TextView rulesText;
-    private Fragment fragment;
-    private String mode = "online";
-    static int LAST_SELECTED_MATCH_MODE;
-    public int numberOfPlayers;
-    static boolean IF_CONNECTED_TO_INTERNET = true;
 
+    private Fragment fragment;
     private ArrayList<String> imageLinks;
     private SliderAdapter adapter;
-
-
-    private final Handler handler = new Handler();
-    private Timer timer = new Timer();
-    Runnable runnable = new Runnable() {
-        public void run() {
-            getLastMove();
-        }
-    };
+    private GameViewModel viewModel;
 
 
     @Override
@@ -88,6 +56,8 @@ public class NavigationPageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+        checkConnection();
         initData();
         initUI();
     }
@@ -97,54 +67,33 @@ public class NavigationPageFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.playText:
-                final Dialog d = new Dialog(getContext());
-                d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                d.setContentView(R.layout.mode);
-                final RadioGroup mode = d.findViewById(R.id.game_mode);
-                final CheckBox local = d.findViewById(R.id.local);
-                mode.check(mode.getChildAt(0).getId());
-                d.findViewById(R.id.ok).setOnClickListener(v -> {
-                    LAST_SELECTED_MATCH_MODE = Integer.parseInt(
-                            (String) d.findViewById(mode.getCheckedRadioButtonId()).getTag());
-                    if (local.isChecked()) {
-                        Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                                LAST_SELECTED_MATCH_MODE, true);
-                        GameEngine.newGame(match, null, null, null);
-                        startGame(match.id);
-                    } else {
-                        if (!IF_CONNECTED_TO_INTERNET) {
-                            AlertDialog.Builder builder =
-                                    new AlertDialog.Builder(getActivity());
-                            builder.setTitle("Not connected to Google Play");
-                            builder.setMessage(
-                                    "You need to connect to Google Play Services to be able to find opponent players and start an online game")
-                                    .setPositiveButton(android.R.string.ok,
-                                            (dialog, id) -> dialog.dismiss());
-                            builder.create().show();
-                        } else {
-                            makeNewGame();
-                        }
-                    }
-                    d.dismiss();
-                });
-                d.findViewById(R.id.back).setOnClickListener(v -> {
-                    d.dismiss();
-                });
-                d.show();
+                //todo in next update I will add other fragment here
+                fragment = ChooseGame.newInstance(true);
                 break;
             case R.id.communityText:
+                fragment = ChooseGame.newInstance(false);
                 break;
             case R.id.optionText:
                 fragment = new FragmentOptionsFragment();
-                replaceFragment(this, fragment);
                 break;
             case R.id.rulesText:
                 fragment = new FragmentRulesFragment();
-                replaceFragment(this, fragment);
                 break;
         }
+        replaceFragment(this, fragment);
     }
 
+    private void checkConnection() {
+        viewModel.getInternetCheck().observe(requireActivity(), aBoolean -> {
+            if (!aBoolean) {
+                playText.setEnabled(false);
+                playText.setTextColor(Color.GRAY);
+            } else {
+                playText.setEnabled(true);
+                playText.setTextColor(Color.WHITE);
+            }
+        });
+    }
 
     private void initData() {
         //add advertisment images
@@ -170,104 +119,5 @@ public class NavigationPageFragment extends Fragment {
         imageSlider.setIndicatorUnselectedColor(Color.GRAY);
         imageSlider.setScrollTimeInSec(3); //set scroll delay in seconds :
         imageSlider.startAutoCycle();
-    }
-
-    private void insertGameIntoDatabase(GameEntity game) {
-        AddGameAsyncTask addGameAsyncTask = new AddGameAsyncTask(getContext());
-        addGameAsyncTask.execute(game);
-    }
-
-    private void makeNewGame() {
-        MakeNewGameLoader loader = new MakeNewGameLoader(new MakeNewGameLoader.GetMakeNewGameLoaderCallback() {
-            @Override
-            public void onGetGoodsLoaded(Game game) {
-                GameEngine.game = game;
-                toast(getContext(), game.toString());
-                if (!checkIfMatched(game))
-                    callAsynchronousTask();
-            }
-
-            @Override
-            public void onResponseFailed(String errorMessage) {
-                toast(getContext(), errorMessage);
-
-            }
-        });
-
-        loader.loadMakeNew2PGame(getToken(), LAST_SELECTED_MATCH_MODE);
-    }
-
-    private boolean checkIfMatched(Game game) {
-        if (LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE == 2) {
-            if (!game.getPlayer1().isEmpty() && !game.getPlayer2().isEmpty()) {
-                timer.cancel();  // Terminates this timer, discarding any currently scheduled tasks.
-                timer.purge();   // Removes all cancelled tasks from this timer's task queue.
-                Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                        LAST_SELECTED_MATCH_MODE, false);
-                String[] players = {game.getPlayer1(), game.getPlayer2()};
-                GameEngine.game = game;
-                //TODO: remove room id
-                GameEngine.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
-                startGame(match.id);
-                return true;
-            }
-            return false;
-        } else {
-            if (!game.getPlayer1().isEmpty() && !game.getPlayer2().isEmpty() && !game.getPlayer3().isEmpty() && !game.getPlayer4().isEmpty()) {
-                timer.cancel();
-                timer.purge();
-                Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                        LAST_SELECTED_MATCH_MODE, false);
-                String[] players = {game.getPlayer1(), game.getPlayer2(), game.getPlayer3(), game.getPlayer4()};
-                GameEngine.game = game;
-                //TODO: remove room id
-                GameEngine.newGame(match, players, getUsername(getContext()), String.valueOf(game.getId()));
-                startGame(match.id);
-                return true;
-            }
-            return false;
-        }
-    }
-
-    private void callAsynchronousTask() {
-        TimerTask doAsynchronousTask = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(runnable);
-            }
-        };
-        timer.schedule(doAsynchronousTask, 0, 6000); //execute in every 50000 ms
-    }
-
-    private void getLastMove() {
-        String token = getToken();
-//        toast(getContext(),token);
-        LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
-            @Override
-            public void onMoveLoaded(Game game) {
-                checkIfMatched(game);
-                toast(getContext(), game.toString());
-            }
-
-            @Override
-            public void onResponseFailed(String errorMessage) {
-                toast(getContext(), errorMessage);
-            }
-        });
-        lastMoveLoader.getLastMove(token, GameEngine.game.getId());
-    }
-
-    private void startGame(final String matchID) {
-        Timber.d("startGame");
-        fragment = new GameFragment();
-        Bundle b = new Bundle();
-        b.putString("matchID", matchID);
-        fragment.setArguments(b);
-        replaceFragment(this, fragment);
-    }
-
-    private String getToken() {
-        SharedPreferences preferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", "");
     }
 }

@@ -1,13 +1,10 @@
 package kz.evilteamgenius.chessapp.fragments;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +38,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getBackFragment;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
-public class FragmentOptionsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, ServiceConnection {
+public class FragmentOptionsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
     @BindView(R.id.languageSpinner)
     Spinner languageSpinner;
@@ -58,9 +55,7 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
 
     private Locale myLocale;
     private String something, getlanguageStat;
-    private Intent intent;
     private SharedPreferences preferences;
-    private MusicService mServ;
     private GameViewModel viewModel;
 
     @Override
@@ -143,15 +138,15 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
             startActivity(refresh);
             requireActivity().finish();
         } else {
-            toast(getContext(), getString(R.string.OOPS_TryAgain));
+            toast(requireActivity(), getString(R.string.OOPS_TryAgain));
         }
     }
 
     @OnClick({R.id.exitTextView, R.id.shareApp, R.id.backButtonInOption})
     public void onViewClicked(View view) {
+        Intent intent = new Intent(this.getContext(), LoginActivity.class);
         switch (view.getId()) {
             case R.id.exitTextView:
-                intent = new Intent(this.getContext(), LoginActivity.class);
                 startActivity(intent);
                 requireActivity()
                         .stopService(new Intent(requireActivity()
@@ -191,15 +186,5 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
                 viewModel.setMusic(isChecked);
                 break;
         }
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        mServ = ((MusicService.ServiceBinder) service).getService();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        mServ = null;
     }
 }

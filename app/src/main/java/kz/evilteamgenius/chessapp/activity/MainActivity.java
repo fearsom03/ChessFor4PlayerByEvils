@@ -3,8 +3,9 @@ package kz.evilteamgenius.chessapp.activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -35,6 +36,7 @@ import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
 import kz.evilteamgenius.chessapp.models.MoveMessage;
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
 import kz.evilteamgenius.chessapp.service.MusicService;
+import kz.evilteamgenius.chessapp.utils.ConnectivityReceiver;
 import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -51,11 +53,12 @@ import ua.naiksoftware.stomp.dto.StompMessage;
 import static kz.evilteamgenius.chessapp.Constants.URL_MAKE_MOVE;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.checkInternet;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
+import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getToken;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.startMusicAction;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection {
+public class MainActivity extends AppCompatActivity implements ServiceConnection, ConnectivityReceiver.ConnectivityReceiverListener {
 
     public static StompClient stompClient;
     private Fragment fragment;
@@ -64,13 +67,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private boolean mIsBound = false;
     private MusicService mServ;
     private GameViewModel viewModel;
+    private ConnectivityReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        token = getToken();
+        token = getToken(this);
         viewModel = new ViewModelProvider(this).get(GameViewModel.class);
+        receiver = new ConnectivityReceiver();
+        receiver.setListener(this);
+        registerReceiver(receiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         //music staff
         startMusicAction(this);
         doBindService();
@@ -100,14 +107,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         new MakeMoveToServer().execute();
     }
 
-    public void connectAndMakeMatch(int LAST_SELECTED_MATCH_MODE) {
+    public void connectAndMakeMatch(int last_game_mode) {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Const.address);
         StompUtils.lifecycle(stompClient);
         Timber.d("Start connecting to server");
         // Connect to WebSocket server
         stompClient.connect();
-        int numberOfPlayers = LAST_SELECTED_MATCH_MODE == 1 || LAST_SELECTED_MATCH_MODE == 2 ? 2 : 4;
-        MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT, LAST_SELECTED_MATCH_MODE, null, null);
+        int numberOfPlayers = last_game_mode == 1 || last_game_mode == 2 ? 2 : 4;
+        MatchMakingMessage matchMakingMessageToSend = new MatchMakingMessage(MatchMakingMessageType.CONNECT, last_game_mode, null, null);
         Gson gson = new Gson();
         String json = gson.toJson(matchMakingMessageToSend);
         if (!checkInternet(this)) {
@@ -133,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             Timber.d("Received: *****\n %s *****\n", matchMakingMessageReceived.toString());
             if (matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED) {
                 Match match = new Match(String.valueOf(System.currentTimeMillis()),
-                        LAST_SELECTED_MATCH_MODE, false);
+                        last_game_mode, false);
                 GameEngine.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
                 startGame(match.id);
             }
@@ -180,16 +187,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         replaceFragment(fragment);
     }
 
-    public String getToken() {
-        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", "");
-    }
 
     //start music methods
     @Override
     protected void onDestroy() {
         super.onDestroy();
         doUnbindService();
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        viewModel.setInternetCheck(isConnected);
     }
 
     public static class MakeMoveToServer extends AsyncTask<String, Void, String> {
@@ -285,12 +293,42 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     protected void onStop() {
         super.onStop();
         stopMusic();
+        stopCheckInternet();
+    }
+
+    private void stopCheckInternet() {
+        try {
+            if (receiver == null) {
+                Timber.d("Receiver Can't unregister a receiver which was never registered");
+            } else {
+                unregisterReceiver(receiver);
+                receiver = null;
+            }
+        } catch (Exception err) {
+            Timber.e("%s --> %s", err.getClass().getName(), err.getMessage());
+            Timber.e("Receiver not registerer Couldn't get context");
+        }
+    }
+
+    private void startCheckInternet() {
+        if (receiver != null) {
+            Timber.d("Receiver Can't register receiver which already has been registered");
+        } else {
+            try {
+                receiver = new ConnectivityReceiver();
+                registerReceiver(receiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+                receiver.setListener(this);
+            } catch (Exception err) {
+                Timber.e("%s --> %s", err.getClass().getName(), err.getMessage());
+            }
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         startMusic();
+        startCheckInternet();
     }
 
     public void startMusic() {

@@ -31,6 +31,7 @@ import kz.evilteamgenius.chessapp.databinding.ActivityLoginBinding;
 import kz.evilteamgenius.chessapp.models.RegisterMyUser;
 import timber.log.Timber;
 
+import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getToken;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
 public class LoginActivity extends AppCompatActivity implements OnClickListener, LoginLoader.LoginCallback {
@@ -58,7 +59,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_login);
         ActivityLoginBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
-        if (getToken() != null && !getToken().isEmpty()) {
+        if (!getToken(this).isEmpty()) {
             goToMainPage();
         }
         RegisterMyUser user = new RegisterMyUser();
@@ -143,11 +144,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-    }
-
-    public String getToken() {
-        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", null);
     }
 
     private void setLocale(String localeName) {

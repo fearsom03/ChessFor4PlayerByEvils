@@ -15,8 +15,8 @@
  */
 package kz.evilteamgenius.chessapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -40,7 +40,7 @@ import kz.evilteamgenius.chessapp.engine.Player;
 import kz.evilteamgenius.chessapp.models.Game;
 import timber.log.Timber;
 
-import static android.content.Context.MODE_PRIVATE;
+import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getToken;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
@@ -133,7 +133,7 @@ public class GameFragment extends Fragment {
     public void gameOverLocal(final Player winnerPlayer) {
         if (turn == null || getActivity() == null) return;
         getActivity().runOnUiThread(() -> {
-            String text = getString(R.string.gameover)
+            @SuppressLint({"StringFormatInvalid", "LocalSuppress"}) String text = getString(R.string.gameover)
                     + "\n" + " "
                     + getString(R.string.winlocal,
                     GameEngine.match.mode == GameEngine.MODE_4_PLAYER_TEAMS
@@ -184,10 +184,10 @@ public class GameFragment extends Fragment {
     }
 
     private void getLastMove() {
-        if(infunc)
+        if (infunc)
             return;
         infunc = true;
-        String token = getToken();
+        String token = getToken(requireActivity());
 //        toast(getContext(),token);
         LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
             @Override
@@ -210,12 +210,6 @@ public class GameFragment extends Fragment {
         });
         lastMoveLoader.getLastMove(token, GameEngine.game.getId());
         infunc = false;
-    }
-
-
-    private String getToken() {
-        SharedPreferences preferences = requireContext().getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return preferences.getString("token", "");
     }
 
     public void callAsynchronousTask() {

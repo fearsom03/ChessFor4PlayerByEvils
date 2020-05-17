@@ -18,8 +18,9 @@
     <string name="usernameText_hint">Имя пользователя</string>
     <string name="confirm_passwordText">Подтвердить пароль</string>
     <string name="emailText">Email</string>
-    <string name="playText">Онлайн игра</string>
-    <string name="communityText">Оффлайн игра</string>
+    <string name="onlineGameText">Онлайн игра</string>
+    <string name="offlineGameText">Оффлайн игра</string>
+    <string name="communityText">Сообщество</string>
     <string name="optionText">Настройки</string>
     <string name="rulesText">Правила</string>
     <string name="EmptyInput">Ввод пустой</string>
@@ -63,4 +64,7 @@
     <string name="winlocal">Поздравляем  , вы выиграли игру!</string>
     <string name="deletematch">Вы действительно хотите удалить эту игру?</string>
     <string name="leavematch">Вы действительно хотите покинуть эту игру?</string>
+    <string name="online">Онлайн</string>
+    <string name="needToBeOnline">Включите интернет для доступа к онлайн игре</string>
+
 </resources>
