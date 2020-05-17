@@ -1,5 +1,7 @@
 package kz.evilteamgenius.chessapp.activity;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
 import java.util.Arrays;
 
 import kz.evilteamgenius.chessapp.BoardView;
@@ -22,13 +26,18 @@ import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.StompUtils;
 import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
-import kz.evilteamgenius.chessapp.engine.Game;
 import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
 import kz.evilteamgenius.chessapp.fragments.NavigationPageFragment;
+import kz.evilteamgenius.chessapp.models.Game;
 import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
 import kz.evilteamgenius.chessapp.models.MoveMessage;
 import kz.evilteamgenius.chessapp.models.enums.MatchMakingMessageType;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import kz.evilteamgenius.chessapp.models.enums.MoveMessageType;
 import kz.evilteamgenius.chessapp.service.MusicService;
 import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
@@ -39,8 +48,10 @@ import ua.naiksoftware.stomp.dto.StompCommand;
 import ua.naiksoftware.stomp.dto.StompHeader;
 import ua.naiksoftware.stomp.dto.StompMessage;
 
+import static kz.evilteamgenius.chessapp.Constants.URL_MAKE_MOVE;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.checkInternet;
 import static kz.evilteamgenius.chessapp.extensions.CheckExtensionKt.getUsername;
+import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.startMusicAction;
 
 @SuppressWarnings({"FieldCanBeLocal", "ResultOfMethodCallIgnored", "CheckResult"})
@@ -49,39 +60,19 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     public static StompClient stompClient;
     private Fragment fragment;
+    static String token;
     // indicates whether the activity is linked to service player.
     private boolean mIsBound = false;
     private MusicService mServ;
     private GameViewModel viewModel;
 
 
-    public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
-        Timber.d("Send move!");
-        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
-        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
-        MoveMessage message = new MoveMessage(old_pos.x, old_pos.y, new_pos.x, new_pos.y, Game.myPlayerUserame, MoveMessageType.OK);
-        if (ifOver)
-            message.setType(MoveMessageType.OVER);
-        Gson gson = new Gson();
-        String json = gson.toJson(message);
-        stompClient.send(new StompMessage(
-                // Stomp command
-                StompCommand.SEND,
-                // Stomp Headers, Send Headers with STOMP
-                // the first header is required, and the other can be customized by ourselves
-                Arrays.asList(
-                        new StompHeader(StompHeader.DESTINATION, Game.roomAdress),
-                        new StompHeader("authorization", Game.myPlayerUserame)
-                ),
-                // Stomp payload
-                json)
-        ).subscribe();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        token = getToken();
         viewModel = new ViewModelProvider(this).get(GameViewModel.class);
         //music staff
         startMusicAction(this);
@@ -98,11 +89,90 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         replaceFragment(fragment);
     }
 
+
+    public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
+        Timber.d("sendMove 2");
+        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
+        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
+        kz.evilteamgenius.chessapp.engine.Game.game.setMade_by(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame);
+        kz.evilteamgenius.chessapp.engine.Game.game.setFrom_x(old_pos.x);
+        kz.evilteamgenius.chessapp.engine.Game.game.setFrom_y(old_pos.y);
+        kz.evilteamgenius.chessapp.engine.Game.game.setTo_x(new_pos.x);
+        kz.evilteamgenius.chessapp.engine.Game.game.setTo_y(new_pos.y);
+        if (ifOver)
+            kz.evilteamgenius.chessapp.engine.Game.game.setResult(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame + " wins!");
+        new MakeMoveToServer().execute();
+    }
+
+    public static class MakeMoveToServer extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Timber.d("sendMove 3");
+            Game game = kz.evilteamgenius.chessapp.engine.Game.game;
+            OkHttpClient okHttpClient = new OkHttpClient();
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("id", String.valueOf(game.getId()))
+                    .add("player1", game.getPlayer1())
+                    .add("player2", game.getPlayer2())
+                    .add("player3", game.getPlayer1())
+                    .add("player4", game.getPlayer2())
+                    .add("FEN", game.getFEN() == null ? "" : game.getFEN())
+                    .add("result", game.getResult() == null ? "" : game.getResult())
+                    .add("from_x", String.valueOf(game.getFrom_x()))
+                    .add("from_y", String.valueOf(game.getFrom_y()))
+                    .add("to_x", String.valueOf(game.getTo_x()))
+                    .add("to_y", String.valueOf(game.getTo_y()))
+                    .add("made_by", game.getMade_by() == null ? "" : game.getMade_by())
+                    .add("type", String.valueOf(game.getType()))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(URL_MAKE_MOVE)
+                    .post(formBody)
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("Authorization", "Bearer " + token)
+                    .build();
+
+            Response response = null;
+            try {
+                response = okHttpClient.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String result = response.body().string();
+                    if (!result.isEmpty()) {
+                        JSONObject jsonObject = new JSONObject(result);
+                        Game receivedGame = new Game(jsonObject.getLong("id"),
+                                jsonObject.getString("play1"),
+                                jsonObject.getString("play2"),
+                                jsonObject.getString("play3"),
+                                jsonObject.getString("play4"),
+                                jsonObject.getString("FEN"),
+                                jsonObject.getString("result"),
+                                jsonObject.getInt("from_x"),
+                                jsonObject.getInt("from_y"),
+                                jsonObject.getInt("to_x"),
+                                jsonObject.getInt("to_y"),
+                                jsonObject.getString("made_by"),
+                                jsonObject.getInt("type"));
+                        //showToast(receivedGame.toString());
+                    } else {
+//                        toast(this,"Make move to server failed in Game Activity");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
     public void replaceFragment(Fragment fragment) {
         FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
         tr.replace(R.id.frame, fragment);
         tr.commitNow();
     }
+
 
     public void connectAndMakeMatch(int LAST_SELECTED_MATCH_MODE) {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Const.address);
@@ -138,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             if (matchMakingMessageReceived.getMessageType() == MatchMakingMessageType.CONNECTED) {
                 Match match = new Match(String.valueOf(System.currentTimeMillis()),
                         LAST_SELECTED_MATCH_MODE, false);
-                Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
+                kz.evilteamgenius.chessapp.engine.Game.newGame(match, matchMakingMessageReceived.getPlayers(), getUsername(this), matchMakingMessageReceived.getRoom_id());
                 startGame(match.id);
             }
         }, throwable -> {
@@ -150,9 +220,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public void getMove(BoardView board) {
-        stompClient.topic(Game.roomAdress).subscribe(stompMessage -> {
+        stompClient.topic(kz.evilteamgenius.chessapp.engine.Game.roomAdress).subscribe(stompMessage -> {
             MoveMessage message = new Gson().fromJson(stompMessage.getPayload(), MoveMessage.class);
-            if (message.getPlayerID().equals(Game.myPlayerUserame))
+            if (message.getPlayerID().equals(kz.evilteamgenius.chessapp.engine.Game.myPlayerUserame))
                 return;
             Timber.d("Received: *****\n %s ***** \n", message.toString());
             Coordinate pos1 = new Coordinate(message.getFrom_x(), message.getFrom_y(), Board.rotations);
@@ -176,6 +246,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         b.putString("matchID", matchID);
         fragment.setArguments(b);
         replaceFragment(fragment);
+    }
+
+    public String getToken() {
+        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        return preferences.getString("token", "");
     }
 
     @Override

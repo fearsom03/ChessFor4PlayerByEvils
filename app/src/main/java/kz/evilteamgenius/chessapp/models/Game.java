@@ -11,17 +11,25 @@ public class Game implements Serializable {
     @Expose
     private Long id;
 
-    @SerializedName("white")
+    @SerializedName("player1")
     @Expose
-    private String white;
+    private String player1;
 
-    @SerializedName("black")
+    @SerializedName("player2")
     @Expose
-    private String black;
+    private String player2;
 
-    @SerializedName("fen")
+    @SerializedName("player3")
     @Expose
-    private String fen;
+    private String player3;
+
+    @SerializedName("player4")
+    @Expose
+    private String player4;
+
+    @SerializedName("FEN")
+    @Expose
+    private String FEN;
 
     @SerializedName("result")
     @Expose
@@ -43,21 +51,28 @@ public class Game implements Serializable {
     @Expose
     private int to_y;
 
-    @SerializedName("next_move")
+    @SerializedName("made_by")
     @Expose
-    private String next_move;
+    private String made_by;
 
-    public Game(Long id, String white, String black, String fen, String result, int from_x, int from_y, int to_x, int to_y, String next_move) {
+    @SerializedName("type")
+    @Expose
+    private int type;
+
+    public Game(Long id, String player1, String player2, String player3, String player4, String FEN, String result, int from_x, int from_y, int to_x, int to_y, String made_by, int type) {
         this.id = id;
-        this.white = white;
-        this.black = black;
-        this.fen = fen;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.player3 = player3;
+        this.player4 = player4;
+        this.FEN = FEN;
         this.result = result;
         this.from_x = from_x;
         this.from_y = from_y;
         this.to_x = to_x;
         this.to_y = to_y;
-        this.next_move = next_move;
+        this.made_by = made_by;
+        this.type = type;
     }
 
     public Long getId() {
@@ -68,28 +83,44 @@ public class Game implements Serializable {
         this.id = id;
     }
 
-    public String getWhite() {
-        return white;
+    public String getPlayer1() {
+        return player1;
     }
 
-    public void setWhite(String white) {
-        this.white = white;
+    public void setPlayer1(String player1) {
+        this.player1 = player1;
     }
 
-    public String getBlack() {
-        return black;
+    public String getPlayer2() {
+        return player2;
     }
 
-    public void setBlack(String black) {
-        this.black = black;
+    public void setPlayer2(String player2) {
+        this.player2 = player2;
     }
 
-    public String getFen() {
-        return fen;
+    public String getPlayer3() {
+        return player3;
     }
 
-    public void setFen(String fen) {
-        this.fen = fen;
+    public void setPlayer3(String player3) {
+        this.player3 = player3;
+    }
+
+    public String getPlayer4() {
+        return player4;
+    }
+
+    public void setPlayer4(String player4) {
+        this.player4 = player4;
+    }
+
+    public String getFEN() {
+        return FEN;
+    }
+
+    public void setFEN(String FEN) {
+        this.FEN = FEN;
     }
 
     public String getResult() {
@@ -132,27 +163,38 @@ public class Game implements Serializable {
         this.to_y = to_y;
     }
 
-    public String getNext_move() {
-        return next_move;
+    public String getMade_by() {
+        return made_by;
     }
 
-    public void setNext_move(String next_move) {
-        this.next_move = next_move;
+    public void setMade_by(String made_by) {
+        this.made_by = made_by;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     @Override
     public String toString() {
         return "Game{" +
                 "id=" + id +
-                ", white='" + white + '\'' +
-                ", black='" + black + '\'' +
-                ", fen='" + fen + '\'' +
+                ", player1='" + player1 + '\'' +
+                ", player2='" + player2 + '\'' +
+                ", player3='" + player3 + '\'' +
+                ", player4='" + player4 + '\'' +
+                ", FEN='" + FEN + '\'' +
                 ", result='" + result + '\'' +
                 ", from_x=" + from_x +
                 ", from_y=" + from_y +
                 ", to_x=" + to_x +
                 ", to_y=" + to_y +
-                ", next_move='" + next_move + '\'' +
+                ", made_by='" + made_by + '\'' +
+                ", type=" + type +
                 '}';
     }
 }

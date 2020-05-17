@@ -9,6 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ChessApi {
 
@@ -16,17 +17,16 @@ public interface ChessApi {
         Call<ResponseForRegistration> registerUser(@Body RequestBody user);
 
         @Headers({ "Content-Type: application/json;charset=UTF-8"})
-        @GET("game/new")
-        Call<Game> makeNewGame(@Header("Authorization") String authHeader);
+        @GET("game/new/{type}")
+        Call<Game> makeNewGame2P(@Header("Authorization") String authHeader,
+                                 @Path("type") int type);
 
         @POST("auth/token")
         Call<String> loginUser(@Body RequestBody body);
 
-        @GET("game/get/move")
-//        @Headers({
-//                "cache-control: application/vnd.yourapi.v1.full+json",
-//                "Authorization: Bearer"
-//        })
-        Call<Game> getLastMove(@Header("cache-control") String header, @Header("Authorization") String Authorization);
+        @GET("game/get/move/{id}")
+        Call<Game> getLastMove(@Header("cache-control") String header,
+                               @Header("Authorization") String Authorization,
+                               @Path("id") long id);
 
 }

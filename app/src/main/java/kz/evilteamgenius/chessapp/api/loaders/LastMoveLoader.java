@@ -15,10 +15,10 @@ public class LastMoveLoader {
         this.lastMoveCallback = lastMoveCallback;
     }
 
-    public void getLastMove(String token) {
+    public void getLastMove(String token, Long id) {
         String authentication = "Bearer " + token;
         ChessService.getInstance().getJSONApi().
-                getLastMove("no-cache", authentication).enqueue(new Callback<Game>() {
+                getLastMove("no-cache", authentication, id).enqueue(new Callback<Game>() {
             @Override
             public void onResponse(Call<Game> call, Response<Game> response) {
                 if (response.isSuccessful()) {

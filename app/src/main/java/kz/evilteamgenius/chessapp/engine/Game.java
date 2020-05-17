@@ -45,6 +45,7 @@ public class Game {
     public static Player[] players;
     public static int turns;
 
+    public static kz.evilteamgenius.chessapp.models.Game game;
     public static String roomAdress;
     private static List<String> deadPlayers;
 

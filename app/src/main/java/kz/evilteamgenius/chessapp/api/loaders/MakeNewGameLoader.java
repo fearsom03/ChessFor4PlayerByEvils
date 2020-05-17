@@ -15,8 +15,8 @@ public class MakeNewGameLoader {
         this.getMakeNewGameLoaderCallback = getMakeNewGameLoaderCallback;
     }
 
-    public void loadMakeNewGame(String token){
-        ChessService.getInstance().getJSONApi().makeNewGame("Bearer "+token).enqueue(new Callback<Game>() {
+    public void loadMakeNew2PGame(String token, int mode){
+        ChessService.getInstance().getJSONApi().makeNewGame2P("Bearer "+token, mode).enqueue(new Callback<Game>() {
             @Override
             public void onResponse(Call<Game> call, Response<Game> response) {
                 if (response.isSuccessful()) {
