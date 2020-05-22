@@ -51,15 +51,15 @@ public class BoardView extends View {
                 int y = max - 1 - (int) (event.getY() / getWidth() * max);
                 Timber.d("selection: %s  %s ", x, y);
                 Coordinate c = new Coordinate(x, y);
-                if (c.isValid() && Board.getPiece(c) != null &&
-                        Board.getPiece(c).getPlayerId().equals(GameEngine.currentPlayer())) {
+                if (c.isValid() && Board.getPiece(c, Board.BOARD) != null &&
+                        Board.getPiece(c, Board.BOARD).getPlayerId().equals(GameEngine.currentPlayer())) {
                     selection = c;
                     Timber.d("Selected!");
                     invalidate();
                 } else {
                     if (selection != null) {
                         // we have a piece selected and clicked on a new position
-                        if (Board.move(selection, c)) {
+                        if (Board.move(selection, c, getContext())) {
                             Timber.d("Moved!");
                             selection = null;
                             invalidate();
@@ -90,7 +90,7 @@ public class BoardView extends View {
                     else boardPaint.setColor(Color.DKGRAY);
                     drawCoordinate(c, canvas, cellWidth, boardPaint, max);
                     if (isInEditMode()) continue;
-                    p = Board.getPiece(c);
+                    p = Board.getPiece(c, Board.BOARD);
                     if (p != null) {
                         textPaint.setColor(GameEngine.getPlayerColor(p.getPlayerId()));
                         canvas.drawText(p.getString(), x * cellWidth,
@@ -99,7 +99,7 @@ public class BoardView extends View {
                 }
             }
         }
-        if (selection != null && (p = Board.getPiece(selection)) != null) {
+        if (selection != null && (p = Board.getPiece(selection, Board.BOARD)) != null) {
             boardPaint.setAlpha(128);
             boardPaint.setColor(Color.CYAN);
             canvas.drawCircle(selection.x * cellWidth + cellWidth / 2,
@@ -107,7 +107,7 @@ public class BoardView extends View {
             textPaint.setColor(GameEngine.getPlayerColor(p.getPlayerId()));
             canvas.drawText(p.getString(), selection.x * cellWidth,
                     (max - selection.y) * cellWidth - 10, textPaint);
-            for (Coordinate possible : p.getPossiblePositions()) {
+            for (Coordinate possible : p.getPossiblePositions(Board.BOARD)) {
                 drawCoordinate(possible, canvas, cellWidth, boardPaint, max);
             }
         }

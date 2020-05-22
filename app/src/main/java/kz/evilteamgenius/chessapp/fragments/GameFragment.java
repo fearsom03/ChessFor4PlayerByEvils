@@ -84,11 +84,6 @@ public class GameFragment extends Fragment {
             callAsynchronousTask();
             infunc = false;
         }
-
-        //TODO: remove websocket get move with polling
-//        if (!Game.match.isLocal) {
-//            ((MainActivity) getActivity()).getMove(board);
-//        }
         return v;
     }
 
@@ -142,11 +137,10 @@ public class GameFragment extends Fragment {
             turn.setText(text);
 
             // Stuff that updates the UI
-
         });
-        getActivity().getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
-                .remove("match_" + GameEngine.match.id + "_" + GameEngine.match.mode).apply();
-        Timber.d("Deleting match_%s_%s", GameEngine.match.id, GameEngine.match.mode);
+//        getActivity().getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
+//                .remove("match_" + GameEngine.match.id + "_" + GameEngine.match.mode).apply();
+//        Timber.d("Deleting match_%s_%s", GameEngine.match.id, GameEngine.match.mode);
     }
 
     /**

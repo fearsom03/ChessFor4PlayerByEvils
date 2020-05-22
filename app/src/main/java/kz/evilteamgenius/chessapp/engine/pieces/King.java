@@ -27,7 +27,7 @@ public class King extends Piece {
     }
 
     @Override
-    public List<Coordinate> getPossiblePositions() {
+    public List<Coordinate> getPossiblePositions(Piece[][] board) {
         List<Coordinate> re = new LinkedList<>();
         int x = position.x;
         int y = position.y;
@@ -35,7 +35,7 @@ public class King extends Piece {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 c = new Coordinate(x + i, y + j);
-                if (c.isValid() && sameTeam(c)) {
+                if (c.isValid() && sameTeam(c, board)) {
                     re.add(c);
                 }
             }

@@ -26,9 +26,9 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Coordinate> getPossiblePositions() {
-        List<Coordinate> re = Rook.moveStraight(this);
-        re.addAll(Bishop.moveDiagonal(this));
+    public List<Coordinate> getPossiblePositions(Piece[][] board) {
+        List<Coordinate> re = Rook.moveStraight(this, board);
+        re.addAll(Bishop.moveDiagonal(this, board));
         return re;
     }
 

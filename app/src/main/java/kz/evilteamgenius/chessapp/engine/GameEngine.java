@@ -69,15 +69,15 @@ public class GameEngine {
      * Should be called when a move is made
      */
     public static void moved() {
-        Timber.d("moved function!");
+
         turns++;
         String next = players[turns % players.length].id;
         while (deadPlayers.contains(next)) {
-            Timber.d("skipping %s", next);
+
             turns++; // skip dead players
             next = players[turns % players.length].id;
         }
-        Timber.d("Game.moved, next player %s", next);
+
         if (next.startsWith("AutoMatch_")) next = null;
         if (!match.isLocal) {
             //TODO SEND MOVES TO WEBSCOKET
@@ -313,7 +313,7 @@ public class GameEngine {
         players = new Player[num_players];
         for (int i = 0; i < num_players; i++) {
             players[i] =
-                    new Player(String.valueOf(i), match.mode == MODE_4_PLAYER_TEAMS ? i / 2 : i,
+                    new Player(String.valueOf(i), match.mode == MODE_4_PLAYER_TEAMS ? i % 2 : i,
                             PLAYER_COLOR[i], ifNull ? "Player " + (i + 1) : receivedPlayers[i]);
             if (!match.isLocal) {
                 if (receivedPlayers[i].equals(myName)) {
