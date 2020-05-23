@@ -85,18 +85,8 @@ public class Board {
         Player me = GameEngine.getPlayer(GameEngine.currentPlayer());
         Piece target = BOARD[new_pos.x][new_pos.y];
 
-        // TODO: at the end of the turn, check if I'm in check, if so check if I'm checkmated
-        if (isCheckmated(me)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Game over")
-                    .setTitle("Game over");
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-        //TODO: ifWillBeChecked();
         if (ifWillBeChecked(me, old_pos, new_pos))
             return false;
-
 
         // move the piece
         BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
@@ -107,16 +97,26 @@ public class Board {
 
         me.lastMove = new Pair<>(old_pos, new_pos);
 
-        if (target instanceof King && GameEngine.removePlayer(target.getPlayerId())) {
+        // at the end of the turn, check if next player is checkmated, if so remove the player
+        Player nextPlayer = GameEngine.getNextPlayer();
+        if (isCheckmated(nextPlayer)) {
+            ifOver = GameEngine.removePlayer(nextPlayer.id);
+        }
+
+        if (ifOver) {
             // game ended
-            ifOver = true;
             if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
-                MainActivity.sendMove(old_pos, new_pos, ifOver);
+                MainActivity.sendMove(old_pos, new_pos, true);
             }
-            GameEngine.over();
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage("Game over")
+                    .setTitle("Game over");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            //GameEngine.over();
         } else {
             if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
-                MainActivity.sendMove(old_pos, new_pos, ifOver);
+                MainActivity.sendMove(old_pos, new_pos, false);
             }
             GameEngine.moved();
         }
@@ -135,7 +135,7 @@ public class Board {
             GameEngine.getPlayer(target.getPlayerId()).pieces.remove(target);
         moved.position = new_pos;
         for (Player p : GameEngine.players) {
-            if (p.team == player.team)
+            if (p.team == player.team || !GameEngine.isPlayerAlive(p.id))
                 continue;
             for (Piece piece1 : p.pieces) {
                 if (piece1.getPossiblePositions(newBoard).contains(myKing.position)) {
@@ -155,7 +155,7 @@ public class Board {
     public static boolean isInCheckNow(Player player) {
         King king = player.king;
         for (Player p : GameEngine.players) {
-            if (p.team == player.team)
+            if (p.team == player.team || !GameEngine.isPlayerAlive(p.id))
                 continue;
             for (Piece piece : p.pieces) {
                 if (piece.getPossiblePositions(BOARD).contains(king.position)) {

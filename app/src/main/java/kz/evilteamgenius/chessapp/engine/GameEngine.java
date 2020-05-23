@@ -86,6 +86,15 @@ public class GameEngine {
         if (UI != null) UI.updateTurn();
     }
 
+    public static Player getNextPlayer(){
+        int now = turns + 1;
+        Player next = players[now % players.length];
+        while (deadPlayers.contains(next)) {
+            now++; // skip dead players
+            next = players[now % players.length];
+        }
+        return next;
+    }
     public static void save(final Context c) {
         if (match.isLocal) {
             c.getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
@@ -170,6 +179,12 @@ public class GameEngine {
         if (players.length > 2) Board.removePlayer(playerId);
         deadPlayers.add(playerId);
         return isGameOver();
+    }
+
+    public static boolean isPlayerAlive(final String playerId) {
+        if(deadPlayers.contains(playerId))
+            return false;
+        return true;
     }
 
     /**
