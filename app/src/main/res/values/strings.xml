@@ -6,6 +6,10 @@
         <item>Русский</item>
         <item>中文</item>
     </string-array>
+    <string name="adMob_for_release" translatable="false">
+        ca-app-pub-8472985163028614~1818323138</string>
+    <string name="adMob_for_testBanner" translatable="false">
+        ca-app-pub-3940256099942544/6300978111</string>
     <string name="app_name">ChessForFour</string>
     <string name="login">Login</string>
     <string name="passwordName">Password</string>

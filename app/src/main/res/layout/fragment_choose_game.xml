@@ -54,6 +54,24 @@
             android:text="@string/mode2"
             android:textSize="20sp" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+
+            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adViewChoose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/adMob_for_testBanner" />
+            <!--
+             ca-app-pub-3940256099942544/6300978111 for test
+             ca-app-pub-8472985163028614~1818323138 for realise-->
+        </RelativeLayout>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

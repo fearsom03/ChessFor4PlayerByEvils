@@ -59,7 +59,13 @@
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
+        <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8472985163028614~1818323138" />
         <receiver
             android:name=".utils.ConnectivityReceiver"
             android:enabled="true">

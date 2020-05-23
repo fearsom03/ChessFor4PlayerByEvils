@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.fragment_choose_game.*
 import kz.evilteamgenius.chessapp.R
 import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader
@@ -51,6 +52,12 @@ class ChooseGame : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(GameViewModel::class.java)
         initClickers()
+        initAddMob()
+    }
+
+    private fun initAddMob() {
+        val adRequest = AdRequest.Builder().build()
+        adViewChoose.loadAd(adRequest)
     }
 
     private fun initClickers() {

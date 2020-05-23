@@ -4,6 +4,7 @@ import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import kz.evilteamgenius.chessapp.BuildConfig;
@@ -13,6 +14,7 @@ public class ApplicationController extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MobileAds.initialize(this);
         Timber.plant(BuildConfig.DEBUG ? new Timber.DebugTree() : new CrashReportingTree());
     }
 
