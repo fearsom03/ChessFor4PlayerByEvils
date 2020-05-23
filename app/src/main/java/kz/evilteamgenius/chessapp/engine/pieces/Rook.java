@@ -28,8 +28,8 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Coordinate> getPossiblePositions() {
-        return moveStraight(this);
+    public List<Coordinate> getPossiblePositions(Piece[][] board) {
+        return moveStraight(this, board);
     }
 
     /**
@@ -38,31 +38,31 @@ public class Rook extends Piece {
      * @param p the piece
      * @return a list of possible positions
      */
-    public static List<Coordinate> moveStraight(final Piece p) {
+    public static List<Coordinate> moveStraight(final Piece p, Piece[][] board) {
         List<Coordinate> re = new LinkedList<>();
 
         // move to top
         int x = p.position.x;
         int y = p.position.y + 1;
         Coordinate c = new Coordinate(x, y);
-        while (c.isValid() && Board.getPiece(c) == null) {
+        while (c.isValid() && Board.getPiece(c, board) == null) {
             re.add(c);
             y++;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c, board)) {
             re.add(c);
         }
 
         // move to bottom
         y = p.position.y - 1;
         c = new Coordinate(x, y);
-        while (c.isValid() && Board.getPiece(c) == null) {
+        while (c.isValid() && Board.getPiece(c, board) == null) {
             re.add(c);
             y--;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c, board)) {
             re.add(c);
         }
 
@@ -70,24 +70,24 @@ public class Rook extends Piece {
         y = p.position.y;
         x = p.position.x + 1;
         c = new Coordinate(x, y);
-        while (c.isValid() && Board.getPiece(c) == null) {
+        while (c.isValid() && Board.getPiece(c, board) == null) {
             re.add(c);
             x++;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c, board)) {
             re.add(c);
         }
 
         // move left
         x = p.position.x - 1;
         c = new Coordinate(x, y);
-        while (c.isValid() && Board.getPiece(c) == null) {
+        while (c.isValid() && Board.getPiece(c, board) == null) {
             re.add(c);
             x--;
             c = new Coordinate(x, y);
         }
-        if (c.isValid() && p.sameTeam(c)) {
+        if (c.isValid() && p.sameTeam(c, board)) {
             re.add(c);
         }
 

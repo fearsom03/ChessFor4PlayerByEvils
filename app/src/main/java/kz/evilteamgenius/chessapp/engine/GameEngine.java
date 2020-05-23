@@ -69,15 +69,15 @@ public class GameEngine {
      * Should be called when a move is made
      */
     public static void moved() {
-        Timber.d("moved function!");
+
         turns++;
         String next = players[turns % players.length].id;
         while (deadPlayers.contains(next)) {
-            Timber.d("skipping %s", next);
+
             turns++; // skip dead players
             next = players[turns % players.length].id;
         }
-        Timber.d("Game.moved, next player %s", next);
+
         if (next.startsWith("AutoMatch_")) next = null;
         if (!match.isLocal) {
             //TODO SEND MOVES TO WEBSCOKET
@@ -86,6 +86,15 @@ public class GameEngine {
         if (UI != null) UI.updateTurn();
     }
 
+    public static Player getNextPlayer(){
+        int now = turns + 1;
+        Player next = players[now % players.length];
+        while (deadPlayers.contains(next)) {
+            now++; // skip dead players
+            next = players[now % players.length];
+        }
+        return next;
+    }
     public static void save(final Context c) {
         if (match.isLocal) {
             c.getSharedPreferences("localMatches", Context.MODE_PRIVATE).edit()
@@ -170,6 +179,12 @@ public class GameEngine {
         if (players.length > 2) Board.removePlayer(playerId);
         deadPlayers.add(playerId);
         return isGameOver();
+    }
+
+    public static boolean isPlayerAlive(final String playerId) {
+        if(deadPlayers.contains(playerId))
+            return false;
+        return true;
     }
 
     /**
@@ -313,7 +328,7 @@ public class GameEngine {
         players = new Player[num_players];
         for (int i = 0; i < num_players; i++) {
             players[i] =
-                    new Player(String.valueOf(i), match.mode == MODE_4_PLAYER_TEAMS ? i / 2 : i,
+                    new Player(String.valueOf(i), match.mode == MODE_4_PLAYER_TEAMS ? i % 2 : i,
                             PLAYER_COLOR[i], ifNull ? "Player " + (i + 1) : receivedPlayers[i]);
             if (!match.isLocal) {
                 if (receivedPlayers[i].equals(myName)) {

@@ -27,31 +27,31 @@ public class Knight extends Piece {
     }
 
     @Override
-    public List<Coordinate> getPossiblePositions() {
+    public List<Coordinate> getPossiblePositions(Piece[][] board) {
         List<Coordinate> re = new LinkedList<>();
         Coordinate c = new Coordinate(position.x + 2, position.y + 1);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         c = new Coordinate(position.x + 2, position.y - 1);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         c = new Coordinate(position.x - 2, position.y + 1);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         c = new Coordinate(position.x - 2, position.y - 1);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         c = new Coordinate(position.x + 1, position.y + 2);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         c = new Coordinate(position.x - 1, position.y + 2);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         c = new Coordinate(position.x + 1, position.y - 2);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         c = new Coordinate(position.x - 1, position.y - 2);
-        if (c.isValid() && sameTeam(c)) re.add(c);
+        if (c.isValid() && sameTeam(c, board)) re.add(c);
 
         return re;
     }

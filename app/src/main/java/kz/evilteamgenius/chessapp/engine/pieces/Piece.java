@@ -49,7 +49,7 @@ public abstract class Piece {
      *
      * @return a list of possible new coordinates
      */
-    public abstract List<Coordinate> getPossiblePositions();
+    public abstract List<Coordinate> getPossiblePositions(Piece[][] board);
 
     /**
      * Gets the player ID, to whom this piece belongs
@@ -66,8 +66,8 @@ public abstract class Piece {
      * @param destination the piece to check against
      * @return true, if both pieces belong to the same team or same player
      */
-    boolean sameTeam(final Coordinate destination) {
-        Piece p = Board.getPiece(destination);
+    boolean sameTeam(final Coordinate destination, Piece[][] board) {
+        Piece p = Board.getPiece(destination, board);
         return p == null || !GameEngine.sameTeam(p.ownerId, ownerId);
     }
 
