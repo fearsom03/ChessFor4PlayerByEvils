@@ -6,7 +6,7 @@
         <item>Русский</item>
         <item>中文</item>
     </string-array>
-    <string name="app_name">ChessAppGG</string>
+    <string name="app_name">ChessForFour</string>
     <string name="login">Login</string>
     <string name="passwordName">Password</string>
     <string name="SignInText">Sign in</string>
@@ -26,7 +26,7 @@
     <string name="RegisterSuccess">Register successful</string>
     <string name="OOPS_TryAgain">OOPS! Please try again</string>
     <string name="notificationName">Notification</string>
-    <string name="soundText">Sound</string>
+    <string name="soundText">Music</string>
     <string name="changeUserText">Change user</string>
     <string name="backText">Back</string>
     <string name="okText">OK</string>

@@ -158,10 +158,14 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
                 getActivity().finish();
                 break;
             case R.id.shareApp:
+                final String appPackageName = requireActivity().getPackageName();
+                String shareString = "https://play.google.com/store/apps/details?id="
+                        + appPackageName;
+//                https://github.com/fearsom03/AndroidFinalChessApp
                 intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, "https://github.com/fearsom03/AndroidFinalChessApp");
+                intent.putExtra(Intent.EXTRA_TEXT, shareString);
                 startActivity(Intent.createChooser(intent, "Share"));
                 break;
             case R.id.backButtonInOption:

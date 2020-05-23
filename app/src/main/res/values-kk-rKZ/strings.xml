@@ -8,7 +8,7 @@
         <item>中文</item>
     </string-array>
 
-    <string name="app_name">ChessAppGG</string>
+    <string name="app_name">ҚазШахМат</string>
     <string name="login">Логин</string>
     <string name="passwordName">Купия соз</string>
     <string name="SignInText">Кiру</string>
@@ -28,7 +28,7 @@
     <string name="RegisterSuccess">Сiз тiркелдiнiз</string>
     <string name="OOPS_TryAgain">УПС! Кайта корiнiз</string>
     <string name="notificationName">Хабарландыру</string>
-    <string name="soundText">Дыбыс</string>
+    <string name="soundText">Музыка</string>
     <string name="changeUserText">Колданушыны ауыстыру</string>
     <string name="backText">Артқа</string>
     <string name="okText">OK</string>

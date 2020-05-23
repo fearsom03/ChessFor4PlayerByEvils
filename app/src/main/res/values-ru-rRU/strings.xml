@@ -9,7 +9,7 @@
         <item>中文</item>
     </string-array>
 
-    <string name="app_name">ChessAppGG</string>
+    <string name="app_name">Шахматы</string>
     <string name="login">Логин</string>
     <string name="passwordName">Пароль</string>
     <string name="SignInText">Войти</string>
@@ -29,7 +29,7 @@
     <string name="RegisterSuccess">Вы зарегистрировались</string>
     <string name="OOPS_TryAgain">УПС! Попробуйте еще раз</string>
     <string name="notificationName">Уведомление</string>
-    <string name="soundText">Звук</string>
+    <string name="soundText">Музыка</string>
     <string name="changeUserText">Поменять пользователя</string>
     <string name="backText">Назад</string>
     <string name="okText">OK</string>
