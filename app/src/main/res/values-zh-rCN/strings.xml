@@ -68,4 +68,5 @@
     <string name="leavematch">Do you really want to leave this match?</string>
     <string name="online">Online</string>
     <string name="needToBeOnline">Turn on internet for access online game</string>
+    <string name="versionText">Version %1$s</string>
 </resources>

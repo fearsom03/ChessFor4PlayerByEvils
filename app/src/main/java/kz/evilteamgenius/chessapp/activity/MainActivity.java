@@ -31,6 +31,7 @@ import kz.evilteamgenius.chessapp.engine.GameEngine;
 import kz.evilteamgenius.chessapp.engine.Match;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
 import kz.evilteamgenius.chessapp.fragments.NavigationPageFragment;
+import kz.evilteamgenius.chessapp.fragments.UpdateYourApplicationFragment;
 import kz.evilteamgenius.chessapp.models.Game;
 import kz.evilteamgenius.chessapp.models.MatchMakingMessage;
 import kz.evilteamgenius.chessapp.models.MoveMessage;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private MusicService mServ;
     private GameViewModel viewModel;
     private ConnectivityReceiver receiver;
+    private boolean isBeenChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 startMusic();
             } else {
                 stopMusic();
+            }
+        });
+        viewModel.checkVersion().observe(this, aBoolean -> {
+            if (!aBoolean) {
+                isBeenChecked = true;
+                replaceFragment(new UpdateYourApplicationFragment());
+            } else {
+                if (isBeenChecked) {
+                    fragment = new NavigationPageFragment();
+                    replaceFragment(fragment);
+                }
             }
         });
         //end music staff

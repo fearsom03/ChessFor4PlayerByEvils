@@ -5,106 +5,123 @@
     android:background="@drawable/image_preview_5"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="25dp"
-        android:orientation="vertical">
-
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/linearOfMainSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="25dp">
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="55dp"
+            android:layout_marginBottom="25dp"
+            android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/languageSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
 
-        <LinearLayout
-            style="@style/textViewDesign"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="100">
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="30"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:text="@string/notificationName"
-                android:textAlignment="textStart"
-                android:textColor="@android:color/white"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="25dp">
 
-            <Switch
-                android:id="@+id/notificationSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="70" />
-        </LinearLayout>
+                <Spinner
+                    android:id="@+id/languageSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
-        <LinearLayout
-            style="@style/textViewDesign"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="100">
-
-            <TextView
+            <LinearLayout
+                style="@style/textViewDesign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="30"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:text="@string/soundText"
-                android:textAlignment="textStart"
-                android:textColor="@android:color/white"
-                android:textSize="22sp"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/notificationName"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/notificationSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="70" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/textViewDesign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/soundText"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/soundSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="70" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/exitTextView"
+                style="@style/textViewDesign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/changeUserText" />
+
+
+            <TextView
+                android:id="@+id/shareApp"
+                style="@style/textViewDesign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shareApp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/backButtonInOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:shadowColor="@android:color/black"
+                android:text="@string/backText"
+                android:textAllCaps="false"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
-            <Switch
-                android:id="@+id/soundSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="70" />
         </LinearLayout>
 
-
         <TextView
-            android:id="@+id/exitTextView"
-            style="@style/textViewDesign"
-            android:layout_width="match_parent"
+            android:id="@+id/versionText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/changeUserText" />
-
-
-        <TextView
-            android:id="@+id/shareApp"
-            style="@style/textViewDesign"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/shareApp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/backButtonInOption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:shadowColor="@android:color/black"
-            android:text="@string/backText"
-            android:textAllCaps="false"
-            android:textSize="25sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+            android:layout_below="@id/linearOfMainSettings"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"
+            android:text="1.0"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
 
 </androidx.core.widget.NestedScrollView>

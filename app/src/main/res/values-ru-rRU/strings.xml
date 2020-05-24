@@ -66,5 +66,6 @@
     <string name="leavematch">Вы действительно хотите покинуть эту игру?</string>
     <string name="online">Онлайн</string>
     <string name="needToBeOnline">Включите интернет для доступа к онлайн игре</string>
+    <string name="versionText">Версия %1$s</string>
 
 </resources>

@@ -111,7 +111,9 @@ public class NavigationPageFragment extends Fragment implements SliderAdapter.my
     private void initData() {
         //add advertisment images
         imageLinks = new ArrayList<>();
+
         AdObj adObjIITU = new AdObj("https://instagram.fala4-2.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/s640x640/99149719_596085964661735_3823630780194234657_n.jpg?_nc_ht=instagram.fala4-2.fna.fbcdn.net&_nc_cat=111&_nc_ohc=1Js5EDqo7EwAX-6N7dL&oh=dbab6534ca4e937789424a9e849aa067&oe=5EF3760C", "https://www.iitu.kz");
+
         AdObj adObjInsta = new AdObj("https://lh3.googleusercontent.com/2sREY-8UpjmaLDCTztldQf6u2RGUtuyf6VT5iyX3z53JS4TdvfQlX-rNChXKgpBYMw", "https://www.instagram.com/altynboy/");
         for (int i = 0; i < 2; i++) {
             imageLinks.add(adObjIITU);

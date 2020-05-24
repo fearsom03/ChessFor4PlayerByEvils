@@ -26,6 +26,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kz.evilteamgenius.chessapp.BuildConfig;
 import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.LoginActivity;
@@ -52,6 +53,8 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
     TextView shareApp;
     @BindView(R.id.backButtonInOption)
     MaterialButton backButtonInOption;
+    @BindView(R.id.versionText)
+    TextView versionText;
 
     private Locale myLocale;
     private String something, getlanguageStat;
@@ -69,11 +72,16 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
-
         preferences
                 = requireActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
         spinnerInit();
         initToggle();
+        initVersionText();
+    }
+
+    private void initVersionText() {
+        String version = getString(R.string.versionText, BuildConfig.VERSION_NAME);
+        versionText.setText(version);
     }
 
     private void initToggle() {
