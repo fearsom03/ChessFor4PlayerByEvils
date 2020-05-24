@@ -54,8 +54,9 @@ public class Board {
      * @param playerId the player id who's pieces should be removed
      */
     public static void removePlayer(final String playerId) {
-        for (int x = 0; x < (extendedBoard ? 12 : 8); x++) {
-            for (int y = 0; y < (extendedBoard ? 12 : 8); y++) {
+        int len = extendedBoard ? 12 : 8;
+        for (int x = 0; x < len; x++) {
+            for (int y = 0; y < len; y++) {
                 if (BOARD[x][y] != null && playerId.equals(BOARD[x][y].getPlayerId())) {
                     BOARD[x][y] = null;
                 }
@@ -436,8 +437,9 @@ public class Board {
     }
 
     public static Piece[][] cloneTheBoard() {
-        Piece[][] cloned = new Piece[BOARD.length][BOARD[0].length];
-        for (int i = 0; i < BOARD.length; i++) {
+        int len = extendedBoard ? 12 : 8;
+        Piece[][] cloned = new Piece[len][len];
+        for (int i = 0; i < len; i++) {
             cloned[i] = BOARD[i].clone();
         }
         return cloned;

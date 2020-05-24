@@ -89,7 +89,7 @@ public class GameEngine {
     public static Player getNextPlayer(){
         int now = turns + 1;
         Player next = players[now % players.length];
-        while (deadPlayers.contains(next)) {
+        while (deadPlayers.contains(next.id)) {
             now++; // skip dead players
             next = players[now % players.length];
         }
