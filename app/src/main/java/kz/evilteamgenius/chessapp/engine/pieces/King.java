@@ -45,6 +45,6 @@ public class King extends Piece {
 
     @Override
     public String getString() {
-        return "\u265A";
+        return "\u265B";
     }
 }

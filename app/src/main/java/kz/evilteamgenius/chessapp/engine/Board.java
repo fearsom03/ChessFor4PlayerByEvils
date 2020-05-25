@@ -23,21 +23,6 @@ import timber.log.Timber;
 
 import static java.security.AccessController.getContext;
 
-/*
- * Copyright 2014 Thomas Hoffmann
- * Updated by evilteamgenius team
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 public class Board {
 
     private Board() {
@@ -287,42 +272,42 @@ public class Board {
         Player player = GameEngine.getPlayer(owner);
         for (int x = x_begin; x < x_begin + 8; x++) {
             Piece pawn = GameEngine.match.isLocal && (y_pawns == 6 || y_pawns == 10) ?
-                    new DownPawn(new Coordinate(x, y_pawns), owner) :
-                    new Pawn(new Coordinate(x, y_pawns), owner);
-            BOARD[x][y_pawns] = pawn;
+                    new DownPawn(new Coordinate(x, y_pawns, rotations), owner) :
+                    new Pawn(new Coordinate(x, y_pawns, rotations), owner);
+            BOARD[pawn.position.x][pawn.position.y] = pawn;
             player.pieces.add(pawn);
         }
-        Piece rook1 = new Rook(new Coordinate(x_begin, y_others), owner);
-        BOARD[x_begin][y_others] = rook1;
+        Piece rook1 = new Rook(new Coordinate(x_begin, y_others, rotations), owner);
+        BOARD[rook1.position.x][rook1.position.y] = rook1;
         player.pieces.add(rook1);
 
-        Piece knight1 = new Knight(new Coordinate(x_begin + 1, y_others), owner);
-        BOARD[x_begin + 1][y_others] = knight1;
+        Piece knight1 = new Knight(new Coordinate(x_begin + 1, y_others, rotations), owner);
+        BOARD[knight1.position.x][knight1.position.y] = knight1;
         player.pieces.add(knight1);
 
-        Piece bishop1 = new Bishop(new Coordinate(x_begin + 2, y_others), owner);
-        BOARD[x_begin + 2][y_others] = bishop1;
+        Piece bishop1 = new Bishop(new Coordinate(x_begin + 2, y_others, rotations), owner);
+        BOARD[bishop1.position.x][bishop1.position.y] = bishop1;
         player.pieces.add(bishop1);
 
-        Piece queen = new Queen(new Coordinate(x_begin + 3, y_others), owner);
-        BOARD[x_begin + 3][y_others] = queen;
+        Piece queen = new Queen(new Coordinate(x_begin + 3, y_others, rotations), owner);
+        BOARD[queen.position.x][queen.position.y] = queen;
         player.pieces.add(queen);
 
-        King king = new King(new Coordinate(x_begin + 4, y_others), owner);
-        BOARD[x_begin + 4][y_others] = king;
+        King king = new King(new Coordinate(x_begin + 4, y_others, rotations), owner);
+        BOARD[king.position.x][king.position.y] = king;
         player.pieces.add(king);
         player.king = king;
 
-        Piece bishop2 = new Bishop(new Coordinate(x_begin + 5, y_others), owner);
-        BOARD[x_begin + 5][y_others] = bishop2;
+        Piece bishop2 = new Bishop(new Coordinate(x_begin + 5, y_others, rotations), owner);
+        BOARD[bishop2.position.x][bishop2.position.y] = bishop2;
         player.pieces.add(bishop2);
 
-        Piece knight2 = new Knight(new Coordinate(x_begin + 6, y_others), owner);
-        BOARD[x_begin + 6][y_others] = knight2;
+        Piece knight2 = new Knight(new Coordinate(x_begin + 6, y_others, rotations), owner);
+        BOARD[knight2.position.x][knight2.position.y] = knight2;
         player.pieces.add(knight2);
 
-        Piece rook2 = new Rook(new Coordinate(x_begin + 7, y_others), owner);
-        BOARD[x_begin + 7][y_others] = rook2;
+        Piece rook2 = new Rook(new Coordinate(x_begin + 7, y_others, rotations), owner);
+        BOARD[rook2.position.x][rook2.position.y] = rook2;
         player.pieces.add(rook2);
     }
 
@@ -339,48 +324,47 @@ public class Board {
             Piece pawn;
             if (GameEngine.match.isLocal) {
                 pawn =
-                        x_pawns == 1 ? new RightPawn(new Coordinate(x_pawns, y), owner) :
-                                new LeftPawn(new Coordinate(x_pawns, y), owner);
+                        x_pawns == 1 ? new RightPawn(new Coordinate(x_pawns, y, rotations), owner) :
+                                new LeftPawn(new Coordinate(x_pawns, y, rotations), owner);
             } else {
                 pawn = GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ?
-                        new LeftPawn(new Coordinate(x_pawns, y), owner) :
-                        new Pawn(new Coordinate(x_pawns, y), owner);
+                        new LeftPawn(new Coordinate(x_pawns, y, rotations), owner) :
+                        new Pawn(new Coordinate(x_pawns, y, rotations), owner);
             }
             player.pieces.add(pawn);
-            BOARD[x_pawns][y] = pawn;
+            BOARD[pawn.position.x][pawn.position.y] = pawn;
         }
-        Piece rook1 = new Rook(new Coordinate(x_others, 2), owner);
-        BOARD[x_others][2] = rook1;
+        Piece rook1 = new Rook(new Coordinate(x_others, 2, rotations), owner);
+        BOARD[rook1.position.x][rook1.position.y] = rook1;
         player.pieces.add(rook1);
 
-        Piece knight1 = new Knight(new Coordinate(x_others, 3), owner);
-        BOARD[x_others][3] = knight1;
+        Piece knight1 = new Knight(new Coordinate(x_others, 3, rotations), owner);
+        BOARD[knight1.position.x][knight1.position.y] = knight1;
         player.pieces.add(knight1);
 
-        Piece bishop1 = new Bishop(new Coordinate(x_others, 4), owner);
-        BOARD[x_others][4] = bishop1;
+        Piece bishop1 = new Bishop(new Coordinate(x_others, 4, rotations), owner);
+        BOARD[bishop1.position.x][bishop1.position.y] = bishop1;
         player.pieces.add(bishop1);
 
-        King king = new King(new Coordinate(x_others, 5), owner);
-        BOARD[x_others][5] = king;
+        King king = new King(new Coordinate(x_others, 5, rotations), owner);
+        BOARD[king.position.x][king.position.y] = king;
         player.pieces.add(king);
         player.king = king;
 
-        Piece queen = new Queen(new Coordinate(x_others, 6), owner);
-        ;
-        BOARD[x_others][6] = queen;
+        Piece queen = new Queen(new Coordinate(x_others, 6, rotations), owner);
+        BOARD[queen.position.x][queen.position.y] = queen;
         player.pieces.add(queen);
 
-        Piece bishop2 = new Bishop(new Coordinate(x_others, 7), owner);
-        BOARD[x_others][7] = bishop2;
+        Piece bishop2 = new Bishop(new Coordinate(x_others, 7, rotations), owner);
+        BOARD[bishop2.position.x][bishop2.position.y] = bishop2;
         player.pieces.add(bishop2);
 
-        Piece knight2 = new Knight(new Coordinate(x_others, 8), owner);
-        BOARD[x_others][8] = knight2;
+        Piece knight2 = new Knight(new Coordinate(x_others, 8, rotations), owner);
+        BOARD[knight2.position.x][knight2.position.y] = knight2;
         player.pieces.add(knight2);
 
-        Piece rook2 = new Rook(new Coordinate(x_others, 9), owner);
-        BOARD[x_others][9] = rook2;
+        Piece rook2 = new Rook(new Coordinate(x_others, 9, rotations), owner);
+        BOARD[rook2.position.x][rook2.position.y] = rook2;
         player.pieces.add(rook2);
     }
 
@@ -397,28 +381,28 @@ public class Board {
             extendedBoard = false;
 
             // setup player 1 (bottom)
-            setupPlayerTopBottom(0, 1, 0, players[myId].id);
+            setupPlayerTopBottom(0, 1, 0, players[0].id);
 
             // setup player 2 (top)
-            setupPlayerTopBottom(0, 6, 7, players[(myId + 1) % 2].id);
+            setupPlayerTopBottom(0, 6, 7, players[1].id);
         } else {
             BOARD = new Piece[12][12];
             extendedBoard = true;
 
             // setup player 1 (bottom)
-            setupPlayerTopBottom(2, 1, 0, players[myId].id);
+            setupPlayerTopBottom(2, 1, 0, players[0].id);
 
             // setup player 2 (right)
             setupPlayerLeftRight(10, 11,
-                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[myId].id : players[(myId + 1) % 4].id);
+                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[0].id : players[1].id);
 
             // setup player 3 (top)
             setupPlayerTopBottom(2, 10, 11,
-                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 2) % 4].id);
+                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[1].id : players[2].id);
 
             // setup player 4 (left)
             setupPlayerLeftRight(1, 0,
-                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[(myId + 1) % 4].id : players[(myId + 3) % 4].id);
+                    GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ? players[1].id : players[3].id);
         }
     }
 

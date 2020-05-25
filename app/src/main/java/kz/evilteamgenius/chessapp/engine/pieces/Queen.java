@@ -34,6 +34,6 @@ public class Queen extends Piece {
 
     @Override
     public String getString() {
-        return "\u265B";
+        return "\u265A";
     }
 }

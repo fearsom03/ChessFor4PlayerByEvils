@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
-        Timber.d("sendMove 2");
         old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
         new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
         GameEngine.game.setMade_by(GameEngine.myPlayerUserame);
