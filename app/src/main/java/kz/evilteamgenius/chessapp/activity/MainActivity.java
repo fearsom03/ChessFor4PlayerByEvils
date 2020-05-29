@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             Timber.d("Received: *****\n %s ***** \n", message.toString());
             Coordinate pos1 = new Coordinate(message.getFrom_x(), message.getFrom_y(), Board.rotations);
             Coordinate pos2 = new Coordinate(message.getTo_x(), message.getTo_y(), Board.rotations);
-            Board.moveWhenReceived(pos1, pos2);
+            Board.moveWhenReceived(pos1, pos2, MainActivity.this);
             // Stuff that updates the UI
             this.runOnUiThread(board::invalidate);
         }, throwable -> {

@@ -176,7 +176,7 @@ public class GameFragment extends Fragment {
                     Coordinate pos1 = new Coordinate(game.getFrom_x(), game.getFrom_y(), Board.rotations);
                     Coordinate pos2 = new Coordinate(game.getTo_x(), game.getTo_y(), Board.rotations);
                     toast(getContext(), game.toString());
-                    Board.moveWhenReceived(pos1, pos2);
+                    Board.moveWhenReceived(pos1, pos2, getContext());
                     getActivity().runOnUiThread(board::invalidate);
                 }
             }

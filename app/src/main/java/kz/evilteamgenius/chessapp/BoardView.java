@@ -49,18 +49,18 @@ public class BoardView extends View {
                 int max = Board.extendedBoard ? 12 : 8;
                 int x = (int) (event.getX() / getWidth() * max);
                 int y = max - 1 - (int) (event.getY() / getWidth() * max);
-                Timber.d("selection: %s  %s ", x, y);
+//                Timber.d("selection: %s  %s ", x, y);
                 Coordinate c = new Coordinate(x, y);
                 if (c.isValid() && Board.getPiece(c, Board.BOARD) != null &&
                         Board.getPiece(c, Board.BOARD).getPlayerId().equals(GameEngine.currentPlayer())) {
                     selection = c;
-                    Timber.d("Selected!");
+//                    Timber.d("Selected!");
                     invalidate();
                 } else {
                     if (selection != null) {
                         // we have a piece selected and clicked on a new position
                         if (Board.move(selection, c, getContext())) {
-                            Timber.d("Moved!");
+//                            Timber.d("Moved!");
                             selection = null;
                             invalidate();
                         }
@@ -74,7 +74,7 @@ public class BoardView extends View {
     @Override
     public void draw(final Canvas canvas) {
         super.draw(canvas);
-        Timber.d("onDraw");
+//        Timber.d("onDraw");
         int max = Board.extendedBoard ? 12 : 8;
         float cellWidth = canvas.getWidth() / (float) max;
         Coordinate c;
@@ -117,9 +117,9 @@ public class BoardView extends View {
         for (Player player : GameEngine.players) {
             if (player.lastMove != null) {
                 boardPaint.setColor(player.color);
-                Timber.d("draw lastMove: %s to %s "
-                        , player.lastMove.first.toString()
-                        , player.lastMove.second.toString());
+//                Timber.d("draw lastMove: %s to %s "
+//                        , player.lastMove.first.toString()
+//                        , player.lastMove.second.toString());
                 drawCoordinate(player.lastMove.first, canvas, cellWidth, boardPaint, max);
                 drawCoordinate(player.lastMove.second, canvas, cellWidth, boardPaint, max);
             }

@@ -91,14 +91,14 @@ public class Board {
 
         if (ifOver) {
             // game ended
-            if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
-                MainActivity.sendMove(old_pos, new_pos, true);
-            }
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage("Game over")
                     .setTitle("Game over");
             AlertDialog dialog = builder.create();
             dialog.show();
+            if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
+                MainActivity.sendMove(old_pos, new_pos, true);
+            }
             //GameEngine.over();
         } else {
             if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
@@ -167,8 +167,8 @@ public class Board {
         return true;
     }
 
-    public static void moveWhenReceived(final Coordinate old_pos, final Coordinate new_pos) {
-
+    public static void moveWhenReceived(final Coordinate old_pos, final Coordinate new_pos, Context context) {
+        boolean ifOver = false;
         Piece p = BOARD[old_pos.x][old_pos.y];
         if (p == null)
             return;
@@ -178,9 +178,19 @@ public class Board {
         p.position = new_pos;  //error: p is null, and write to null.pos
         GameEngine.getPlayer(GameEngine.currentPlayer()).lastMove =
                 new Pair<>(old_pos, new_pos);
-        if (target instanceof King && GameEngine.removePlayer(target.getPlayerId())) {
+        Player nextPlayer = GameEngine.getNextPlayer();
+        if (isCheckmated(nextPlayer)) {
+            ifOver = GameEngine.removePlayer(nextPlayer.id);
+        }
+
+        if (ifOver) {
             // game ended
-            GameEngine.over();
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage("Game over")
+                    .setTitle("Game over");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            //GameEngine.over();
         } else {
             GameEngine.moved();
         }
@@ -270,13 +280,22 @@ public class Board {
      */
     private static void setupPlayerTopBottom(int x_begin, int y_pawns, int y_others, final String owner) {
         Player player = GameEngine.getPlayer(owner);
+        Piece modelPawn = new Pawn(new Coordinate(2, y_pawns, rotations), owner);
+        int modelY = modelPawn.position.y;
         for (int x = x_begin; x < x_begin + 8; x++) {
-            Piece pawn = GameEngine.match.isLocal && (y_pawns == 6 || y_pawns == 10) ?
+            Piece pawn = modelY != 1 ?
                     new DownPawn(new Coordinate(x, y_pawns, rotations), owner) :
                     new Pawn(new Coordinate(x, y_pawns, rotations), owner);
             BOARD[pawn.position.x][pawn.position.y] = pawn;
             player.pieces.add(pawn);
         }
+//        for (int x = x_begin; x < x_begin + 8; x++) {
+//            Piece pawn = GameEngine.match.isLocal && (y_pawns == 6 || y_pawns == 10) ?
+//                    new DownPawn(new Coordinate(x, y_pawns, rotations), owner) :
+//                    new Pawn(new Coordinate(x, y_pawns, rotations), owner);
+//            BOARD[pawn.position.x][pawn.position.y] = pawn;
+//            player.pieces.add(pawn);
+//        }
         Piece rook1 = new Rook(new Coordinate(x_begin, y_others, rotations), owner);
         BOARD[rook1.position.x][rook1.position.y] = rook1;
         player.pieces.add(rook1);
