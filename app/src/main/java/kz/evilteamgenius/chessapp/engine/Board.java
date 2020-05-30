@@ -281,11 +281,17 @@ public class Board {
     private static void setupPlayerTopBottom(int x_begin, int y_pawns, int y_others, final String owner) {
         Player player = GameEngine.getPlayer(owner);
         Piece modelPawn = new Pawn(new Coordinate(2, y_pawns, rotations), owner);
-        int modelY = modelPawn.position.y;
         for (int x = x_begin; x < x_begin + 8; x++) {
-            Piece pawn = modelY != 1 ?
-                    new DownPawn(new Coordinate(x, y_pawns, rotations), owner) :
-                    new Pawn(new Coordinate(x, y_pawns, rotations), owner);
+            Piece pawn;
+            if(modelPawn.position.y == 1){
+                pawn = new Pawn(new Coordinate(x, y_pawns, rotations), owner);
+            }else if(modelPawn.position.y == 6 || modelPawn.position.y == 10){
+                pawn = new DownPawn(new Coordinate(x, y_pawns, rotations), owner);
+            }else if(modelPawn.position.x == 1){
+                pawn = new RightPawn(new Coordinate(x, y_pawns, rotations), owner);
+            }else{
+                pawn = new LeftPawn(new Coordinate(x, y_pawns, rotations), owner);
+            }
             BOARD[pawn.position.x][pawn.position.y] = pawn;
             player.pieces.add(pawn);
         }
@@ -339,17 +345,27 @@ public class Board {
      */
     private static void setupPlayerLeftRight(int x_pawns, int x_others, final String owner) {
         Player player = GameEngine.getPlayer(owner);
+        Piece modelPawn = new Pawn(new Coordinate(x_pawns, 2, rotations), owner);
         for (int y = 2; y < 10; y++) {
             Piece pawn;
-            if (GameEngine.match.isLocal) {
-                pawn =
-                        x_pawns == 1 ? new RightPawn(new Coordinate(x_pawns, y, rotations), owner) :
-                                new LeftPawn(new Coordinate(x_pawns, y, rotations), owner);
-            } else {
-                pawn = GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ?
-                        new LeftPawn(new Coordinate(x_pawns, y, rotations), owner) :
-                        new Pawn(new Coordinate(x_pawns, y, rotations), owner);
+            if(modelPawn.position.x == 10){
+                pawn = new LeftPawn(new Coordinate(x_pawns, y, rotations), owner);
+            }else if(modelPawn.position.x == 1){
+                pawn = new RightPawn(new Coordinate(x_pawns, y, rotations), owner);
+            }else if(modelPawn.position.y == 1){
+                pawn = new Pawn(new Coordinate(x_pawns, y, rotations), owner);
+            }else{
+                pawn = new DownPawn(new Coordinate(x_pawns, y, rotations), owner);
             }
+//            if (GameEngine.match.isLocal) {
+//                pawn =
+//                        x_pawns == 1 ? new RightPawn(new Coordinate(x_pawns, y, rotations), owner) :
+//                                new LeftPawn(new Coordinate(x_pawns, y, rotations), owner);
+//            } else {
+//                pawn = GameEngine.match.mode == GameEngine.MODE_2_PLAYER_4_SIDES ?
+//                        new LeftPawn(new Coordinate(x_pawns, y, rotations), owner) :
+//                        new Pawn(new Coordinate(x_pawns, y, rotations), owner);
+//            }
             player.pieces.add(pawn);
             BOARD[pawn.position.x][pawn.position.y] = pawn;
         }
