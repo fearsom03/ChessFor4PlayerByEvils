@@ -82,7 +82,12 @@ public class Board {
             GameEngine.getPlayer(target.getPlayerId()).pieces.remove(target);
 
         me.lastMove = new Pair<>(old_pos, new_pos);
-
+        if (checkForPromotion(p)) {
+            me.pieces.remove(p);
+            p = new Queen(p.position, p.getPlayerId());
+            BOARD[new_pos.x][new_pos.y] = p;
+            me.pieces.add(p);
+        }
         // at the end of the turn, check if next player is checkmated, if so remove the player
         Player nextPlayer = GameEngine.getNextPlayer();
         if (isCheckmated(nextPlayer)) {
@@ -172,12 +177,21 @@ public class Board {
         Piece p = BOARD[old_pos.x][old_pos.y];
         if (p == null)
             return;
+        Player cur_player = GameEngine.getPlayer(GameEngine.currentPlayer());
         Piece target = BOARD[new_pos.x][new_pos.y];
         BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
         BOARD[old_pos.x][old_pos.y] = null;
         p.position = new_pos;  //error: p is null, and write to null.pos
-        GameEngine.getPlayer(GameEngine.currentPlayer()).lastMove =
+        cur_player.lastMove =
                 new Pair<>(old_pos, new_pos);
+
+        if (checkForPromotion(p)) {
+            cur_player.pieces.remove(p);
+            p = new Queen(p.position, p.getPlayerId());
+            BOARD[new_pos.x][new_pos.y] = p;
+            cur_player.pieces.add(p);
+        }
+
         Player nextPlayer = GameEngine.getNextPlayer();
         if (isCheckmated(nextPlayer)) {
             ifOver = GameEngine.removePlayer(nextPlayer.id);
@@ -283,13 +297,13 @@ public class Board {
         Piece modelPawn = new Pawn(new Coordinate(2, y_pawns, rotations), owner);
         for (int x = x_begin; x < x_begin + 8; x++) {
             Piece pawn;
-            if(modelPawn.position.y == 1){
+            if (modelPawn.position.y == 1) {
                 pawn = new Pawn(new Coordinate(x, y_pawns, rotations), owner);
-            }else if(modelPawn.position.y == 6 || modelPawn.position.y == 10){
+            } else if (modelPawn.position.y == 6 || modelPawn.position.y == 10) {
                 pawn = new DownPawn(new Coordinate(x, y_pawns, rotations), owner);
-            }else if(modelPawn.position.x == 1){
+            } else if (modelPawn.position.x == 1) {
                 pawn = new RightPawn(new Coordinate(x, y_pawns, rotations), owner);
-            }else{
+            } else {
                 pawn = new LeftPawn(new Coordinate(x, y_pawns, rotations), owner);
             }
             BOARD[pawn.position.x][pawn.position.y] = pawn;
@@ -348,13 +362,13 @@ public class Board {
         Piece modelPawn = new Pawn(new Coordinate(x_pawns, 2, rotations), owner);
         for (int y = 2; y < 10; y++) {
             Piece pawn;
-            if(modelPawn.position.x == 10){
+            if (modelPawn.position.x == 10) {
                 pawn = new LeftPawn(new Coordinate(x_pawns, y, rotations), owner);
-            }else if(modelPawn.position.x == 1){
+            } else if (modelPawn.position.x == 1) {
                 pawn = new RightPawn(new Coordinate(x_pawns, y, rotations), owner);
-            }else if(modelPawn.position.y == 1){
+            } else if (modelPawn.position.y == 1) {
                 pawn = new Pawn(new Coordinate(x_pawns, y, rotations), owner);
-            }else{
+            } else {
                 pawn = new DownPawn(new Coordinate(x_pawns, y, rotations), owner);
             }
 //            if (GameEngine.match.isLocal) {
@@ -462,5 +476,21 @@ public class Board {
             cloned[i] = BOARD[i].clone();
         }
         return cloned;
+    }
+
+    private static boolean checkForPromotion(Piece p) {
+        if (p instanceof DownPawn) {
+            int max = extendedBoard ? 11 : 7;
+            return p.position.y == max - 7;
+        } else if (p instanceof Pawn) {
+            return p.position.y == 7;
+        } else if (p instanceof LeftPawn) {
+            return p.position.x == 4;
+        } else if (p instanceof RightPawn) {
+            return p.position.x == 7;
+        } else {
+            return false;
+
+        }
     }
 }
