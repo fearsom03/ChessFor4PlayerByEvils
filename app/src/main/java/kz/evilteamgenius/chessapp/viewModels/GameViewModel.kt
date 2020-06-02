@@ -1,5 +1,6 @@
 package kz.evilteamgenius.chessapp.viewModels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kz.evilteamgenius.chessapp.repository.CommonRepo
@@ -17,11 +18,11 @@ class GameViewModel : ViewModel() {
         musicIsPlaying.value = boolean
     }
 
-    fun getMusicValue(): MutableLiveData<Boolean> {
+    fun getMusicValue(): LiveData<Boolean> {
         return musicIsPlaying
     }
 
-    fun getInternetCheck(): MutableLiveData<Boolean> {
+    fun getInternetCheck(): LiveData<Boolean> {
         return internetIsOk
     }
 
@@ -29,7 +30,7 @@ class GameViewModel : ViewModel() {
         internetIsOk.value = boolean
     }
 
-    fun checkVersion(): MutableLiveData<Boolean> {
+    fun checkVersion(): LiveData<Boolean> {
         return commonChatRepository.checkVersion()
     }
 }

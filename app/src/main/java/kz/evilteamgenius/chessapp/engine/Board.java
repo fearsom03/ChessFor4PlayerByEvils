@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Pair;
 
-import java.util.LinkedList;
-
 import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.engine.pieces.Bishop;
 import kz.evilteamgenius.chessapp.engine.pieces.DownPawn;
@@ -17,11 +15,7 @@ import kz.evilteamgenius.chessapp.engine.pieces.Piece;
 import kz.evilteamgenius.chessapp.engine.pieces.Queen;
 import kz.evilteamgenius.chessapp.engine.pieces.RightPawn;
 import kz.evilteamgenius.chessapp.engine.pieces.Rook;
-import kz.evilteamgenius.chessapp.fragments.GameFragment;
-import kz.evilteamgenius.chessapp.models.Game;
 import timber.log.Timber;
-
-import static java.security.AccessController.getContext;
 
 public class Board {
 
@@ -38,7 +32,7 @@ public class Board {
      *
      * @param playerId the player id who's pieces should be removed
      */
-    public static void removePlayer(final String playerId) {
+    static void removePlayer(final String playerId) {
         int len = extendedBoard ? 12 : 8;
         for (int x = 0; x < len; x++) {
             for (int y = 0; y < len; y++) {
@@ -85,6 +79,7 @@ public class Board {
 
         // at the end of the turn, check if next player is checkmated, if so remove the player
         Player nextPlayer = GameEngine.getNextPlayer();
+        checkUpgradePawn(nextPlayer);
         if (isCheckmated(nextPlayer)) {
             ifOver = GameEngine.removePlayer(nextPlayer.id);
         }
@@ -109,7 +104,55 @@ public class Board {
         return true;
     }
 
-    public static boolean ifWillBeChecked(Player player, final Coordinate old_pos, final Coordinate new_pos) {
+    private static void checkUpgradePawn(Player nextPlayer) {
+        //todo need to do this thing EDIL
+        // Why do we use static methods instead of object???
+        if (Board.extendedBoard) {
+            //extended board game
+            if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
+                    instanceof DownPawn && nextPlayer.lastMove.second.y == 6) {
+                //upgrade
+                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
+                Timber.d("Upgrade needed");
+            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
+                    instanceof Pawn && nextPlayer.lastMove.second.y == 6) {
+                //upgrade
+                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
+                Timber.d("Upgrade needed");
+
+            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
+                    instanceof LeftPawn && nextPlayer.lastMove.second.x == 7) {
+                //upgrade
+                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
+                Timber.d("Upgrade needed");
+
+            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
+                    instanceof RightPawn && nextPlayer.lastMove.second.x == 7) {
+                //upgrade
+                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
+                Timber.d("Upgrade needed");
+            }
+        } else {
+            //normal game
+            if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
+                    instanceof DownPawn && nextPlayer.lastMove.second.y == 7) {
+                //upgrade
+                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
+                Timber.d("Upgrade needed");
+            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
+                    instanceof Pawn && nextPlayer.lastMove.second.y == 0) {
+                //upgrade
+                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
+                Timber.d("Upgrade needed");
+            }
+        }
+    }
+
+    private static void updatePawn(Piece pawn) {
+        //do update here!!
+    }
+
+    private static boolean ifWillBeChecked(Player player, final Coordinate old_pos, final Coordinate new_pos) {
         boolean flag = false;
         King myKing = player.king;
         Piece[][] newBoard = cloneTheBoard();
@@ -138,7 +181,7 @@ public class Board {
         return flag;
     }
 
-    public static boolean isInCheckNow(Player player) {
+    private static boolean isInCheckNow(Player player) {
         King king = player.king;
         for (Player p : GameEngine.players) {
             if (p.team == player.team || !GameEngine.isPlayerAlive(p.id))
@@ -152,7 +195,7 @@ public class Board {
         return false;
     }
 
-    public static boolean isCheckmated(Player player) {
+    private static boolean isCheckmated(Player player) {
         if (!isInCheckNow(player)) {
             return false;
         }
@@ -283,13 +326,13 @@ public class Board {
         Piece modelPawn = new Pawn(new Coordinate(2, y_pawns, rotations), owner);
         for (int x = x_begin; x < x_begin + 8; x++) {
             Piece pawn;
-            if(modelPawn.position.y == 1){
+            if (modelPawn.position.y == 1) {
                 pawn = new Pawn(new Coordinate(x, y_pawns, rotations), owner);
-            }else if(modelPawn.position.y == 6 || modelPawn.position.y == 10){
+            } else if (modelPawn.position.y == 6 || modelPawn.position.y == 10) {
                 pawn = new DownPawn(new Coordinate(x, y_pawns, rotations), owner);
-            }else if(modelPawn.position.x == 1){
+            } else if (modelPawn.position.x == 1) {
                 pawn = new RightPawn(new Coordinate(x, y_pawns, rotations), owner);
-            }else{
+            } else {
                 pawn = new LeftPawn(new Coordinate(x, y_pawns, rotations), owner);
             }
             BOARD[pawn.position.x][pawn.position.y] = pawn;
@@ -348,13 +391,13 @@ public class Board {
         Piece modelPawn = new Pawn(new Coordinate(x_pawns, 2, rotations), owner);
         for (int y = 2; y < 10; y++) {
             Piece pawn;
-            if(modelPawn.position.x == 10){
+            if (modelPawn.position.x == 10) {
                 pawn = new LeftPawn(new Coordinate(x_pawns, y, rotations), owner);
-            }else if(modelPawn.position.x == 1){
+            } else if (modelPawn.position.x == 1) {
                 pawn = new RightPawn(new Coordinate(x_pawns, y, rotations), owner);
-            }else if(modelPawn.position.y == 1){
+            } else if (modelPawn.position.y == 1) {
                 pawn = new Pawn(new Coordinate(x_pawns, y, rotations), owner);
-            }else{
+            } else {
                 pawn = new DownPawn(new Coordinate(x_pawns, y, rotations), owner);
             }
 //            if (GameEngine.match.isLocal) {

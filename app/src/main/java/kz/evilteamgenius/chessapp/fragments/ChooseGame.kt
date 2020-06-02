@@ -31,7 +31,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
     private val timer = Timer()
     private var runnable: Runnable? = Runnable { getLastMove() }
     private var mode: Int = 1
-    var viewModel: GameViewModel? = null
+    private lateinit var viewModel: GameViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,14 +84,13 @@ class ChooseGame : Fragment(), View.OnClickListener {
                 if (!isOnlineGame) {
                     startLocalMatch(mode)
                 } else {
-                    viewModel?.getInternetCheck()?.observe(requireActivity(),
-                            androidx.lifecycle.Observer { aBoolean: Boolean ->
-                                if (aBoolean) {
-                                    makeNewGame()
-                                } else {
-                                    toastKt(requireContext(), getString(R.string.needToBeOnline))
-                                }
-                            })
+                    observeLiveData(viewModel.getInternetCheck()) {
+                        if (it) {
+                            makeNewGame()
+                        } else {
+                            toastKt(requireContext(), getString(R.string.needToBeOnline))
+                        }
+                    }
                 }
 
             }
@@ -100,7 +99,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
                 if (!isOnlineGame) {
                     startLocalMatch(mode)
                 } else {
-                    viewModel?.getInternetCheck()?.observe(requireActivity(),
+                    viewModel.getInternetCheck().observe(requireActivity(),
                             androidx.lifecycle.Observer { aBoolean: Boolean ->
                                 if (aBoolean) {
                                     makeNewGame()
@@ -116,7 +115,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
                 if (!isOnlineGame) {
                     startLocalMatch(mode)
                 } else {
-                    viewModel?.getInternetCheck()?.observe(requireActivity(),
+                    viewModel.getInternetCheck().observe(requireActivity(),
                             androidx.lifecycle.Observer { aBoolean: Boolean ->
                                 if (aBoolean) {
                                     makeNewGame()
@@ -132,7 +131,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
                 if (!isOnlineGame) {
                     startLocalMatch(mode)
                 } else {
-                    viewModel?.getInternetCheck()?.observe(requireActivity(),
+                    viewModel.getInternetCheck().observe(requireActivity(),
                             androidx.lifecycle.Observer { aBoolean: Boolean ->
                                 if (aBoolean) {
                                     makeNewGame()

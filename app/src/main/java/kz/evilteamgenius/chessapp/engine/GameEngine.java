@@ -15,8 +15,10 @@ public class GameEngine {
     private final static int PROTOCOL_VERSION = 1;
 
     private final static int[] PLAYER_COLOR =
-            {Color.parseColor("#FF8800"), Color.parseColor("#99CC00"), Color.parseColor("#33B5E5"),
-                    Color.parseColor("#CC0000")};
+            {Color.parseColor("#FF8800")
+                    , Color.parseColor("#99CC00")
+                    , Color.parseColor("#33B5E5")
+                    , Color.parseColor("#CC0000")};
 
     public final static int MODE_2_PLAYER_2_SIDES = 1;
     public final static int MODE_2_PLAYER_4_SIDES = 2;
@@ -166,9 +168,7 @@ public class GameEngine {
     }
 
     public static boolean isPlayerAlive(final String playerId) {
-        if(deadPlayers.contains(playerId))
-            return false;
-        return true;
+        return !deadPlayers.contains(playerId);
     }
 
     /**
