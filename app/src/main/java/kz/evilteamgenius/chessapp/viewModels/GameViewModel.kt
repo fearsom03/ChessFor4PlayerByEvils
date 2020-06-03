@@ -9,12 +9,15 @@ class GameViewModel : ViewModel() {
     private var musicIsPlaying = MutableLiveData<Boolean>()
     private var internetIsOk = MutableLiveData<Boolean>()
     private var commonChatRepository = CommonRepo()
+    private var songIdentifier = MutableLiveData<Int>()
+
     init {
         musicIsPlaying.value = true
         internetIsOk.value = true
+        songIdentifier.value = 0
     }
 
-    fun setMusic(boolean: Boolean) {
+    fun setMusicIsPlaying(boolean: Boolean) {
         musicIsPlaying.value = boolean
     }
 
@@ -32,5 +35,13 @@ class GameViewModel : ViewModel() {
 
     fun checkVersion(): LiveData<Boolean> {
         return commonChatRepository.checkVersion()
+    }
+
+    fun startNextMusic() {
+        songIdentifier.value?.plus(1)
+    }
+
+    fun startPrevMusic() {
+        songIdentifier.value?.minus(1)
     }
 }

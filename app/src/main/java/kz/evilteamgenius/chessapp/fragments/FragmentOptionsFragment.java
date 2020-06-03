@@ -195,7 +195,7 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
                 editor.putBoolean(Const.PLAY_MUSIC, isChecked);
                 editor.apply();
                 editor.commit();
-                viewModel.setMusic(isChecked);
+                viewModel.setMusicIsPlaying(isChecked);
                 break;
         }
     }
