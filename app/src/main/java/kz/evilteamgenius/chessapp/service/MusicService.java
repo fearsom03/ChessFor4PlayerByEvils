@@ -92,7 +92,11 @@ public class MusicService extends Service
     @Override
     public void onCompletion(MediaPlayer mp) {
         currentPosition++;
-        if (currentPosition < sourceArray.size()) {
+        checkAndChangeMusic();
+    }
+
+    private void checkAndChangeMusic() {
+        if (currentPosition > -1 && currentPosition < sourceArray.size()) {
             mediaPlayer.reset();
             int resId = (int) sourceArray.get(currentPosition);
             mediaPlayer = MediaPlayer.create(this, resId);
@@ -183,5 +187,15 @@ public class MusicService extends Service
         public MusicService getService() {
             return MusicService.this;
         }
+    }
+
+    public void startNextSong() {
+        currentPosition++;
+        checkAndChangeMusic();
+    }
+
+    public void startPreviousSong() {
+        currentPosition = -1;
+        checkAndChangeMusic();
     }
 }

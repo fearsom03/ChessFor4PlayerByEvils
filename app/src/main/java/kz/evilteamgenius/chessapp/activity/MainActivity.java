@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 stopMusic();
             }
         });
+
         viewModel.checkVersion().observe(this, aBoolean -> {
             if (!aBoolean) {
                 isBeenChecked = true;
@@ -99,6 +100,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     fragment = new NavigationPageFragment();
                     replaceFragment(fragment);
                 }
+            }
+        });
+
+        viewModel.getNextSong().observe(this, aBoolean -> {
+            if (aBoolean) {
+                nextSong();
+            }
+        });
+
+        viewModel.getPrevSong().observe(this, aBoolean -> {
+            if (aBoolean) {
+                prevSong();
             }
         });
         //end music staff
@@ -343,16 +356,30 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         startCheckInternet();
     }
 
-    public void startMusic() {
+    private void startMusic() {
         if (mServ != null) {
             mServ.start();
         }
     }
 
-    public void stopMusic() {
+    private void stopMusic() {
         if (mServ != null) {
             mServ.pause();
         }
+    }
+
+    private void nextSong() {
+        if (mServ != null) {
+            mServ.startNextSong();
+        }
+        viewModel.defaultValChanger();
+    }
+
+    private void prevSong() {
+        if (mServ != null) {
+            mServ.startPreviousSong();
+        }
+        viewModel.defaultValChanger();
     }
     //end music methods
 }

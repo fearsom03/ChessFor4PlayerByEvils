@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -235,7 +236,10 @@ public class GameFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.previousMusic:
+                view.setBackgroundColor(Color.GREEN);
                 viewModel.startPrevMusic();
+                view.postDelayed(() ->
+                        view.setBackgroundColor(Color.TRANSPARENT), TimeUnit.MILLISECONDS.toMillis(500));
                 break;
             case R.id.pauseMusic:
                 viewModel.setMusicIsPlaying(false);
@@ -244,7 +248,10 @@ public class GameFragment extends Fragment {
                 viewModel.setMusicIsPlaying(true);
                 break;
             case R.id.nextMusic:
+                view.setBackgroundColor(Color.GREEN);
                 viewModel.startNextMusic();
+                view.postDelayed(() ->
+                        view.setBackgroundColor(Color.TRANSPARENT), TimeUnit.MILLISECONDS.toMillis(500));
                 break;
         }
     }
