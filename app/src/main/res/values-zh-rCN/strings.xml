@@ -69,4 +69,8 @@
     <string name="online">Online</string>
     <string name="needToBeOnline">Turn on internet for access online game</string>
     <string name="versionText">Version %1$s</string>
+    <string name="queenPiece">Queen</string>
+    <string name="bishopPiece">Bishop</string>
+    <string name="rookPiece">Rook</string>
+    <string name="knightPiece">Knight</string>
 </resources>

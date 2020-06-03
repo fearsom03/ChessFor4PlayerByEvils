@@ -68,4 +68,8 @@
     <string name="online">Онлайн</string>
     <string name="needToBeOnline">Онлайн ойынға кіру үшін интернетті қосыңыз</string>
     <string name="versionText">Версия %1$s</string>
+    <string name="queenPiece">Королева</string>
+    <string name="bishopPiece">Піл</string>
+    <string name="rookPiece">Ладья</string>
+    <string name="knightPiece">Ат</string>
 </resources>

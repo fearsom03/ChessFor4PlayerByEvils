@@ -16,18 +16,13 @@
 
         <TextView
             android:id="@+id/pawn_queen"
+            style="@style/dialogPawnUpgrade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:layout_marginTop="10dp"
             android:drawableStart="@drawable/wqueen"
             android:drawableEnd="@drawable/bqueen"
-            android:elevation="6dp"
-            android:padding="5sp"
-            android:text="Queen"
-            android:textAlignment="center"
-            android:textColor="#e60f0f"
-            android:textSize="40sp" />
+            android:text="@string/queenPiece"
+            android:textColor="@android:color/holo_red_dark" />
 
         <View
             android:layout_width="match_parent"
@@ -38,19 +33,13 @@
 
         <TextView
             android:id="@+id/pawn_bishop"
+            style="@style/dialogPawnUpgrade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:background="#ffffff"
-            android:drawableLeft="@drawable/wbishop"
-            android:drawableRight="@drawable/bbishop"
-            android:elevation="6dp"
-            android:onClick="pawnChoice"
-            android:padding="5sp"
-            android:text="Bishop"
-            android:textAlignment="center"
-            android:textColor="#4b84ba"
-            android:textSize="40sp" />
+            android:drawableStart="@drawable/wbishop"
+            android:drawableEnd="@drawable/bbishop"
+            android:text="@string/bishopPiece"
+            android:textColor="@android:color/holo_blue_dark" />
 
         <View
             android:layout_width="match_parent"
@@ -61,19 +50,13 @@
 
         <TextView
             android:id="@+id/pawn_rook"
+            style="@style/dialogPawnUpgrade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:background="#ffffff"
-            android:drawableLeft="@drawable/wrook"
-            android:drawableRight="@drawable/brook"
-            android:elevation="6dp"
-            android:onClick="pawnChoice"
-            android:padding="5sp"
-            android:text="Rook"
-            android:textAlignment="center"
-            android:textColor="#23bc32"
-            android:textSize="40sp" />
+            android:drawableStart="@drawable/wrook"
+            android:drawableEnd="@drawable/brook"
+            android:text="@string/rookPiece"
+            android:textColor="@android:color/holo_green_dark" />
 
         <View
             android:layout_width="match_parent"
@@ -84,20 +67,13 @@
 
         <TextView
             android:id="@+id/pawn_knight"
+            style="@style/dialogPawnUpgrade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:layout_marginBottom="10dp"
-            android:background="#ffffff"
-            android:drawableLeft="@drawable/wknight"
-            android:drawableRight="@drawable/bknight"
-            android:elevation="6dp"
-            android:onClick="pawnChoice"
-            android:padding="5sp"
-            android:text="Knight"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="40sp" />
+            android:drawableStart="@drawable/wknight"
+            android:drawableEnd="@drawable/bknight"
+            android:text="@string/knightPiece"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
 
