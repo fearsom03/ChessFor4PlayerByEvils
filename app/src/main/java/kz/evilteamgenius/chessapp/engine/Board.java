@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Pair;
 
 import kz.evilteamgenius.chessapp.activity.MainActivity;
+import kz.evilteamgenius.chessapp.dialogs.UpgradePawnDialog;
 import kz.evilteamgenius.chessapp.engine.pieces.Bishop;
 import kz.evilteamgenius.chessapp.engine.pieces.DownPawn;
 import kz.evilteamgenius.chessapp.engine.pieces.King;
@@ -51,15 +52,14 @@ public class Board {
      * @return false, if that move is not legal
      */
     public static boolean move(final Coordinate old_pos, final Coordinate new_pos, Context context) {
-
         //最后的赢家发出消息， 他赢了。
         boolean ifOver = false;
         if (!GameEngine.myTurn()) return false;
 
         if (!new_pos.isValid()) return false; // not a valid new position
 
-        Piece p = BOARD[old_pos.x][old_pos.y];
-        if (!p.getPossiblePositions(BOARD).contains(new_pos))
+        final Piece[] p = {BOARD[old_pos.x][old_pos.y]};
+        if (!p[0].getPossiblePositions(BOARD).contains(new_pos))
             return false; // not possible to move there
 
         Player me = GameEngine.getPlayer(GameEngine.currentPlayer());
@@ -71,20 +71,49 @@ public class Board {
         // move the piece
         BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
         BOARD[old_pos.x][old_pos.y] = null;
-        p.position = new_pos;
+        p[0].position = new_pos;
         if (target != null)
             GameEngine.getPlayer(target.getPlayerId()).pieces.remove(target);
 
         me.lastMove = new Pair<>(old_pos, new_pos);
-        if (checkForPromotion(p)) {
-            me.pieces.remove(p);
-            p = new Queen(p.position, p.getPlayerId());
-            BOARD[new_pos.x][new_pos.y] = p;
-            me.pieces.add(p);
+//        if (checkUpgradePawn(p[0])) {
+//            me.pieces.remove(p[0]);
+//            p[0] = new Queen(p[0].position, p[0].getPlayerId());
+//            BOARD[new_pos.x][new_pos.y] = p[0];
+//            me.pieces.add(p[0]);
+//        }
+
+        if (checkUpgradePawn(p[0])) {
+            UpgradePawnDialog dialog = new UpgradePawnDialog(position -> {
+                me.pieces.remove(p[0]);
+                switch (position) {
+                    case 0:
+                        p[0] = new Bishop(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        me.pieces.add(p[0]);
+                        break;
+                    case 1:
+                        p[0] = new Knight(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        me.pieces.add(p[0]);
+                        break;
+                    case 2:
+                        p[0] = new Queen(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        me.pieces.add(p[0]);
+                        break;
+                    case 3:
+                        p[0] = new Rook(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        me.pieces.add(p[0]);
+                        break;
+                }
+            }, context);
+            dialog.show();
         }
+
         // at the end of the turn, check if next player is checkmated, if so remove the player
         Player nextPlayer = GameEngine.getNextPlayer();
-        checkUpgradePawn(nextPlayer);
         if (isCheckmated(nextPlayer)) {
             ifOver = GameEngine.removePlayer(nextPlayer.id);
         }
@@ -109,52 +138,33 @@ public class Board {
         return true;
     }
 
-    private static void checkUpgradePawn(Player nextPlayer) {
-        //todo need to do this thing EDIL
-        // Why do we use static methods instead of object???
-        if (Board.extendedBoard) {
-            //extended board game
-            if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
-                    instanceof DownPawn && nextPlayer.lastMove.second.y == 6) {
-                //upgrade
-                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
-                Timber.d("Upgrade needed");
-            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
-                    instanceof Pawn && nextPlayer.lastMove.second.y == 6) {
-                //upgrade
-                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
-                Timber.d("Upgrade needed");
 
-            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
-                    instanceof LeftPawn && nextPlayer.lastMove.second.x == 7) {
-                //upgrade
-                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
-                Timber.d("Upgrade needed");
-
-            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
-                    instanceof RightPawn && nextPlayer.lastMove.second.x == 7) {
-                //upgrade
-                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
-                Timber.d("Upgrade needed");
+    private static boolean checkUpgradePawn(Piece nextPlayer) {
+        try {
+            if (Board.extendedBoard) {
+                //extended board game
+                if (nextPlayer instanceof DownPawn && nextPlayer.position.y == 5) {
+                    return true;
+                } else if (nextPlayer instanceof Pawn && nextPlayer.position.y == 5) {
+                    return true;
+                } else if (nextPlayer instanceof LeftPawn && nextPlayer.position.x == 6) {
+                    return true;
+                } else return nextPlayer
+                        instanceof RightPawn && nextPlayer.position.x == 6;
+            } else {
+                //normal game
+                if (nextPlayer instanceof DownPawn && nextPlayer.position.y == 7) {
+                    return true;
+                } else return nextPlayer instanceof Pawn && nextPlayer.position.y == 0;
             }
-        } else {
-            //normal game
-            if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
-                    instanceof DownPawn && nextPlayer.lastMove.second.y == 7) {
-                //upgrade
-                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
-                Timber.d("Upgrade needed");
-            } else if (BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]
-                    instanceof Pawn && nextPlayer.lastMove.second.y == 0) {
-                //upgrade
-                updatePawn(BOARD[nextPlayer.lastMove.second.x][nextPlayer.lastMove.second.y]);
-                Timber.d("Upgrade needed");
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
     private static void updatePawn(Piece pawn) {
-        //do update here!!
+        Timber.d("TRY TO UPDATE");
     }
 
     private static boolean ifWillBeChecked(Player player, final Coordinate old_pos, final Coordinate new_pos) {
@@ -217,22 +227,44 @@ public class Board {
 
     public static void moveWhenReceived(final Coordinate old_pos, final Coordinate new_pos, Context context) {
         boolean ifOver = false;
-        Piece p = BOARD[old_pos.x][old_pos.y];
-        if (p == null)
+        Piece[] p = {BOARD[old_pos.x][old_pos.y]};
+        if (p[0] == null)
             return;
         Player cur_player = GameEngine.getPlayer(GameEngine.currentPlayer());
         Piece target = BOARD[new_pos.x][new_pos.y];
         BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
         BOARD[old_pos.x][old_pos.y] = null;
-        p.position = new_pos;  //error: p is null, and write to null.pos
+        p[0].position = new_pos;  //error: p is null, and write to null.pos
         cur_player.lastMove =
                 new Pair<>(old_pos, new_pos);
 
-        if (checkForPromotion(p)) {
-            cur_player.pieces.remove(p);
-            p = new Queen(p.position, p.getPlayerId());
-            BOARD[new_pos.x][new_pos.y] = p;
-            cur_player.pieces.add(p);
+        if (checkUpgradePawn(p[0])) {
+            UpgradePawnDialog dialog = new UpgradePawnDialog(position -> {
+                cur_player.pieces.remove(p[0]);
+                switch (position) {
+                    case 0:
+                        p[0] = new Bishop(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        cur_player.pieces.add(p[0]);
+                        break;
+                    case 1:
+                        p[0] = new Knight(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        cur_player.pieces.add(p[0]);
+                        break;
+                    case 2:
+                        p[0] = new Queen(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        cur_player.pieces.add(p[0]);
+                        break;
+                    case 3:
+                        p[0] = new Rook(p[0].position, p[0].getPlayerId());
+                        BOARD[new_pos.x][new_pos.y] = p[0];
+                        cur_player.pieces.add(p[0]);
+                        break;
+                }
+            }, context);
+            dialog.show();
         }
 
         Player nextPlayer = GameEngine.getNextPlayer();
@@ -522,10 +554,10 @@ public class Board {
     }
 
     private static boolean checkForPromotion(Piece p) {
-        if (p instanceof DownPawn) {
+        if (p instanceof Pawn) {
             int max = extendedBoard ? 11 : 7;
             return p.position.y == max - 7;
-        } else if (p instanceof Pawn) {
+        } else if (p instanceof DownPawn) {
             return p.position.y == 7;
         } else if (p instanceof LeftPawn) {
             return p.position.x == 4;
@@ -533,7 +565,6 @@ public class Board {
             return p.position.x == 7;
         } else {
             return false;
-
         }
     }
 }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/pawn_queen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:layout_marginTop="10dp"
+            android:drawableStart="@drawable/wqueen"
+            android:drawableEnd="@drawable/bqueen"
+            android:elevation="6dp"
+            android:padding="5sp"
+            android:text="Queen"
+            android:textAlignment="center"
+            android:textColor="#e60f0f"
+            android:textSize="40sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/pawn_bishop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:background="#ffffff"
+            android:drawableLeft="@drawable/wbishop"
+            android:drawableRight="@drawable/bbishop"
+            android:elevation="6dp"
+            android:onClick="pawnChoice"
+            android:padding="5sp"
+            android:text="Bishop"
+            android:textAlignment="center"
+            android:textColor="#4b84ba"
+            android:textSize="40sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/pawn_rook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:background="#ffffff"
+            android:drawableLeft="@drawable/wrook"
+            android:drawableRight="@drawable/brook"
+            android:elevation="6dp"
+            android:onClick="pawnChoice"
+            android:padding="5sp"
+            android:text="Rook"
+            android:textAlignment="center"
+            android:textColor="#23bc32"
+            android:textSize="40sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/pawn_knight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:layout_marginBottom="10dp"
+            android:background="#ffffff"
+            android:drawableLeft="@drawable/wknight"
+            android:drawableRight="@drawable/bknight"
+            android:elevation="6dp"
+            android:onClick="pawnChoice"
+            android:padding="5sp"
+            android:text="Knight"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="40sp" />
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
