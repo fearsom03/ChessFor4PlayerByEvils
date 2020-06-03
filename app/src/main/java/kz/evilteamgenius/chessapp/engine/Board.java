@@ -76,7 +76,12 @@ public class Board {
             GameEngine.getPlayer(target.getPlayerId()).pieces.remove(target);
 
         me.lastMove = new Pair<>(old_pos, new_pos);
-
+        if (checkForPromotion(p)) {
+            me.pieces.remove(p);
+            p = new Queen(p.position, p.getPlayerId());
+            BOARD[new_pos.x][new_pos.y] = p;
+            me.pieces.add(p);
+        }
         // at the end of the turn, check if next player is checkmated, if so remove the player
         Player nextPlayer = GameEngine.getNextPlayer();
         checkUpgradePawn(nextPlayer);
@@ -215,12 +220,21 @@ public class Board {
         Piece p = BOARD[old_pos.x][old_pos.y];
         if (p == null)
             return;
+        Player cur_player = GameEngine.getPlayer(GameEngine.currentPlayer());
         Piece target = BOARD[new_pos.x][new_pos.y];
         BOARD[new_pos.x][new_pos.y] = BOARD[old_pos.x][old_pos.y];
         BOARD[old_pos.x][old_pos.y] = null;
         p.position = new_pos;  //error: p is null, and write to null.pos
-        GameEngine.getPlayer(GameEngine.currentPlayer()).lastMove =
+        cur_player.lastMove =
                 new Pair<>(old_pos, new_pos);
+
+        if (checkForPromotion(p)) {
+            cur_player.pieces.remove(p);
+            p = new Queen(p.position, p.getPlayerId());
+            BOARD[new_pos.x][new_pos.y] = p;
+            cur_player.pieces.add(p);
+        }
+
         Player nextPlayer = GameEngine.getNextPlayer();
         if (isCheckmated(nextPlayer)) {
             ifOver = GameEngine.removePlayer(nextPlayer.id);
@@ -505,5 +519,21 @@ public class Board {
             cloned[i] = BOARD[i].clone();
         }
         return cloned;
+    }
+
+    private static boolean checkForPromotion(Piece p) {
+        if (p instanceof DownPawn) {
+            int max = extendedBoard ? 11 : 7;
+            return p.position.y == max - 7;
+        } else if (p instanceof Pawn) {
+            return p.position.y == 7;
+        } else if (p instanceof LeftPawn) {
+            return p.position.x == 4;
+        } else if (p instanceof RightPawn) {
+            return p.position.x == 7;
+        } else {
+            return false;
+
+        }
     }
 }
