@@ -153,9 +153,9 @@ public class Board {
                         instanceof RightPawn && nextPlayer.position.x == 6;
             } else {
                 //normal game
-                if (nextPlayer instanceof DownPawn && nextPlayer.position.y == 7) {
+                if (nextPlayer instanceof DownPawn && nextPlayer.position.y == 0) {
                     return true;
-                } else return nextPlayer instanceof Pawn && nextPlayer.position.y == 0;
+                } else return nextPlayer instanceof Pawn && nextPlayer.position.y == 7;
             }
         } catch (Exception e) {
             e.printStackTrace();
