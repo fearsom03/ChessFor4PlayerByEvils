@@ -15,10 +15,10 @@ public class GameEngine {
     private final static int PROTOCOL_VERSION = 1;
 
     private final static int[] PLAYER_COLOR =
-            {Color.parseColor("#FF8800")
-                    , Color.parseColor("#99CC00")
-                    , Color.parseColor("#33B5E5")
-                    , Color.parseColor("#CC0000")};
+            {Color.parseColor("#A42D31")
+                    , Color.parseColor("#AF8122")
+                    , Color.parseColor("#457F4D")
+                    , Color.parseColor("#3170AB")};
 
     public final static int MODE_2_PLAYER_2_SIDES = 1;
     public final static int MODE_2_PLAYER_4_SIDES = 2;

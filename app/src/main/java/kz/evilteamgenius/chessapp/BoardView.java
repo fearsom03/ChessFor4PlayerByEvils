@@ -70,8 +70,8 @@ public class BoardView extends View {
             for (int y = 0; y < max; y++) {
                 c = new Coordinate(x, y);
                 if (c.isValid()) {
-                    if ((x + y) % 2 == 0) boardPaint.setColor(Color.GRAY);
-                    else boardPaint.setColor(Color.DKGRAY);
+                    if ((x + y) % 2 == 0) boardPaint.setColor(Color.parseColor("#D4D4D4"));
+                    else boardPaint.setColor(Color.parseColor("#9B9B9B"));
                     drawCoordinate(c, canvas, cellWidth, boardPaint, max);
                     if (isInEditMode()) continue;
                     p = Board.getPiece(c, Board.BOARD);
