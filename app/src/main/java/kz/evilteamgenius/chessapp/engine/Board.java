@@ -7,6 +7,7 @@ import android.util.Pair;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.MainActivity;
@@ -63,8 +64,8 @@ public class Board {
      * @return false, if that move is not legal
      */
     public static boolean move(final Coordinate old_pos, final Coordinate new_pos, Context context) {
-
-        boolean ifOver = false;
+        //最后的赢家发出消息， 他赢了。
+        AtomicBoolean ifOver = new AtomicBoolean(false);
         if (!GameEngine.myTurn()) return false;
 
         if (!new_pos.isValid()) return false; // not a valid new position
@@ -87,49 +88,77 @@ public class Board {
             GameEngine.getPlayer(target.getPlayerId()).pieces.remove(target);
 
         me.lastMove = new Pair<>(old_pos, new_pos);
-//        if (checkUpgradePawn(p[0])) {
-//            me.pieces.remove(p[0]);
-//            p[0] = new Queen(p[0].position, p[0].getPlayerId());
-//            BOARD[new_pos.x][new_pos.y] = p[0];
-//            me.pieces.add(p[0]);
-//        }
 
-        if (checkUpgradePawn(p[0])) {
-            UpgradePawnDialog dialog = new UpgradePawnDialog(position -> {
+        if (GameEngine.match.isLocal) {
+            if (checkUpgradePawn(p[0])) {
+                UpgradePawnDialog dialog = new UpgradePawnDialog(position -> {
+                    Timber.d("TRY TO UPDATE KUKA 22 ");
+                    me.pieces.remove(p[0]);
+                    switch (position) {
+                        case 0:
+                            p[0] = new Bishop(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            me.pieces.add(p[0]);
+                            break;
+                        case 1:
+                            p[0] = new Knight(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            me.pieces.add(p[0]);
+                            break;
+                        case 2:
+                            p[0] = new Queen(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            me.pieces.add(p[0]);
+                            break;
+                        case 3:
+                            p[0] = new Rook(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            me.pieces.add(p[0]);
+                            break;
+                    }
+
+                    Player nextPlayer = GameEngine.getNextPlayer();
+                    if (isCheckmated(nextPlayer)) {
+                        ifOver.set(GameEngine.removePlayer(nextPlayer.id));
+                    }
+
+                    if (ifOver.get()) {
+                        // game ended
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage("Game over")
+                                .setTitle("Game over");
+                        AlertDialog dialog1 = builder.create();
+                        dialog1.show();
+                        if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
+                            MainActivity.sendMove(old_pos, new_pos, true);
+                        }
+                        //GameEngine.over();
+                    } else {
+                        if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
+                            MainActivity.sendMove(old_pos, new_pos, false);
+                        }
+                        GameEngine.moved();
+                    }
+
+                }, context);
+                dialog.show();
+            }
+        } else {
+            if (checkUpgradePawn(p[0])) {
                 me.pieces.remove(p[0]);
-                switch (position) {
-                    case 0:
-                        p[0] = new Bishop(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        me.pieces.add(p[0]);
-                        break;
-                    case 1:
-                        p[0] = new Knight(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        me.pieces.add(p[0]);
-                        break;
-                    case 2:
-                        p[0] = new Queen(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        me.pieces.add(p[0]);
-                        break;
-                    case 3:
-                        p[0] = new Rook(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        me.pieces.add(p[0]);
-                        break;
-                }
-            }, context);
-            dialog.show();
+                p[0] = new Queen(p[0].position, p[0].getPlayerId());
+                BOARD[new_pos.x][new_pos.y] = p[0];
+                me.pieces.add(p[0]);
+            }
         }
 
         // at the end of the turn, check if next player is checkmated, if so remove the player
         Player nextPlayer = GameEngine.getNextPlayer();
         if (isCheckmated(nextPlayer)) {
-            ifOver = GameEngine.removePlayer(nextPlayer.id);
+            ifOver.set(GameEngine.removePlayer(nextPlayer.id));
         }
 
-        if (ifOver) {
+        if (ifOver.get()) {
             // game ended
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             String gameOverText = context.getResources().getString(R.string.gameover);
@@ -238,7 +267,7 @@ public class Board {
     }
 
     public static void moveWhenReceived(final Coordinate old_pos, final Coordinate new_pos, Context context) {
-        boolean ifOver = false;
+        AtomicBoolean ifOver = new AtomicBoolean(false);
         Piece[] p = {BOARD[old_pos.x][old_pos.y]};
         if (p[0] == null)
             return;
@@ -250,41 +279,71 @@ public class Board {
         cur_player.lastMove =
                 new Pair<>(old_pos, new_pos);
 
-        if (checkUpgradePawn(p[0])) {
-            UpgradePawnDialog dialog = new UpgradePawnDialog(position -> {
+        if (GameEngine.match.isLocal) {
+            if (checkUpgradePawn(p[0])) {
+                UpgradePawnDialog dialog = new UpgradePawnDialog(position -> {
+                    Timber.d("TRY TO UPDATE KUKA 22 ");
+                    cur_player.pieces.remove(p[0]);
+                    switch (position) {
+                        case 0:
+                            p[0] = new Bishop(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            cur_player.pieces.add(p[0]);
+                            break;
+                        case 1:
+                            p[0] = new Knight(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            cur_player.pieces.add(p[0]);
+                            break;
+                        case 2:
+                            p[0] = new Queen(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            cur_player.pieces.add(p[0]);
+                            break;
+                        case 3:
+                            p[0] = new Rook(p[0].position, p[0].getPlayerId());
+                            BOARD[new_pos.x][new_pos.y] = p[0];
+                            cur_player.pieces.add(p[0]);
+                            break;
+                    }
+
+
+                    Player nextPlayer = GameEngine.getNextPlayer();
+                    if (isCheckmated(nextPlayer)) {
+                        ifOver.set(GameEngine.removePlayer(nextPlayer.id));
+                    }
+
+                    if (ifOver.get()) {
+                        // game ended
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage("Game over")
+                                .setTitle("Game over");
+                        AlertDialog dialog21 = builder.create();
+                        dialog21.show();
+                        //GameEngine.over();
+                    } else {
+                        GameEngine.moved();
+                    }
+
+                }, context);
+                dialog.show();
+            }
+        } else {
+            if (checkUpgradePawn(p[0])) {
                 cur_player.pieces.remove(p[0]);
-                switch (position) {
-                    case 0:
-                        p[0] = new Bishop(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        cur_player.pieces.add(p[0]);
-                        break;
-                    case 1:
-                        p[0] = new Knight(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        cur_player.pieces.add(p[0]);
-                        break;
-                    case 2:
-                        p[0] = new Queen(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        cur_player.pieces.add(p[0]);
-                        break;
-                    case 3:
-                        p[0] = new Rook(p[0].position, p[0].getPlayerId());
-                        BOARD[new_pos.x][new_pos.y] = p[0];
-                        cur_player.pieces.add(p[0]);
-                        break;
-                }
-            }, context);
-            dialog.show();
+                p[0] = new Queen(p[0].position, p[0].getPlayerId());
+                BOARD[new_pos.x][new_pos.y] = p[0];
+                cur_player.pieces.add(p[0]);
+            }
         }
+
 
         Player nextPlayer = GameEngine.getNextPlayer();
         if (isCheckmated(nextPlayer)) {
-            ifOver = GameEngine.removePlayer(nextPlayer.id);
+            ifOver.set(GameEngine.removePlayer(nextPlayer.id));
         }
 
-        if (ifOver) {
+        if (ifOver.get()) {
             // game ended
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             String gameOverText = context.getResources().getString(R.string.gameover);
