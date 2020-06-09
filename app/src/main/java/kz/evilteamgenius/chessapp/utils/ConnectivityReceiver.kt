@@ -11,7 +11,7 @@ class ConnectivityReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
         if (connectivityReceiverListener != null) {
-            connectivityReceiverListener!!.onNetworkConnectionChanged(isConnectedOrConnecting(context))
+            connectivityReceiverListener?.onNetworkConnectionChanged(isConnectedOrConnecting(context))
         } else {
             toastKt(context, "Hello listener null !!")
         }

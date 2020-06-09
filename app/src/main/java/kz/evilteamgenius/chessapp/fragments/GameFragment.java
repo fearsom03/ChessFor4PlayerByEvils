@@ -196,35 +196,42 @@ public class GameFragment extends Fragment {
     }
 
     private void getLastMove() {
-        if (infunc)
-            return;
-        infunc = true;
-        String token = getToken(requireActivity());
+        try {
+            if (infunc)
+                return;
+            infunc = true;
+            String token = getToken(requireActivity());
 //        toast(getContext(),token);
-        LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
-            @Override
-            public void onMoveLoaded(Game game) {
-                if(game.getResult().equals("over")){
-                    timer.cancel();
-                    timer.purge();
+            LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
+                @Override
+                public void onMoveLoaded(Game game) {
+                    if (game.getResult().equals("over")) {
+                        timer.cancel();
+                        timer.purge();
+                    }
+                    if (!game.getMade_by().equals(GameEngine.myPlayerUserame) && !game.getMade_by().isEmpty()) {
+                        GameEngine.game = game;
+                        Coordinate pos1 = new Coordinate(game.getFrom_x(), game.getFrom_y(), Board.rotations);
+                        Coordinate pos2 = new Coordinate(game.getTo_x(), game.getTo_y(), Board.rotations);
+                        //toast(getContext(), game.toString());
+                        Board.moveWhenReceived(pos1, pos2, getContext());
+                        getActivity().runOnUiThread(board::invalidate);
+                    }
                 }
-                if (!game.getMade_by().equals(GameEngine.myPlayerUserame) && !game.getMade_by().isEmpty()) {
-                    GameEngine.game = game;
-                    Coordinate pos1 = new Coordinate(game.getFrom_x(), game.getFrom_y(), Board.rotations);
-                    Coordinate pos2 = new Coordinate(game.getTo_x(), game.getTo_y(), Board.rotations);
-                    //toast(getContext(), game.toString());
-                    Board.moveWhenReceived(pos1, pos2, getContext());
-                    getActivity().runOnUiThread(board::invalidate);
-                }
-            }
 
-            @Override
-            public void onResponseFailed(String errorMessage) {
-                toast(getContext(), errorMessage);
-            }
-        });
-        lastMoveLoader.getLastMove(token, GameEngine.game.getId());
-        infunc = false;
+                @Override
+                public void onResponseFailed(String errorMessage) {
+                    toast(getContext(), errorMessage);
+                }
+            });
+            lastMoveLoader.getLastMove(token, GameEngine.game.getId());
+            infunc = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+            toast(requireContext(), "LEAVED");
+        }
+
     }
 
     private void callAsynchronousTask() {
