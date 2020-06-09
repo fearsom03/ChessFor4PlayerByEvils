@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Pair;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.dialogs.UpgradePawnDialog;
 import kz.evilteamgenius.chessapp.engine.pieces.Bishop;
@@ -25,9 +29,15 @@ public class Board {
 
     public static Piece[][] BOARD;
     public static int rotations;
-
     public static boolean extendedBoard; // true, if 12x12 board, false if 8x8
-
+    private Map<String, Integer> pieceValue = new HashMap<String, Integer>(){{
+        put("pawn", 100);
+        put("knight", 350);
+        put("bishop", 350);
+        put("rook", 525);
+        put("queen", 1000);
+        put("king", 10000);
+    }};
     /**
      * Remove all pieces belonging to the given player
      *
@@ -566,5 +576,34 @@ public class Board {
         } else {
             return false;
         }
+    }
+
+
+    private static LinkedList<Coordinate> GetBestMove(Board board, Boolean isAI, int depth, int alpha, int beta, LinkedList<Coordinate> move){
+
+        return null;
+    }
+
+    private static LinkedList<Coordinate> GetBestMoveOne(Board board, Boolean isAI, int depth, int alpha, int beta, LinkedList<Coordinate> move){
+
+        return null;
+    }
+
+    int evaluateBoard(Piece[][] board){
+        int val = 0;
+        for(int i=0; i<board.length; i++){
+            for(int j=0; j<board[i].length; j++){
+                Piece p = board[i][j];
+                if( p != null){
+                    int sign = p.getPlayerId().equals("1") ? 1 : -1;
+                    int v = 0;
+                    if(pieceValue.containsKey(p.getType())){
+                        v = pieceValue.get(p.getType());
+                    }
+                    val += sign * v;
+                }
+            }
+        }
+        return val;
     }
 }

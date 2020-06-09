@@ -29,6 +29,10 @@ public class King extends Piece {
         return re;
     }
 
+    public String getType() {
+        return "king";
+    }
+
     @Override
     public String getString() {
         return "\u265B";

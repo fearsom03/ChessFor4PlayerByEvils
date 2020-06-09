@@ -79,6 +79,10 @@ public class Rook extends Piece {
         return re;
     }
 
+    public String getType() {
+        return "rook";
+    }
+    
     @Override
     public String getString() {
         return "\u265C";

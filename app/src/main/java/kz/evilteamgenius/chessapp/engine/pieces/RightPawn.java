@@ -45,6 +45,10 @@ public class RightPawn extends Piece {
         return re;
     }
 
+    public String getType() {
+        return "pawn";
+    }
+
     @Override
     public String getString() {
         return "\u265F";

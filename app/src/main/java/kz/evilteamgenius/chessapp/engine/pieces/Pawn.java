@@ -42,6 +42,10 @@ public class Pawn extends Piece {
         return re;
     }
 
+    public String getType() {
+        return "pawn";
+    }
+
     @Override
     public String getString() {
         return "\u265F";

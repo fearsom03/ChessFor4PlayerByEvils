@@ -42,6 +42,10 @@ public class Knight extends Piece {
         return re;
     }
 
+    public String getType() {
+        return "knight";
+    }
+
     @Override
     public String getString() {
         return "\u265E";

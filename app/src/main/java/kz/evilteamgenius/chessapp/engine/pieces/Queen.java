@@ -17,6 +17,10 @@ public class Queen extends Piece {
         return re;
     }
 
+    public String getType() {
+        return "queen";
+    }
+
     @Override
     public String getString() {
         return "\u265A";

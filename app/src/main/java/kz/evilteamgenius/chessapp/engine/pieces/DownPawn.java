@@ -51,4 +51,9 @@ public class DownPawn extends Piece {
     public String getString() {
         return "\u265F";
     }
+
+    @Override
+    public String getType() {
+        return "pawn";
+    }
 }

@@ -86,6 +86,11 @@ public class Bishop extends Piece {
     }
 
     @Override
+    public String getType() {
+        return "bishop";
+    }
+
+    @Override
     public String getString() {
         return "\u265D";
     }

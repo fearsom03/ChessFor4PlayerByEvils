@@ -66,4 +66,6 @@ public abstract class Piece {
         Coordinate c = new Coordinate(position.x, position.y, (4 - Board.getRotation()) % 4);
         return c.toString() + "," + ownerId + "," + getClass().getSimpleName();
     }
+
+    public abstract String getType();
 }
