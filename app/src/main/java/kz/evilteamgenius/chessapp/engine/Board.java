@@ -31,6 +31,7 @@ public class Board {
 
     public static Piece[][] BOARD;
     public static int rotations;
+    public static int encodeRotations;
     public static boolean extendedBoard; // true, if 12x12 board, false if 8x8
     private Map<String, Integer> pieceValue = new HashMap<String, Integer>() {{
         put("pawn", 100);
@@ -499,6 +500,12 @@ public class Board {
      */
     public static void newGame(final Player[] players) {
         rotations = getRotation();
+        encodeRotations = rotations;
+        if(encodeRotations == 1)
+            encodeRotations = 3;
+        else if(encodeRotations == 3)
+            encodeRotations =1;
+
         int myId = Integer.parseInt(GameEngine.myPlayerId);
         if (GameEngine.match.mode == GameEngine.MODE_2_PLAYER_2_SIDES) {
             BOARD = new Piece[8][8];
