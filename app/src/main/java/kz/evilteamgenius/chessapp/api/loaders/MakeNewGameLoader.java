@@ -20,7 +20,7 @@ public class MakeNewGameLoader {
             @Override
             public void onResponse(Call<Game> call, Response<Game> response) {
                 if (response.isSuccessful()) {
-                    getMakeNewGameLoaderCallback.onGetGoodsLoaded(response.body());
+                    getMakeNewGameLoaderCallback.onGameLoaded(response.body());
                 } else {
                     ApiError apiError = RetrofitErrorUtil.parseError(response);
                     getMakeNewGameLoaderCallback.onResponseFailed(apiError.getMessage());
@@ -35,7 +35,8 @@ public class MakeNewGameLoader {
     }
 
     public interface GetMakeNewGameLoaderCallback {
-        void onGetGoodsLoaded(Game game);
+        void onGameLoaded(Game game);
+
         void onResponseFailed(String errorMessage);
     }
 }

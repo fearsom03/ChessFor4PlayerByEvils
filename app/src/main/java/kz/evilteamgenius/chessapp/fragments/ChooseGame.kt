@@ -163,11 +163,17 @@ class ChooseGame : Fragment(), View.OnClickListener {
     }
 
     private fun makeNewGame() {
+        progressBar.visible()
         val loader = MakeNewGameLoader(object : GetMakeNewGameLoaderCallback {
-            override fun onGetGoodsLoaded(game: Game) {
+            override fun onGameLoaded(game: Game) {
                 GameEngine.game = game
                 requireContext().toast(getString(R.string.searchForOpp))
-                if (!checkIfMatched(game)) callAsynchronousTask()
+                if (!checkIfMatched(game)) {
+                    progressBar.visible()
+                    callAsynchronousTask()
+                } else {
+                    progressBar.gone()
+                }
             }
 
             override fun onResponseFailed(errorMessage: String) {
@@ -179,7 +185,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
 
     private fun checkIfMatched(game: Game): Boolean {
         return if (mode == 1 || mode == 2) {
-            if (!game.player1.isEmpty() && !game.player2.isEmpty()) {
+            if (game.player1.isNotEmpty() && game.player2.isNotEmpty()) {
                 timer.cancel() // Terminates this timer, discarding any currently scheduled tasks.
                 timer.purge() // Removes all cancelled tasks from this timer's task queue.
                 val match = Match(System.currentTimeMillis().toString(),
@@ -187,12 +193,13 @@ class ChooseGame : Fragment(), View.OnClickListener {
                 val players = arrayOf(game.player1, game.player2)
                 GameEngine.game = game
                 GameEngine.newGame(match, players, requireContext().getUsername(), game.id.toString())
+                progressBar.gone()
                 startGame(match.id)
                 return true
             }
             false
         } else {
-            if (!game.player1.isEmpty() && !game.player2.isEmpty() && !game.player3.isEmpty() && !game.player4.isEmpty()) {
+            if (game.player1.isNotEmpty() && game.player2.isNotEmpty() && game.player3.isNotEmpty() && game.player4.isNotEmpty()) {
                 timer.cancel()
                 timer.purge()
                 val match = Match(System.currentTimeMillis().toString(),
@@ -200,6 +207,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
                 val players = arrayOf(game.player1, game.player2, game.player3, game.player4)
                 GameEngine.game = game
                 GameEngine.newGame(match, players, requireContext().getUsername(), game.id.toString())
+                progressBar.gone()
                 startGame(match.id)
                 return true
             }
