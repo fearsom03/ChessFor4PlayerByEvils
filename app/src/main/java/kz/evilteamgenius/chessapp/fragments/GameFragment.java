@@ -262,4 +262,10 @@ public class GameFragment extends Fragment {
                 break;
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        handler.removeCallbacks(runnable);
+        super.onDestroyView();
+    }
 }

@@ -28,7 +28,7 @@ private const val ARG_PARAM1 = "param1"
 class ChooseGame : Fragment(), View.OnClickListener {
     private var isOnlineGame: Boolean = false
     private val handler: Handler? = Handler()
-    private val timer = Timer()
+    private var timer = Timer()
     private var runnable: Runnable? = Runnable { getLastMove() }
     private var mode: Int = 1
     private lateinit var viewModel: GameViewModel
@@ -163,21 +163,28 @@ class ChooseGame : Fragment(), View.OnClickListener {
     }
 
     private fun makeNewGame() {
-        progressBar.visible()
+        progressBar?.let {
+            it.visible()
+        }
         val loader = MakeNewGameLoader(object : GetMakeNewGameLoaderCallback {
             override fun onGameLoaded(game: Game) {
                 GameEngine.game = game
                 requireContext().toast(getString(R.string.searchForOpp))
                 if (!checkIfMatched(game)) {
-                    progressBar.visible()
+                    progressBar?.let {
+                        it.visible()
+                    }
                     callAsynchronousTask()
                 } else {
-                    progressBar.gone()
+                    progressBar?.let {
+                        it.gone()
+                    }
                 }
             }
 
             override fun onResponseFailed(errorMessage: String) {
                 requireContext().toast(errorMessage)
+                requireActivity().onBackPressed()
             }
         })
         loader.loadMakeNew2PGame(requireActivity().getToken(), mode)
@@ -188,12 +195,13 @@ class ChooseGame : Fragment(), View.OnClickListener {
             if (game.player1.isNotEmpty() && game.player2.isNotEmpty()) {
                 timer.cancel() // Terminates this timer, discarding any currently scheduled tasks.
                 timer.purge() // Removes all cancelled tasks from this timer's task queue.
+                timer = Timer()
                 val match = Match(System.currentTimeMillis().toString(),
                         mode, false)
                 val players = arrayOf(game.player1, game.player2)
                 GameEngine.game = game
                 GameEngine.newGame(match, players, requireContext().getUsername(), game.id.toString())
-                progressBar.gone()
+                progressBar?.let { it.gone() }
                 startGame(match.id)
                 return true
             }
@@ -202,12 +210,13 @@ class ChooseGame : Fragment(), View.OnClickListener {
             if (game.player1.isNotEmpty() && game.player2.isNotEmpty() && game.player3.isNotEmpty() && game.player4.isNotEmpty()) {
                 timer.cancel()
                 timer.purge()
+                timer = Timer()
                 val match = Match(System.currentTimeMillis().toString(),
                         mode, false)
                 val players = arrayOf(game.player1, game.player2, game.player3, game.player4)
                 GameEngine.game = game
                 GameEngine.newGame(match, players, requireContext().getUsername(), game.id.toString())
-                progressBar.gone()
+                progressBar?.let { it.gone() }
                 startGame(match.id)
                 return true
             }
@@ -234,7 +243,9 @@ class ChooseGame : Fragment(), View.OnClickListener {
             }
 
             override fun onResponseFailed(errorMessage: String) {
-                context!!.toast(errorMessage)
+                requireContext().toast(errorMessage)
+                requireActivity().onBackPressed()
+                replaceFragment(ChooseGame())
             }
         })
         lastMoveLoader.getLastMove(token, GameEngine.game.id)

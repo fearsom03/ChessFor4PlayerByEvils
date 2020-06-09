@@ -334,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             if (receiver == null) {
                 Timber.d("Receiver Can't unregister a receiver which was never registered");
             } else {
+                receiver.abortBroadcast();
                 unregisterReceiver(receiver);
                 receiver = null;
             }
@@ -389,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
         viewModel.defaultValChanger();
     }
+
 
     @Override
     public void onBackPressed() {

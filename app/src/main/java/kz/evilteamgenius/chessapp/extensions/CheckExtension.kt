@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import java.util.regex.Pattern
 
+
 fun isValidEmailAddress(email: String): Boolean {
     return try {
         val ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$"
@@ -28,8 +29,8 @@ fun checkInternetKt(context: Context): Boolean {
 }
 
 fun Context.checkInternet(): Boolean {
-    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val networkInfo = cm.activeNetworkInfo
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+    val networkInfo = cm!!.activeNetworkInfo
     return networkInfo != null && networkInfo.isConnected
 }
 
