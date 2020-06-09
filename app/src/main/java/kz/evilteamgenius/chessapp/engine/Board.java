@@ -160,23 +160,23 @@ public class Board {
     }
 
 
-    private static boolean checkUpgradePawn(Piece nextPlayer) {
+    private static boolean checkUpgradePawn(Piece piece) {
         try {
             if (Board.extendedBoard) {
                 //extended board game
-                if (nextPlayer instanceof DownPawn && nextPlayer.position.y == 5) {
+                if (piece instanceof DownPawn && piece.position.y == 5) {
                     return true;
-                } else if (nextPlayer instanceof Pawn && nextPlayer.position.y == 5) {
+                } else if (piece instanceof Pawn && piece.position.y == 6) {
                     return true;
-                } else if (nextPlayer instanceof LeftPawn && nextPlayer.position.x == 6) {
+                } else if (piece instanceof LeftPawn && piece.position.x == 5) {
                     return true;
-                } else return nextPlayer
-                        instanceof RightPawn && nextPlayer.position.x == 6;
+                } else return piece
+                        instanceof RightPawn && piece.position.x == 6;
             } else {
                 //normal game
-                if (nextPlayer instanceof DownPawn && nextPlayer.position.y == 0) {
+                if (piece instanceof DownPawn && piece.position.y == 0) {
                     return true;
-                } else return nextPlayer instanceof Pawn && nextPlayer.position.y == 7;
+                } else return piece instanceof Pawn && piece.position.y == 7;
             }
         } catch (Exception e) {
             e.printStackTrace();
