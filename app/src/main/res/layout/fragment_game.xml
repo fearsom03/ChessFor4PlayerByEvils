@@ -62,17 +62,25 @@
         android:layout_centerInParent="true"
         android:layout_margin="4dp" />
 
+    <LinearLayout
+        android:id="@+id/namesLinear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/board"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:padding="5dp" />
+
     <TextView
         android:id="@+id/turn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/board"
-        android:layout_below="@id/board"
+        android:layout_below="@id/namesLinear"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/cardbackground"
-        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:padding="4dp"
         android:textStyle="bold" />
 
 </RelativeLayout>

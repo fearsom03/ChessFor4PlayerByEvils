@@ -5,10 +5,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +56,8 @@ public class GameFragment extends Fragment {
     BoardView board;
     @BindView(R.id.turn)
     TextView turn;
+    @BindView(R.id.namesLinear)
+    LinearLayout linearLayout;
 
     private String currentMatch;
     private boolean infunc;
@@ -169,23 +175,34 @@ public class GameFragment extends Fragment {
             StringBuilder sb = new StringBuilder();
             String current = GameEngine.players[GameEngine.turns % GameEngine.players.length].id;
             Timber.d(" current player: %s", current);
+            ArrayList<TextView> arr = new ArrayList<>();
             for (Player p : GameEngine.players) {
+                sb = new StringBuilder();
                 Timber.d(" UI:updateTurn() player " + p.id + " " + p.name + " " + p.team);
                 sb.append("<font color='")
                         .append(String.format("#%06X", (0xFFFFFF & GameEngine.getPlayerColor(p.id))))
                         .append("'>");
-                if (p.id.equals(current)) sb.append("-> ");
+                sb.append(getString(R.string.beReady)).append(" -- ");
                 if (GameEngine.match.mode == GameEngine.MODE_4_PLAYER_TEAMS) {
                     sb.append(p.name).append(" [").append(p.team).append("]</font><br />");
                 } else {
                     sb.append(p.name).append("</font><br />");
                 }
+                TextView t = new TextView(requireContext());
+                t.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+                t.setText(Html.fromHtml(sb.toString()));
+                t.setBackgroundColor(GameEngine.getPlayerColor(current));
+                t.setPadding(10, 10, 10, 10);
+                t.setGravity(Gravity.CENTER);
+                arr.add(t);
             }
             sb.delete(sb.lastIndexOf("<br />"), sb.length());
-            getActivity().runOnUiThread(() -> {
-
-                // Stuff that updates the UI
-                turn.setText(Html.fromHtml(sb.toString()));
+            requireActivity().runOnUiThread(() -> {
+//                turn.setText(Html.fromHtml(sb.toString()));
+                linearLayout.removeAllViews();
+                for (TextView t : arr) {
+                    linearLayout.addView(t);
+                }
 
             });
         }

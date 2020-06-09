@@ -9,7 +9,7 @@
         <item>中文</item>
     </string-array>
 
-    <string name="app_name">Шахматы</string>
+    <string name="app_name">КазШахМат</string>
     <string name="login">Логин</string>
     <string name="passwordName">Пароль</string>
     <string name="SignInText">Войти</string>
@@ -73,4 +73,6 @@
     <string name="knightPiece">Конь</string>
     <string name="gameStartedMsg">игра началась !</string>
     <string name="searchForOpp">В поисках оппонентов …</string>
+    <string name="beReady">Готовиться  </string>
+
 </resources>

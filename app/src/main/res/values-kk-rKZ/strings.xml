@@ -74,4 +74,6 @@
     <string name="knightPiece">Ат</string>
     <string name="gameStartedMsg">Ойын басталды !</string>
     <string name="searchForOpp">Қарсыластарды іздеу …</string>
+    <string name="beReady">Дайын бол  </string>
+
 </resources>

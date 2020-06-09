@@ -75,4 +75,5 @@
     <string name="knightPiece">马</string>
     <string name="gameStartedMsg">游戏开始 !</string>
     <string name="searchForOpp">寻找对手…</string>
+    <string name="beReady">Be ready  </string>
 </resources>
