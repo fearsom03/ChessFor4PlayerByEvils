@@ -91,6 +91,7 @@ public class GameFragment extends Fragment {
             }
         });
         if (!GameEngine.match.isLocal) {
+            toast(getContext(), getResources().getString(R.string.gameStartedMsg));
             callAsynchronousTask();
             infunc = false;
         }
@@ -203,11 +204,15 @@ public class GameFragment extends Fragment {
         LastMoveLoader lastMoveLoader = new LastMoveLoader(new LastMoveLoader.LastMoveCallback() {
             @Override
             public void onMoveLoaded(Game game) {
+                if(game.getResult().equals("over")){
+                    timer.cancel();
+                    timer.purge();
+                }
                 if (!game.getMade_by().equals(GameEngine.myPlayerUserame) && !game.getMade_by().isEmpty()) {
                     GameEngine.game = game;
                     Coordinate pos1 = new Coordinate(game.getFrom_x(), game.getFrom_y(), Board.rotations);
                     Coordinate pos2 = new Coordinate(game.getTo_x(), game.getTo_y(), Board.rotations);
-                    toast(getContext(), game.toString());
+                    //toast(getContext(), game.toString());
                     Board.moveWhenReceived(pos1, pos2, getContext());
                     getActivity().runOnUiThread(board::invalidate);
                 }

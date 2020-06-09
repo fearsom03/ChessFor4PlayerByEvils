@@ -72,4 +72,6 @@
     <string name="bishopPiece">Піл</string>
     <string name="rookPiece">Ладья</string>
     <string name="knightPiece">Ат</string>
+    <string name="gameStartedMsg">Ойын басталды !</string>
+    <string name="searchForOpp">Қарсыластарды іздеу …</string>
 </resources>

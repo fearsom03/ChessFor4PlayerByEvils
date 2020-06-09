@@ -33,7 +33,7 @@ public class GameEngine {
 
     public static kz.evilteamgenius.chessapp.models.Game game;
     public static String roomAdress;
-    private static List<String> deadPlayers;
+    public static List<String> deadPlayers;
 
     public static GameFragment UI;
 

@@ -48,29 +48,31 @@
 \n\n
         5)两个或两个以上的玩家组队是合法的。</string>
 
-    <string name="achievements">Achievements</string>
+    <string name="achievements">成就</string>
     <string name="reload">Reload</string>
-    <string name="mode1">2-player, standard chess board</string>
-    <string name="mode2">2-player, extended board</string>
-    <string name="mode3">4-player in 2 teams</string>
-    <string name="mode4">4-player, no teams</string>
-    <string name="theirturn">Their turn:</string>
-    <string name="yourturn">Your turn:</string>
-    <string name="localmatches">Local matches:</string>
-    <string name="history">Match history</string>
-    <string name="newgame">Start new game</string>
-    <string name="localgame">Local game</string>
-    <string name="gameover">Game Over!\n</string>
-    <string name="win">Congratulation, you\'ve won the match!</string>
-    <string name="loss">Sorry, you\'ve lost the match!</string>
-    <string name="winlocal">Congratulation %1$s, you\'ve won the match!</string>
-    <string name="deletematch">Do you really want to delete this match?</string>
-    <string name="leavematch">Do you really want to leave this match?</string>
-    <string name="online">Online</string>
-    <string name="needToBeOnline">Turn on internet for access online game</string>
-    <string name="versionText">Version %1$s</string>
-    <string name="queenPiece">Queen</string>
-    <string name="bishopPiece">Bishop</string>
-    <string name="rookPiece">Rook</string>
-    <string name="knightPiece">Knight</string>
+    <string name="mode1">二人, 标准棋盘</string>
+    <string name="mode2">二人, 大棋盘</string>
+    <string name="mode3">四人, 俩队</string>
+    <string name="mode4">四人, 无团队</string>
+    <string name="theirturn">对手回合:</string>
+    <string name="yourturn">你的回合:</string>
+    <string name="localmatches">本地游戏:</string>
+    <string name="history">比赛历史</string>
+    <string name="newgame">开始新游戏</string>
+    <string name="localgame">本地游戏</string>
+    <string name="gameover">游戏结束\n</string>
+    <string name="win">恭喜， 你赢得了胜利!</string>
+    <string name="loss">不好意思，你输了!</string>
+    <string name="winlocal">恭喜 %1$s, 你赢得了胜利!</string>
+    <string name="deletematch">你真有删除游戏吗？</string>
+    <string name="leavematch">您真要离开游戏吗？</string>
+    <string name="online">线上</string>
+    <string name="needToBeOnline">请打开网络来连接网络游戏</string>
+    <string name="versionText">版本 %1$s</string>
+    <string name="queenPiece">后</string>
+    <string name="bishopPiece">象</string>
+    <string name="rookPiece">车</string>
+    <string name="knightPiece">马</string>
+    <string name="gameStartedMsg">游戏开始 !</string>
+    <string name="searchForOpp">寻找对手…</string>
 </resources>

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.activity.MainActivity;
 import kz.evilteamgenius.chessapp.dialogs.UpgradePawnDialog;
 import kz.evilteamgenius.chessapp.engine.pieces.Bishop;
@@ -62,7 +63,7 @@ public class Board {
      * @return false, if that move is not legal
      */
     public static boolean move(final Coordinate old_pos, final Coordinate new_pos, Context context) {
-        //最后的赢家发出消息， 他赢了。
+
         boolean ifOver = false;
         if (!GameEngine.myTurn()) return false;
 
@@ -131,8 +132,9 @@ public class Board {
         if (ifOver) {
             // game ended
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Game over")
-                    .setTitle("Game over");
+            String gameOverText = context.getResources().getString(R.string.gameover);
+            builder.setMessage(gameOverText)
+                    .setTitle(gameOverText);
             AlertDialog dialog = builder.create();
             dialog.show();
             if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
@@ -285,8 +287,9 @@ public class Board {
         if (ifOver) {
             // game ended
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Game over")
-                    .setTitle("Game over");
+            String gameOverText = context.getResources().getString(R.string.gameover);
+            builder.setMessage(gameOverText)
+                    .setTitle(gameOverText);
             AlertDialog dialog = builder.create();
             dialog.show();
             //GameEngine.over();

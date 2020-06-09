@@ -69,4 +69,7 @@
     <string name="bishopPiece">Bishop</string>
     <string name="rookPiece">Rook</string>
     <string name="knightPiece">Knight</string>
+    <string name="gameStartedMsg">Game Started !</string>
+    <string name="searchForOpp">Searching For Opponents …</string>
+
 </resources>

@@ -29,6 +29,7 @@ import kz.evilteamgenius.chessapp.engine.Board;
 import kz.evilteamgenius.chessapp.engine.Coordinate;
 import kz.evilteamgenius.chessapp.engine.GameEngine;
 import kz.evilteamgenius.chessapp.engine.Match;
+import kz.evilteamgenius.chessapp.engine.Player;
 import kz.evilteamgenius.chessapp.fragments.GameFragment;
 import kz.evilteamgenius.chessapp.fragments.NavigationPageFragment;
 import kz.evilteamgenius.chessapp.fragments.UpdateYourApplicationFragment;
@@ -127,8 +128,15 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         GameEngine.game.setFrom_y(old_pos.y);
         GameEngine.game.setTo_x(new_pos.x);
         GameEngine.game.setTo_y(new_pos.y);
-        if (ifOver)
-            GameEngine.game.setResult(GameEngine.myPlayerUserame + " wins!");
+        if (ifOver){
+            StringBuilder s = new StringBuilder();
+            for(Player p: GameEngine.players){
+                if(!GameEngine.deadPlayers.contains(p.id))
+                    s.append(p.name);
+            }
+            GameEngine.game.setResult("over");
+            GameEngine.game.setFEN(s.toString());
+        }
         new MakeMoveToServer().execute();
     }
 
@@ -237,8 +245,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     .add("id", String.valueOf(game.getId()))
                     .add("player1", game.getPlayer1())
                     .add("player2", game.getPlayer2())
-                    .add("player3", game.getPlayer1())
-                    .add("player4", game.getPlayer2())
+                    .add("player3", game.getPlayer3())
+                    .add("player4", game.getPlayer4())
                     .add("FEN", game.getFEN() == null ? "" : game.getFEN())
                     .add("result", game.getResult() == null ? "" : game.getResult())
                     .add("from_x", String.valueOf(game.getFrom_x()))
@@ -264,10 +272,10 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     if (!result.isEmpty()) {
                         JSONObject jsonObject = new JSONObject(result);
                         Game receivedGame = new Game(jsonObject.getLong("id"),
-                                jsonObject.getString("play1"),
-                                jsonObject.getString("play2"),
-                                jsonObject.getString("play3"),
-                                jsonObject.getString("play4"),
+                                jsonObject.getString("player1"),
+                                jsonObject.getString("player2"),
+                                jsonObject.getString("player3"),
+                                jsonObject.getString("player4"),
                                 jsonObject.getString("FEN"),
                                 jsonObject.getString("result"),
                                 jsonObject.getInt("from_x"),

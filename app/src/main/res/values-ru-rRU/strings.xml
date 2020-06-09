@@ -71,4 +71,6 @@
     <string name="bishopPiece">Cлон</string>
     <string name="rookPiece">Ладья</string>
     <string name="knightPiece">Конь</string>
+    <string name="gameStartedMsg">игра началась !</string>
+    <string name="searchForOpp">В поисках оппонентов …</string>
 </resources>

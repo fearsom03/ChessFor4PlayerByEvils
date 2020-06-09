@@ -166,7 +166,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
         val loader = MakeNewGameLoader(object : GetMakeNewGameLoaderCallback {
             override fun onGetGoodsLoaded(game: Game) {
                 GameEngine.game = game
-                requireContext().toast(game.toString())
+                requireContext().toast(getString(R.string.searchForOpp))
                 if (!checkIfMatched(game)) callAsynchronousTask()
             }
 
@@ -222,7 +222,7 @@ class ChooseGame : Fragment(), View.OnClickListener {
         val lastMoveLoader = LastMoveLoader(object : LastMoveCallback {
             override fun onMoveLoaded(game: Game) {
                 checkIfMatched(game)
-                context!!.toast(game.toString())
+                //context!!.toast(game.toString())
             }
 
             override fun onResponseFailed(errorMessage: String) {
