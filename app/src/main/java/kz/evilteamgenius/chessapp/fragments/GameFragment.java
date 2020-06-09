@@ -58,11 +58,7 @@ public class GameFragment extends Fragment {
     private GameViewModel viewModel;
     private final Handler handler = new Handler();
     private Timer timer = new Timer();
-    private Runnable runnable = new Runnable() {
-        public void run() {
-            getLastMove();
-        }
-    };
+    private Runnable runnable = this::getLastMove;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -221,15 +217,14 @@ public class GameFragment extends Fragment {
 
                 @Override
                 public void onResponseFailed(String errorMessage) {
-                    toast(getContext(), errorMessage);
+                    toast(requireActivity(), errorMessage);
                 }
             });
             lastMoveLoader.getLastMove(token, GameEngine.game.getId());
             infunc = false;
         } catch (Exception e) {
             e.printStackTrace();
-            Thread.currentThread().interrupt();
-            toast(requireContext(), "LEAVED");
+            handler.removeCallbacks(runnable);
         }
 
     }
