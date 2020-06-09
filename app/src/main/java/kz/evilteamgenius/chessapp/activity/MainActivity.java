@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public static void sendMove(Coordinate old_pos, Coordinate new_pos, boolean ifOver) {
-        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.rotations);
-        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.rotations);
+        old_pos = new Coordinate(old_pos.x, old_pos.y, Board.encodeRotations);
+        new_pos = new Coordinate(new_pos.x, new_pos.y, Board.encodeRotations);
         GameEngine.game.setMade_by(GameEngine.myPlayerUserame);
         GameEngine.game.setFrom_x(old_pos.x);
         GameEngine.game.setFrom_y(old_pos.y);
