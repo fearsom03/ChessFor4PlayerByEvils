@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +59,12 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
     MaterialButton backButtonInOption;
     @BindView(R.id.versionText)
     TextView versionText;
+    @BindView(R.id.pauseMusic)
+    ImageView pauseMusic;
+    @BindView(R.id.playMusic)
+    ImageView playMusic;
+    @BindView(R.id.linearOfMainSettings)
+    LinearLayout linearOfMainSettings;
 
     private Locale myLocale;
     private String something, getlanguageStat;
@@ -72,6 +82,15 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+        viewModel.getMusicValue().observe(requireActivity(), aBoolean -> {
+            if (aBoolean) {
+                playMusic.setBackgroundColor(Color.GREEN);
+                pauseMusic.setBackgroundColor(Color.TRANSPARENT);
+            } else {
+                pauseMusic.setBackgroundColor(Color.GREEN);
+                playMusic.setBackgroundColor(Color.TRANSPARENT);
+            }
+        });
         preferences
                 = requireActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
         spinnerInit();
@@ -150,7 +169,7 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
         }
     }
 
-    @OnClick({R.id.exitTextView, R.id.shareApp, R.id.backButtonInOption})
+    @OnClick({R.id.exitTextView, R.id.shareApp, R.id.backButtonInOption, R.id.previousMusic, R.id.pauseMusic, R.id.playMusic, R.id.nextMusic})
     public void onViewClicked(View view) {
         Intent intent = new Intent(this.getContext(), LoginActivity.class);
         switch (view.getId()) {
@@ -178,6 +197,24 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
                 break;
             case R.id.backButtonInOption:
                 getBackFragment(this, new NavigationPageFragment());
+                break;
+            case R.id.previousMusic:
+                view.setBackgroundColor(Color.GREEN);
+                viewModel.startPrevMusic();
+                view.postDelayed(() ->
+                        view.setBackgroundColor(Color.TRANSPARENT), TimeUnit.MILLISECONDS.toMillis(500));
+                break;
+            case R.id.pauseMusic:
+                viewModel.setMusicIsPlaying(false);
+                break;
+            case R.id.playMusic:
+                viewModel.setMusicIsPlaying(true);
+                break;
+            case R.id.nextMusic:
+                view.setBackgroundColor(Color.GREEN);
+                viewModel.startNextMusic();
+                view.postDelayed(() ->
+                        view.setBackgroundColor(Color.TRANSPARENT), TimeUnit.MILLISECONDS.toMillis(500));
                 break;
         }
     }

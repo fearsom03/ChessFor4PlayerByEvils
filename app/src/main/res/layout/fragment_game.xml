@@ -1,16 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/back_grad"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/musicLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:alpha="0.5"
+        android:layout_alignTop="@id/board"
         android:background="@android:drawable/screen_background_light_transparent"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -18,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="previus"
             android:padding="3dp"
             android:src="@android:drawable/ic_media_previous" />
 
@@ -26,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="pause"
             android:padding="3dp"
             android:src="@android:drawable/ic_media_pause" />
 
@@ -34,6 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="@string/common_google_play_services_enable_button"
             android:padding="3dp"
             android:src="@android:drawable/ic_media_play" />
 
@@ -42,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:contentDescription="next"
             android:padding="3dp"
             android:src="@android:drawable/ic_media_next" />
 
@@ -51,14 +59,15 @@
         android:id="@+id/board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:layout_margin="4dp" />
 
     <TextView
         android:id="@+id/turn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/board"
         android:layout_above="@id/board"
+        android:layout_below="@id/board"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"

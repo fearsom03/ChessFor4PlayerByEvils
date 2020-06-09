@@ -142,6 +142,32 @@ public class Board {
 
                 }, context);
                 dialog.show();
+            } else {
+
+                // at the end of the turn, check if next player is checkmated, if so remove the player
+                Player nextPlayer = GameEngine.getNextPlayer();
+                if (isCheckmated(nextPlayer)) {
+                    ifOver.set(GameEngine.removePlayer(nextPlayer.id));
+                }
+
+                if (ifOver.get()) {
+                    // game ended
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    String gameOverText = context.getResources().getString(R.string.gameover);
+                    builder.setMessage(gameOverText)
+                            .setTitle(gameOverText);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
+                        MainActivity.sendMove(old_pos, new_pos, true);
+                    }
+                    //GameEngine.over();
+                } else {
+                    if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
+                        MainActivity.sendMove(old_pos, new_pos, false);
+                    }
+                    GameEngine.moved();
+                }
             }
         } else {
             if (checkUpgradePawn(p[0])) {
@@ -150,31 +176,6 @@ public class Board {
                 BOARD[new_pos.x][new_pos.y] = p[0];
                 me.pieces.add(p[0]);
             }
-        }
-
-        // at the end of the turn, check if next player is checkmated, if so remove the player
-        Player nextPlayer = GameEngine.getNextPlayer();
-        if (isCheckmated(nextPlayer)) {
-            ifOver.set(GameEngine.removePlayer(nextPlayer.id));
-        }
-
-        if (ifOver.get()) {
-            // game ended
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            String gameOverText = context.getResources().getString(R.string.gameover);
-            builder.setMessage(gameOverText)
-                    .setTitle(gameOverText);
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
-                MainActivity.sendMove(old_pos, new_pos, true);
-            }
-            //GameEngine.over();
-        } else {
-            if (!GameEngine.match.isLocal && GameEngine.myTurn()) {
-                MainActivity.sendMove(old_pos, new_pos, false);
-            }
-            GameEngine.moved();
         }
         return true;
     }
@@ -327,6 +328,24 @@ public class Board {
 
                 }, context);
                 dialog.show();
+            } else {
+                Player nextPlayer = GameEngine.getNextPlayer();
+                if (isCheckmated(nextPlayer)) {
+                    ifOver.set(GameEngine.removePlayer(nextPlayer.id));
+                }
+
+                if (ifOver.get()) {
+                    // game ended
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    String gameOverText = context.getResources().getString(R.string.gameover);
+                    builder.setMessage(gameOverText)
+                            .setTitle(gameOverText);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    //GameEngine.over();
+                } else {
+                    GameEngine.moved();
+                }
             }
         } else {
             if (checkUpgradePawn(p[0])) {
@@ -337,24 +356,6 @@ public class Board {
             }
         }
 
-
-        Player nextPlayer = GameEngine.getNextPlayer();
-        if (isCheckmated(nextPlayer)) {
-            ifOver.set(GameEngine.removePlayer(nextPlayer.id));
-        }
-
-        if (ifOver.get()) {
-            // game ended
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            String gameOverText = context.getResources().getString(R.string.gameover);
-            builder.setMessage(gameOverText)
-                    .setTitle(gameOverText);
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            //GameEngine.over();
-        } else {
-            GameEngine.moved();
-        }
     }
 
     /**

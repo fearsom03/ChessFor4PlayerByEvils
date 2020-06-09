@@ -10,6 +10,56 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/musicLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@android:drawable/screen_background_light_transparent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/previousMusic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:contentDescription="previus"
+                android:padding="3dp"
+                android:src="@android:drawable/ic_media_previous" />
+
+            <ImageView
+                android:id="@+id/pauseMusic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:contentDescription="pause"
+                android:padding="3dp"
+                android:src="@android:drawable/ic_media_pause" />
+
+            <ImageView
+                android:id="@+id/playMusic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:contentDescription="@string/common_google_play_services_enable_button"
+                android:padding="3dp"
+                android:src="@android:drawable/ic_media_play" />
+
+            <ImageView
+                android:id="@+id/nextMusic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:contentDescription="next"
+                android:padding="3dp"
+                android:src="@android:drawable/ic_media_next" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linearOfMainSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -17,6 +67,7 @@
             android:layout_marginTop="45dp"
             android:layout_marginEnd="55dp"
             android:layout_marginBottom="25dp"
+            android:layout_below="@id/musicLine"
             android:orientation="vertical">
 
 
