@@ -184,7 +184,6 @@ class ChooseGame : Fragment(), View.OnClickListener {
 
             override fun onResponseFailed(errorMessage: String) {
                 requireContext().toast(errorMessage)
-                requireActivity().onBackPressed()
             }
         })
         loader.loadMakeNew2PGame(requireActivity().getToken(), mode)
@@ -244,8 +243,6 @@ class ChooseGame : Fragment(), View.OnClickListener {
 
             override fun onResponseFailed(errorMessage: String) {
                 requireContext().toast(errorMessage)
-                requireActivity().onBackPressed()
-                replaceFragment(ChooseGame())
             }
         })
         lastMoveLoader.getLastMove(token, GameEngine.game.id)

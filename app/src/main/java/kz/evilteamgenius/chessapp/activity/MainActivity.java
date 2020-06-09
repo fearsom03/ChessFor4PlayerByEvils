@@ -390,11 +390,5 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
         viewModel.defaultValChanger();
     }
-
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
     //end music methods
 }
