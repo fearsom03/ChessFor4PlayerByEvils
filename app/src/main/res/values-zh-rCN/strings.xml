@@ -20,7 +20,7 @@
     <string name="emailText">邮箱</string>
     <string name="onlineGameText">网上游戏</string>
     <string name="offlineGameText">线下游戏</string>
-    <string name="communityText">Community</string>
+    <string name="communityText">互动</string>
     <string name="optionText">选项</string>
     <string name="rulesText">规则</string>
     <string name="EmptyInput">输入为空</string>
@@ -75,6 +75,6 @@
     <string name="knightPiece">马</string>
     <string name="gameStartedMsg">游戏开始 !</string>
     <string name="searchForOpp">寻找对手…</string>
-    <string name="beReady">Be ready  </string>
+    <string name="beReady">请准备  </string>
     <string name="select_background">Select background</string>
 </resources>
