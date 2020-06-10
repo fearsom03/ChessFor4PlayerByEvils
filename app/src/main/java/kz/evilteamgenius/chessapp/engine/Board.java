@@ -474,7 +474,8 @@ public class Board {
         King king = new King(new Coordinate(x_others, 5, rotations), owner);
         BOARD[king.position.x][king.position.y] = king;
         player.pieces.add(king);
-        player.king = king;
+        if (player.king == null)
+            player.king = king;
 
         Piece queen = new Queen(new Coordinate(x_others, 6, rotations), owner);
         BOARD[queen.position.x][queen.position.y] = queen;
@@ -501,10 +502,10 @@ public class Board {
     public static void newGame(final Player[] players) {
         rotations = getRotation();
         encodeRotations = rotations;
-        if(encodeRotations == 1)
+        if (encodeRotations == 1)
             encodeRotations = 3;
-        else if(encodeRotations == 3)
-            encodeRotations =1;
+        else if (encodeRotations == 3)
+            encodeRotations = 1;
 
         int myId = Integer.parseInt(GameEngine.myPlayerId);
         if (GameEngine.match.mode == GameEngine.MODE_2_PLAYER_2_SIDES) {
