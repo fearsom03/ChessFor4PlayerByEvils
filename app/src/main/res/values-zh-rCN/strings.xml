@@ -76,4 +76,5 @@
     <string name="gameStartedMsg">游戏开始 !</string>
     <string name="searchForOpp">寻找对手…</string>
     <string name="beReady">Be ready  </string>
+    <string name="select_background">Select background</string>
 </resources>

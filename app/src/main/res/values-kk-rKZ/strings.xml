@@ -75,5 +75,6 @@
     <string name="gameStartedMsg">Ойын басталды !</string>
     <string name="searchForOpp">Қарсыластарды іздеу …</string>
     <string name="beReady">Дайын бол  </string>
+    <string name="select_background">Фон таңдаңыз</string>
 
 </resources>

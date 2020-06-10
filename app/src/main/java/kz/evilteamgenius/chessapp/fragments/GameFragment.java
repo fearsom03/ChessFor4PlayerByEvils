@@ -1,6 +1,7 @@
 package kz.evilteamgenius.chessapp.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -28,6 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.evilteamgenius.chessapp.BoardView;
+import kz.evilteamgenius.chessapp.Const;
 import kz.evilteamgenius.chessapp.R;
 import kz.evilteamgenius.chessapp.api.loaders.LastMoveLoader;
 import kz.evilteamgenius.chessapp.engine.Board;
@@ -38,6 +41,7 @@ import kz.evilteamgenius.chessapp.models.Game;
 import kz.evilteamgenius.chessapp.viewModels.GameViewModel;
 import timber.log.Timber;
 
+import static android.content.Context.MODE_PRIVATE;
 import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getToken;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
@@ -58,6 +62,10 @@ public class GameFragment extends Fragment {
     TextView turn;
     @BindView(R.id.namesLinear)
     LinearLayout linearLayout;
+    @BindView(R.id.musicLine)
+    LinearLayout musicLine;
+    @BindView(R.id.wallBackground)
+    RelativeLayout wallBackground;
 
     private String currentMatch;
     private boolean infunc;
@@ -88,10 +96,28 @@ public class GameFragment extends Fragment {
                 playMusic.setBackgroundColor(Color.GREEN);
                 pauseMusic.setBackgroundColor(Color.TRANSPARENT);
             } else {
-                pauseMusic.setBackgroundColor(Color.GREEN);
                 playMusic.setBackgroundColor(Color.TRANSPARENT);
+                pauseMusic.setBackgroundColor(Color.GREEN);
             }
         });
+        viewModel.getSelectedStyle().observe(requireActivity(), integer -> {
+            try {
+                switch (integer) {
+                    case 0:
+                        wallBackground.setBackground(requireActivity().getResources().getDrawable(R.drawable.back_grad));
+                        break;
+                    case 1:
+                        wallBackground.setBackground(requireActivity().getResources().getDrawable(R.drawable.back_grad_1));
+                        break;
+                    case 2:
+                        wallBackground.setBackground(requireActivity().getResources().getDrawable(R.drawable.back_grad_3));
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        initViews();
         if (!GameEngine.match.isLocal) {
             toast(getContext(), getResources().getString(R.string.gameStartedMsg));
             callAsynchronousTask();
@@ -99,6 +125,17 @@ public class GameFragment extends Fragment {
         }
         GameEngine.UI = this;
         updateTurn();
+    }
+
+    private void initViews() {
+        SharedPreferences preferences
+                = requireActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
+        boolean forMusic = preferences.getBoolean(Const.PLAY_MUSIC, true);
+        if (forMusic) {
+            musicLine.setVisibility(View.VISIBLE);
+        } else {
+            musicLine.setVisibility(View.GONE);
+        }
     }
 
     @Override

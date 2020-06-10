@@ -80,7 +80,6 @@ public class NavigationPageFragment extends Fragment implements SliderAdapter.my
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.playText:
-                //todo in next update I will add other fragment here
                 fragment = ChooseGame.newInstance(true);
                 break;
             case R.id.communityText:

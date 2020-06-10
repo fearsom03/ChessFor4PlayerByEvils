@@ -11,12 +11,14 @@ class GameViewModel : ViewModel() {
     private var commonChatRepository = CommonRepo()
     private var nextSong = MutableLiveData<Boolean>()
     private var prevSong = MutableLiveData<Boolean>()
+    private var selectedStyle = MutableLiveData<Int>()
 
     init {
         musicIsPlaying.value = true
         internetIsOk.value = true
         nextSong.value = false
         prevSong.value = false
+        selectedStyle.value = 0
     }
 
     fun setMusicIsPlaying(boolean: Boolean) {
@@ -53,6 +55,14 @@ class GameViewModel : ViewModel() {
 
     fun startPrevMusic() {
         prevSong.value = true
+    }
+
+    fun setSelectedStyle(position: Int) {
+        selectedStyle.value = position
+    }
+
+    fun getSelectedStyle(): LiveData<Int> {
+        return selectedStyle
     }
 
     fun defaultValChanger() {

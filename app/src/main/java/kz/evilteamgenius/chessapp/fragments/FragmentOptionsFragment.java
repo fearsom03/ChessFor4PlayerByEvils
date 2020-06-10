@@ -43,7 +43,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static kz.evilteamgenius.chessapp.extensions.LifecycleExtensionKt.getBackFragment;
 import static kz.evilteamgenius.chessapp.extensions.ViewExtensionsKt.toast;
 
-public class FragmentOptionsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+public class FragmentOptionsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, ItemDesignListDialogFragment.ListenerOfChoose {
 
     @BindView(R.id.languageSpinner)
     Spinner languageSpinner;
@@ -65,6 +65,10 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
     ImageView playMusic;
     @BindView(R.id.linearOfMainSettings)
     LinearLayout linearOfMainSettings;
+    @BindView(R.id.musicLine)
+    LinearLayout musicLine;
+    @BindView(R.id.selectBackground)
+    TextView selectBackground;
 
     private Locale myLocale;
     private String something, getlanguageStat;
@@ -105,7 +109,14 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
 
     private void initToggle() {
         boolean forMusic = preferences.getBoolean(Const.PLAY_MUSIC, true);
+        boolean forNotification = preferences.getBoolean(Const.NOTIFICATION, false);
         soundSwitch.setChecked(forMusic);
+        if (forMusic) {
+            musicLine.setVisibility(View.VISIBLE);
+        } else {
+            musicLine.setVisibility(View.GONE);
+        }
+        notificationSwitch.setChecked(forNotification);
         soundSwitch.setOnCheckedChangeListener(this);
         notificationSwitch.setOnCheckedChangeListener(this);
     }
@@ -162,6 +173,7 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
             Intent refresh = new Intent(getContext(), MainActivity.class);
             refresh.putExtra("buttonId", 1);
             refresh.putExtra(something, conf.locale.getLanguage());
+            viewModel.setMusicIsPlaying(false);
             startActivity(refresh);
             requireActivity().finish();
         } else {
@@ -169,7 +181,7 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
         }
     }
 
-    @OnClick({R.id.exitTextView, R.id.shareApp, R.id.backButtonInOption, R.id.previousMusic, R.id.pauseMusic, R.id.playMusic, R.id.nextMusic})
+    @OnClick({R.id.exitTextView, R.id.shareApp, R.id.backButtonInOption, R.id.previousMusic, R.id.pauseMusic, R.id.playMusic, R.id.nextMusic, R.id.selectBackground})
     public void onViewClicked(View view) {
         Intent intent = new Intent(this.getContext(), LoginActivity.class);
         switch (view.getId()) {
@@ -182,7 +194,7 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
                 editor.clear();
                 editor.apply();
                 editor.commit();
-                getActivity().finish();
+                requireActivity().finish();
                 break;
             case R.id.shareApp:
                 final String appPackageName = requireActivity().getPackageName();
@@ -216,6 +228,9 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
                 view.postDelayed(() ->
                         view.setBackgroundColor(Color.TRANSPARENT), TimeUnit.MILLISECONDS.toMillis(500));
                 break;
+            case R.id.selectBackground:
+                new ItemDesignListDialogFragment(this).show(getParentFragmentManager(), "Hello");
+                break;
         }
     }
 
@@ -233,7 +248,18 @@ public class FragmentOptionsFragment extends Fragment implements CompoundButton.
                 editor.apply();
                 editor.commit();
                 viewModel.setMusicIsPlaying(isChecked);
+                if (isChecked) {
+                    musicLine.setVisibility(View.VISIBLE);
+                } else {
+                    musicLine.setVisibility(View.GONE);
+                }
                 break;
         }
+    }
+
+    @Override
+    public void selectStyle(int position) {
+        toast(requireContext(), "Selected --> " + position);
+        viewModel.setSelectedStyle(position);
     }
 }

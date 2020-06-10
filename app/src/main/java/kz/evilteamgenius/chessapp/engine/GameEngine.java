@@ -65,10 +65,6 @@ public class GameEngine {
         }
 
         if (next.startsWith("AutoMatch_")) next = null;
-        if (!match.isLocal) {
-            //TODO SEND MOVES TO WEBSCOKET
-            //Games.TurnBasedMultiplayer.takeTurn(api, match.id, toBytes(), next);
-        }
         if (UI != null) UI.updateTurn();
     }
 
@@ -115,29 +111,6 @@ public class GameEngine {
     /**
      * Game over
      */
-    public static void over() {
-        int winnerTeam = getWinnerTeam();
-        if (!match.isLocal) {
-            //TODO SEND OVER MESSAGE TO WEBSOCKET
-//            System.out.println("Game.over state: " + match.getStatus());
-//            if (match.getStatus() == TurnBasedMatch.MATCH_STATUS_ACTIVE) {
-//                List<ParticipantResult> result = new ArrayList<ParticipantResult>(players.length);
-//                for (Player p : players) {
-//                    result.add(new ParticipantResult(p.id,
-//                            p.team == winnerTeam ? ParticipantResult.MATCH_RESULT_WIN :
-//                                    ParticipantResult.MATCH_RESULT_LOSS,
-//                            ParticipantResult.PLACING_UNINITIALIZED));
-//                    System.out.println(p.id + " " + (p.team == winnerTeam ? "win" : "loss"));
-//                }
-//                Games.TurnBasedMultiplayer.finishMatch(api, match.id, toBytes(), result);
-//            } else {
-//                Games.TurnBasedMultiplayer.finishMatch(api, match.id);
-//            }
-//            if (UI != null) UI.gameOver(winnerTeam == getPlayer(myPlayerId).team);
-        } else {
-            if (UI != null) UI.gameOverLocal(getWinner());
-        }
-    }
 
     /**
      * Checks if the game is over
